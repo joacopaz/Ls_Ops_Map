@@ -36,7 +36,7 @@ const Mapa = () => {
 		if (Object.keys(data).length > 0 && !selectedChannel)
 			setSelectedChannel(data.channels[0]);
 	}, [data, selectedChannel]);
-
+	const [sharedVcs, setSharedVcs] = useState([]);
 	const [edit, setEdit] = useState(false);
 	const [show, setShow] = useState(false);
 	const [showConfirm, setShowConfirm] = useState(false);
@@ -45,13 +45,13 @@ const Mapa = () => {
 	const [property, setProperty] = useState({});
 
 	useEffect(() => {
-		if (!selectedChannel && searchRef.current) searchRef.current.focus();
+		if (searchRef.current) searchRef.current.focus();
 	}, [searchRef, selectedChannel]);
 	const { currentUser } = useAuth();
-	const handleClick = () => {
-		console.log(data);
-		// if (selectedChannel) console.log(selectedChannel);
-	};
+	// const handleClick = () => {
+	// 	console.log(data);
+	// 	// if (selectedChannel) console.log(selectedChannel);
+	// };
 	const handleChange = (e) => {
 		const channel = data.channels.find(
 			(e) => `${e.data.vc} ${e.data.canal}` === searchRef.current.value
@@ -179,7 +179,7 @@ const Mapa = () => {
 		}
 		setLoading(false);
 	};
-	const e = selectedChannel ? selectedChannel?.data : null;
+	const e = selectedChannel?.data;
 
 	useEffect(() => {
 		if (editPayload.length > 0) {
@@ -201,13 +201,18 @@ const Mapa = () => {
 			});
 			setData(newData);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [editPayload]);
 
 	useEffect(() => {
-		if (e && e.data && searchRef.current)
-			document.querySelector("#search").value = `${e.data.vc} ${e.data.canal}`;
-		// console.log(document.querySelector("#search"));
-	}, [selectedChannel, e]);
+		if (!e) return;
+		const vc = selectedChannel.data.vc;
+		const compartidos = data.channels.filter((e) => e.data.vc === vc);
+		if (compartidos.length > 1) {
+			setSharedVcs(compartidos);
+			console.log(compartidos);
+		}
+	}, [selectedChannel]);
 
 	return (
 		<>
@@ -240,7 +245,12 @@ const Mapa = () => {
 						/>
 
 						{selectedChannel ? (
-							<ChannelData e={e} edit={edit} editData={editData} />
+							<ChannelData
+								e={e}
+								edit={edit}
+								editData={editData}
+								sharedVcs={sharedVcs}
+							/>
 						) : null}
 
 						<div style={{ display: "flex", gap: "20px" }}>

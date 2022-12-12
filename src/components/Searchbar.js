@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useState } from "react";
+import React, { forwardRef } from "react";
 import { Form } from "react-bootstrap";
 import styles from "../Mapa.module.css";
 import "../App.css";

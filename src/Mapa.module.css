@@ -120,3 +120,15 @@
 .confirmModalBody div + div {
 	border-top: none;
 }
+.closeAlert {
+	width: fit-content;
+	height: fit-content;
+	padding: 0;
+	position: absolute;
+	top: 0px;
+	right: 8px;
+	font-size: 0.9rem;
+}
+.closeAlert:hover {
+	cursor: pointer;
+}

@@ -1,13 +1,15 @@
 import React from "react";
 import styles from "../Mapa.module.css";
 import { Button } from "react-bootstrap";
-const ChannelData = ({ e, edit, editData }) => {
+import MultiChannelAlert from "./MultiChannelAlert";
+const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 	return (
 		<>
 			{e.img && e.img.substring(0, 4) === "http" ? (
 				<img className={styles.cardImg} src={e.img} alt={` `}></img>
 			) : null}
 			<h5 className={styles.title}>{e.canal}</h5>
+
 			<ul className={`${styles.ul} ${styles.split} ${edit ? styles.edit : ""}`}>
 				{edit ? (
 					<li>
@@ -437,6 +439,9 @@ const ChannelData = ({ e, edit, editData }) => {
 					</li>
 				) : null}
 			</ul>
+			{sharedVcs.length > 1 && !edit ? (
+				<MultiChannelAlert sharedVcs={sharedVcs} />
+			) : null}
 		</>
 	);
 };
