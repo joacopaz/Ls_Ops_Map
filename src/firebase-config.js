@@ -1,6 +1,9 @@
 import firebase from "firebase/compat/app";
+
+import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 import "firebase/compat/auth";
 import { getFirestore, setLogLevel } from "firebase/firestore";
+import { getToken } from "firebase/app-check";
 
 const app = firebase.initializeApp(
 	{
@@ -14,7 +17,12 @@ const app = firebase.initializeApp(
 	}
 	// { experimentalAutoDetectLongPolling: true }
 );
-setLogLevel("debug");
+
+const appCheck = initializeAppCheck(app, {
+	provider: new ReCaptchaV3Provider(process.env.REACT_APP_RECAPTCHA_KEY),
+	isTokenAutoRefreshEnabled: true,
+});
+
 export const auth = app.auth();
 export const db = getFirestore(app);
 export default app;

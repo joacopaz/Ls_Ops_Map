@@ -17,7 +17,6 @@ export default function AuthProvider({ children }) {
 		const unsub = auth.onAuthStateChanged((user) => {
 			setCurrentUser(user);
 			setLoading(false);
-			console.log(user);
 		});
 		return unsub;
 	});
