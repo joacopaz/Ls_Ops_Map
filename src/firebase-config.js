@@ -17,7 +17,7 @@ const app = firebase.initializeApp(
 	// { experimentalAutoDetectLongPolling: true }
 );
 
-const appCheck = initializeAppCheck(app, {
+initializeAppCheck(app, {
 	provider: new ReCaptchaV3Provider(process.env.REACT_APP_RECAPTCHA_KEY),
 	isTokenAutoRefreshEnabled: true,
 });
