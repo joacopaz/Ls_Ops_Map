@@ -1,6 +1,6 @@
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, setLogLevel } from "firebase/firestore";
 
 const app = firebase.initializeApp(
 	{
@@ -14,7 +14,7 @@ const app = firebase.initializeApp(
 	}
 	// { experimentalAutoDetectLongPolling: true }
 );
-firebase.firestore.setLogLevel("debug");
+setLogLevel("debug");
 export const auth = app.auth();
 export const db = getFirestore(app);
 export default app;
