@@ -14,8 +14,12 @@ const useOnLoad = () => {
 			setLoading(true);
 			fetched.current = true;
 			const compareVersions = async () => {
-				const { current } = await read("history", "current"); // remoteDB version
+				let { current } = await read("history", "current"); // remoteDB version
 				let latestStoragedVersion = Number(storage.get("version")); // localStorage version
+				if (!current) {
+					console.log(`Error fetching latest version, falling back on cache`);
+					current = latestStoragedVersion;
+				}
 				console.log(
 					`Current online version is ${current}, local version is ${latestStoragedVersion}`
 				);
