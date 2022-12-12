@@ -14,7 +14,7 @@ const app = firebase.initializeApp(
 	}
 	// { experimentalAutoDetectLongPolling: true }
 );
-
+firebase.firestore.setLogLevel("debug");
 export const auth = app.auth();
 export const db = getFirestore(app);
 export default app;
