@@ -29,6 +29,7 @@ const useOnLoad = () => {
 					console.log("Fetching updates for " + latestStoragedVersion);
 					while (latestStoragedVersion < current) {
 						const data = storage.getAll();
+						console.log(data);
 						const version = Number(data.version);
 						const channels = JSON.parse(data.channels);
 						const { changes } = await read("history", `v${version}`);
@@ -64,12 +65,12 @@ const useOnLoad = () => {
 					}
 				} else {
 					const data = storage.getAll();
+					console.log(data);
 					const version = Number(current);
 					if (latestStoragedVersion > current) {
 						console.log("Fixing version mismatch");
 						storage.set("version", current);
 					}
-
 					const channels = JSON.parse(data.channels);
 					setData({ version, channels });
 					console.log("Parsed local data");
