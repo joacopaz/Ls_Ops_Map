@@ -46,7 +46,7 @@ const Mapa = () => {
 
 	useEffect(() => {
 		if (searchRef.current) searchRef.current.focus();
-	}, [searchRef, selectedChannel]);
+	}, [searchRef]);
 	const { currentUser } = useAuth();
 	// const handleClick = () => {
 	// 	console.log(data);
