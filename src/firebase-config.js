@@ -2,8 +2,7 @@ import firebase from "firebase/compat/app";
 
 import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 import "firebase/compat/auth";
-import { getFirestore, setLogLevel } from "firebase/firestore";
-import { getToken } from "firebase/app-check";
+import { getFirestore } from "firebase/firestore";
 
 const app = firebase.initializeApp(
 	{
