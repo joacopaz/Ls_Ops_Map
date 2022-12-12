@@ -1,8 +1,8 @@
 import firebase from "firebase/compat/app";
 
-import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
+// import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 import "firebase/compat/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, enableIndexedDbPersistence } from "firebase/firestore";
 
 const app = firebase.initializeApp(
 	{
@@ -17,12 +17,10 @@ const app = firebase.initializeApp(
 	// { experimentalAutoDetectLongPolling: true }
 );
 
-initializeAppCheck(app, {
-	provider: new ReCaptchaV3Provider(process.env.REACT_APP_RECAPTCHA_KEY),
-	isTokenAutoRefreshEnabled: true,
-});
-
-firebase.firestore().enablePersistence();
+// initializeAppCheck(app, {
+// 	provider: new ReCaptchaV3Provider(process.env.REACT_APP_RECAPTCHA_KEY),
+// 	isTokenAutoRefreshEnabled: true,
+// });
 
 export const auth = app.auth();
 export const db = getFirestore(app);
