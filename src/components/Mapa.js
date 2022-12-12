@@ -210,7 +210,6 @@ const Mapa = () => {
 		const compartidos = data.channels.filter((e) => e.data.vc === vc);
 		if (compartidos.length > 1) {
 			setSharedVcs(compartidos);
-			console.log(compartidos);
 		}
 	}, [selectedChannel]);
 

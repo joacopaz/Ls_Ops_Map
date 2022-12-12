@@ -70,7 +70,11 @@ const useOnLoad = () => {
 					setLoading(false);
 				}
 			};
-			compareVersions();
+			try {
+				compareVersions();
+			} catch (error) {
+				console.log(error);
+			}
 		} else if (!hasStorage && !fetched.current) {
 			const getRemoteDB = async () => {
 				setLoading(true);
