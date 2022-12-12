@@ -11,8 +11,8 @@ const app = firebase.initializeApp(
 		storageBucket: process.env.REACT_APP_STORAGEBUCKET,
 		messagingSenderId: process.env.REACT_APP_MESSAGINGSENDERID,
 		appId: process.env.REACT_APP_APPID,
-	},
-	{ experimentalAutoDetectLongPolling: true }
+	}
+	// { experimentalAutoDetectLongPolling: true }
 );
 
 export const auth = app.auth();
