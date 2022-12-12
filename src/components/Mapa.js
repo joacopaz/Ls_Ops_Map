@@ -139,8 +139,14 @@ const Mapa = () => {
 	const handleConfirm = async () => {
 		if (editPayload.length === 0) return;
 		setLoading(true);
-		const { current } = await read("history", "current"); // remoteDB version
 		const latestStoragedVersion = Number(storage.get("version")); // localStorage version
+		const data = await read("history", "current"); // remoteDB version
+		let current;
+		if (data) current = data.current;
+		if (!data) {
+			console.log(`Error fetching latest version, falling back on cache`);
+			current = latestStoragedVersion;
+		}
 		if (Number(latestStoragedVersion) === Number(current)) {
 			console.log(
 				`Both versions match, current version is ${current}. Updating DB...`
