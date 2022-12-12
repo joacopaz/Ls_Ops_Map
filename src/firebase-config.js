@@ -22,6 +22,8 @@ initializeAppCheck(app, {
 	isTokenAutoRefreshEnabled: true,
 });
 
+firebase.firestore().enablePersistence();
+
 export const auth = app.auth();
 export const db = getFirestore(app);
 export default app;
