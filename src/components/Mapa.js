@@ -65,8 +65,13 @@ const Mapa = () => {
 		const channel = data.channels.find(
 			(e) => `${e.data.vc} ${e.data.canal}` === searchRef.current.value
 		);
-		if (!channel) return;
+		if (channel) return setSelectedChannel(channel);
+		const closestMatch = data.channels.find(
+			(e) => searchRef.current.value.match(/(\d+)/)[1] === e.data.vc
+		);
+		if (closestMatch) setSelectedChannel(closestMatch);
 	};
+
 	const enterEditingMode = (e) => {
 		setEdit(true);
 	};
@@ -174,7 +179,7 @@ const Mapa = () => {
 		}
 		setLoading(false);
 	};
-	const e = selectedChannel?.data;
+	const e = selectedChannel ? selectedChannel?.data : null;
 
 	useEffect(() => {
 		if (editPayload.length > 0) {
@@ -197,6 +202,12 @@ const Mapa = () => {
 			setData(newData);
 		}
 	}, [editPayload]);
+
+	useEffect(() => {
+		if (e && e.data && searchRef.current)
+			document.querySelector("#search").value = `${e.data.vc} ${e.data.canal}`;
+		// console.log(document.querySelector("#search"));
+	}, [selectedChannel, e]);
 
 	return (
 		<>

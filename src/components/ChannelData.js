@@ -25,6 +25,23 @@ const ChannelData = ({ e, edit, editData }) => {
 						) : null}
 					</li>
 				) : null}
+				{e.vc !== "-" || edit ? (
+					<li>
+						<strong>VC:</strong>
+						{e.vc}
+						{edit ? (
+							<Button
+								variant="outline-danger"
+								size="sm"
+								className={styles.editBtn}
+								onClick={(e) => editData(e.target.dataset.edit)}
+								data-edit="vc"
+							>
+								Edit
+							</Button>
+						) : null}
+					</li>
+				) : null}
 				{edit ? (
 					<li>
 						<strong>Nombre:</strong> {e.canal}
@@ -91,17 +108,17 @@ const ChannelData = ({ e, edit, editData }) => {
 						) : null}
 					</li>
 				) : null}
-				{e.analista !== "-" || edit ? (
+				{e.territorio !== "-" || edit ? (
 					<li>
-						<strong>Analista:</strong>
-						{e.analista}
+						<strong>Territorio:</strong>
+						{e.territorio}
 						{edit ? (
 							<Button
 								variant="outline-danger"
 								size="sm"
 								className={styles.editBtn}
 								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="analista"
+								data-edit="territorio"
 							>
 								Edit
 							</Button>
@@ -125,6 +142,24 @@ const ChannelData = ({ e, edit, editData }) => {
 						) : null}
 					</li>
 				) : null}
+				{e.analista !== "-" || edit ? (
+					<li>
+						<strong>Analista:</strong>
+						{e.analista}
+						{edit ? (
+							<Button
+								variant="outline-danger"
+								size="sm"
+								className={styles.editBtn}
+								onClick={(e) => editData(e.target.dataset.edit)}
+								data-edit="analista"
+							>
+								Edit
+							</Button>
+						) : null}
+					</li>
+				) : null}
+
 				{e.categoria !== "-" || edit ? (
 					<li>
 						<strong>Categoria:</strong>
@@ -313,23 +348,7 @@ const ChannelData = ({ e, edit, editData }) => {
 						) : null}
 					</li>
 				) : null}
-				{e.territorio !== "-" || edit ? (
-					<li>
-						<strong>Territorio:</strong>
-						{e.territorio}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="territorio"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
+
 				{e.url !== "-" || edit ? (
 					<li>
 						<strong>Página Web:</strong>
@@ -341,23 +360,6 @@ const ChannelData = ({ e, edit, editData }) => {
 								className={styles.editBtn}
 								onClick={(e) => editData(e.target.dataset.edit)}
 								data-edit="url"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
-				{e.vc !== "-" || edit ? (
-					<li>
-						<strong>VC:</strong>
-						{e.vc}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="vc"
 							>
 								Edit
 							</Button>
