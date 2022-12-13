@@ -15,6 +15,7 @@ const Searchbar = forwardRef(
 						onChange={handleChange}
 						list="datalist"
 						ref={searchRef}
+						onClick={(e) => (e.target.value = "")}
 					/>
 
 					<datalist id="datalist" className={styles.dataList}>
