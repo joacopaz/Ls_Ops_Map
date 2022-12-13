@@ -5,13 +5,13 @@ import storage from "./useStorage";
 export const round = (num) => Math.round((num + Number.EPSILON) * 100) / 100;
 
 const useOnLoad = () => {
-	const hasStorage = Object.keys(storage.getAll()).length !== 0;
 	const [data, setData] = useState({});
 	const [loading, setLoading] = useState(false);
 	const { read, readAll } = useRead();
 	const fetched = useRef(null); // to avoid multiple renders, especially during testing (React Strict Mode)
 
 	useEffect(() => {
+		const hasStorage = Object.keys(storage.getAll()).length !== 0;
 		if (hasStorage && !fetched.current) {
 			setLoading(true);
 			fetched.current = true;
@@ -97,7 +97,7 @@ const useOnLoad = () => {
 			};
 			getRemoteDB();
 		}
-	}, [hasStorage, read, readAll]);
+	}, [read, readAll]);
 
 	return { data, loading, setData, setLoading };
 };
