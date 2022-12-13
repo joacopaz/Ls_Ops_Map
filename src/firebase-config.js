@@ -14,7 +14,7 @@ const app = firebase.initializeApp(
 		messagingSenderId: process.env.REACT_APP_MESSAGINGSENDERID,
 		appId: process.env.REACT_APP_APPID,
 	},
-	{ experimentalAutoDetectLongPolling: true }
+	{ experimentalForceLongPolling: true }
 );
 
 // initializeAppCheck(app, {
