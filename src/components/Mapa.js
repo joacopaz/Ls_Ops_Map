@@ -12,6 +12,7 @@ import useRead from "../hooks/useRead";
 import useWrite from "../hooks/useWrite";
 import storage from "../hooks/useStorage";
 import { useAuth } from "../contexts/AuthContext";
+import { round } from "../hooks/useOnLoad";
 
 const Mapa = () => {
 	const { data, loading, setData, setLoading } = useOnLoad(); // disconnected db to not consume data
@@ -139,7 +140,7 @@ const Mapa = () => {
 	const handleConfirm = async () => {
 		if (editPayload.length === 0) return;
 		setLoading(true);
-		const latestStoragedVersion = Number(storage.get("version")); // localStorage version
+		const latestStoragedVersion = round(Number(storage.get("version"))); // localStorage version
 		const response = await read("history", "current"); // remoteDB version
 		let current;
 		if (response) current = response.current;
@@ -147,11 +148,11 @@ const Mapa = () => {
 			console.log(`Error fetching latest version, falling back on cache`);
 			current = latestStoragedVersion;
 		}
-		if (Number(latestStoragedVersion) === Number(current)) {
+		if (round(Number(latestStoragedVersion)) === round(Number(current))) {
 			console.log(
 				`Both versions match, current version is ${current}. Updating DB...`
 			);
-			const newVersion = Number(latestStoragedVersion) + 0.01;
+			const newVersion = round(Number(latestStoragedVersion)) + 0.01;
 			const user = currentUser.email.match(/(.+)@/)[1];
 			const changesForHistory = editPayload.map((e) => {
 				const channelIndex = indexOfChannel(e.id);
@@ -168,7 +169,7 @@ const Mapa = () => {
 				timestamp,
 				user,
 			});
-			storage.set("version", newVersion);
+			storage.set("version", JSON.stringify(newVersion));
 			storage.set("channels", JSON.stringify(data.channels));
 			write("history", "current", {
 				current: newVersion,

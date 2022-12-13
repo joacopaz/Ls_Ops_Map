@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import useRead from "./useRead";
 import storage from "./useStorage";
 
+export const round = (num) => Math.round((num + Number.EPSILON) * 100) / 100;
+
 const useOnLoad = () => {
 	const hasStorage = Object.keys(storage.getAll()).length !== 0;
 	const [data, setData] = useState({});
@@ -14,7 +16,7 @@ const useOnLoad = () => {
 			setLoading(true);
 			fetched.current = true;
 			const compareVersions = async () => {
-				let latestStoragedVersion = Number(storage.get("version")); // localStorage version
+				let latestStoragedVersion = round(Number(storage.get("version"))); // localStorage version
 				const response = await read("history", "current"); // remoteDB version
 				let current;
 				if (response) current = response.current;
@@ -29,8 +31,7 @@ const useOnLoad = () => {
 					console.log("Fetching updates for " + latestStoragedVersion);
 					while (latestStoragedVersion < current) {
 						const data = storage.getAll();
-						console.log(data);
-						const version = Number(data.version);
+						const version = round(Number(JSON.parse(data.version)));
 						const channels = JSON.parse(data.channels);
 						const { changes } = await read("history", `v${version}`);
 						changes.forEach((change) => {
@@ -55,7 +56,7 @@ const useOnLoad = () => {
 							};
 						});
 						latestStoragedVersion = version + 0.01;
-						storage.set("version", latestStoragedVersion);
+						storage.set("version", JSON.stringify(latestStoragedVersion));
 						storage.set("channels", JSON.stringify(channels));
 						console.log(
 							`Finished updating local DB to version ${latestStoragedVersion}`
@@ -65,11 +66,10 @@ const useOnLoad = () => {
 					}
 				} else {
 					const data = storage.getAll();
-					console.log(data);
-					const version = Number(current);
+					const version = round(Number(current));
 					if (latestStoragedVersion > current) {
 						console.log("Fixing version mismatch");
-						storage.set("version", current);
+						storage.set("version", JSON.stringify(current));
 					}
 					const channels = JSON.parse(data.channels);
 					setData({ version, channels });
@@ -91,7 +91,7 @@ const useOnLoad = () => {
 				const { current } = await read("history", "current"); // remoteDB version
 				setData({ version: current, channels });
 				storage.set("channels", JSON.stringify(channels));
-				storage.set("version", current);
+				storage.set("version", JSON.stringify(current));
 				console.log(`Updated local storage to version ${current} of DB`);
 				setLoading(false);
 			};
