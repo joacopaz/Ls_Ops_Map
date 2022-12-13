@@ -1,8 +1,9 @@
 import firebase from "firebase/compat/app";
-
+import { Firestore } from "firebase/firestore";
 // import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 import "firebase/compat/auth";
 import { getFirestore, enableIndexedDbPersistence } from "firebase/firestore";
+import { initializeFirestore } from "firebase/firestore";
 
 const app = firebase.initializeApp({
 	apiKey: process.env.REACT_APP_API_KEY,
@@ -14,6 +15,8 @@ const app = firebase.initializeApp({
 	appId: process.env.REACT_APP_APPID,
 	experimentalForceLongPolling: true,
 });
+
+initializeFirestore(app, { experimentalForceLongPolling: true });
 
 // initializeAppCheck(app, {
 // 	provider: new ReCaptchaV3Provider(process.env.REACT_APP_RECAPTCHA_KEY),
