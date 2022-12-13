@@ -14,7 +14,7 @@ const MultiChannelAlert = ({ sharedVcs }) => {
 			{sharedVcs.map((e, i) => {
 				if (i === 0) return e.data.canal;
 				if (i === sharedVcs.length - 1) return ` y ${e.data.canal}`;
-				return `, ${e.data.canal} `;
+				return `, ${e.data.canal}`;
 			})}{" "}
 			<div className={styles.closeAlert} onClick={() => setShow(false)}>
 				x
