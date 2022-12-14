@@ -298,8 +298,8 @@ const Mapa = () => {
 				}
 			});
 			setData(newData);
-			console.log(editPayload);
-			console.log(editCache);
+			// console.log(editPayload);
+			// console.log(editCache);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [editPayload]);
@@ -308,10 +308,11 @@ const Mapa = () => {
 		if (!e) return;
 		const vc = selectedChannel.data.vc;
 		const compartidos = data.channels.filter((e) => e.data.vc === vc);
+		if (compartidos.length === 1) setSharedVcs([]);
 		if (compartidos.length > 1) {
 			setSharedVcs(compartidos);
 		}
-	}, [selectedChannel]);
+	}, [selectedChannel, data.channels, e]);
 
 	return (
 		<>
