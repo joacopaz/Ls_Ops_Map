@@ -53,13 +53,7 @@ const Mapa = () => {
 	// 	console.log(data);
 	// 	// if (selectedChannel) console.log(selectedChannel);
 	// };
-	const handleChange = (e) => {
-		const channel = data.channels.find(
-			(e) => `${e.data.vc} ${e.data.canal}` === searchRef.current.value
-		);
-		if (!channel) return;
-		setSelectedChannel(channel);
-	};
+
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		// run search function
@@ -245,7 +239,7 @@ const Mapa = () => {
 					<div className={styles.mapa}>
 						<Searchbar
 							handleSubmit={handleSubmit}
-							handleChange={handleChange}
+							setSelectedChannel={setSelectedChannel}
 							data={data}
 							ref={searchRef}
 						/>

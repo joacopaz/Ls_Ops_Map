@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import Mapa from "./Mapa";
 import useGrant from "../hooks/useGrant";
+import PopupControllers from "./PopupControllers";
 const Dashboard = () => {
 	useGrant();
 	const [error, setError] = useState("");
@@ -25,6 +26,7 @@ const Dashboard = () => {
 			{currentUser ? (
 				<>
 					<Mapa />
+					<PopupControllers />
 				</>
 			) : (
 				"This content is restricted"
