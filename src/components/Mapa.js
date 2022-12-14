@@ -1,7 +1,7 @@
 import styles from "../Mapa.module.css";
 import useOnLoad from "../hooks/useOnLoad";
 import { useEffect, useRef, useState } from "react";
-import { Button } from "react-bootstrap";
+import { Alert, Button, Form } from "react-bootstrap";
 import Loader from "./Loader";
 // import base from "../base.json";
 import EditModal from "./EditModal";
@@ -13,6 +13,7 @@ import useWrite from "../hooks/useWrite";
 import storage from "../hooks/useStorage";
 import { useAuth } from "../contexts/AuthContext";
 import { round } from "../hooks/useOnLoad";
+import DeleteForm from "./DeleteForm";
 
 const Mapa = () => {
 	const { data, loading, setData, setLoading } = useOnLoad(); // disconnected db to not consume data
@@ -33,10 +34,7 @@ const Mapa = () => {
 		if (Object.keys(data).length > 0) return data.channels[0];
 		return null;
 	});
-	useEffect(() => {
-		if (Object.keys(data).length > 0 && !selectedChannel)
-			setSelectedChannel(data.channels[0]);
-	}, [data, selectedChannel]);
+
 	const [sharedVcs, setSharedVcs] = useState([]);
 	const [edit, setEdit] = useState(false);
 	const [show, setShow] = useState(false);
@@ -46,6 +44,14 @@ const Mapa = () => {
 	const [property, setProperty] = useState({});
 	const [creatingNew, setCreatingNew] = useState(false);
 	const [alert, setAlert] = useState("");
+	const [deleting, setDeleting] = useState(false);
+	const [channelToDelete, setChannelToDelete] = useState({});
+	const [deleteConfirm, setDeleteConfirm] = useState(false);
+
+	useEffect(() => {
+		if (Object.keys(data).length > 0 && !selectedChannel)
+			setSelectedChannel(data.channels[0]);
+	}, [data, selectedChannel]);
 
 	useEffect(() => {
 		if (searchRef.current) searchRef.current.focus();
@@ -108,6 +114,10 @@ const Mapa = () => {
 			...prev,
 			{ id: `${newID}`, type: "Create", data: { ...newChannel.data } },
 		]);
+	};
+
+	const handleChannelDeletion = () => {
+		if (deleting === false) setDeleting(true);
 	};
 
 	const handleSubmit = (e) => {
@@ -306,6 +316,7 @@ const Mapa = () => {
 
 	useEffect(() => {
 		if (!e) return;
+		if (deleting) return;
 		const vc = selectedChannel.data.vc;
 		const compartidos = data.channels.filter((e) => e.data.vc === vc);
 		if (compartidos.length === 1) setSharedVcs([]);
@@ -313,6 +324,19 @@ const Mapa = () => {
 			setSharedVcs(compartidos);
 		}
 	}, [selectedChannel, data.channels, e]);
+
+	const deleteInputRef = useRef();
+
+	const handleDeleteInput = (e) => {
+		const channel = data.channels.find(
+			(e) => `${e.data.vc} ${e.data.canal}` === deleteInputRef.current.value
+		);
+		if (!channel) return;
+		setChannelToDelete(channel);
+	};
+	const handleWillDelete = (e) => {
+		console.log("Starting deletion process");
+	};
 
 	return (
 		<>
@@ -342,14 +366,19 @@ const Mapa = () => {
 						{!creatingNew ? (
 							<Searchbar
 								handleSubmit={handleSubmit}
+								setDeleting={setDeleting}
+								deleting={deleting}
 								handleChannelCreation={handleChannelCreation}
+								handleChannelDeletion={handleChannelDeletion}
+								setDeleteConfirm={setDeleteConfirm}
+								setChannelToDelete={setChannelToDelete}
 								setSelectedChannel={setSelectedChannel}
 								data={data}
 								ref={searchRef}
 							/>
 						) : null}
 
-						{selectedChannel ? (
+						{selectedChannel && !deleting ? (
 							<ChannelData
 								e={e}
 								edit={edit}
@@ -359,7 +388,7 @@ const Mapa = () => {
 						) : null}
 
 						<div style={{ display: "flex", gap: "20px" }}>
-							{selectedChannel && !edit ? (
+							{selectedChannel && !edit && !deleting ? (
 								<Button
 									variant="primary"
 									className="mt-4"
@@ -387,7 +416,17 @@ const Mapa = () => {
 								</Button>
 							) : null}
 						</div>
-						<button onClick={handleClick}>Log All Data</button>
+						{deleting ? (
+							<DeleteForm
+								ref={deleteInputRef}
+								handleDeleteInput={handleDeleteInput}
+								deleteConfirm={deleteConfirm}
+								setDeleteConfirm={setDeleteConfirm}
+								channelToDelete={channelToDelete}
+								handleWillDelete={handleWillDelete}
+							/>
+						) : null}
+						{/* <button onClick={handleClick}>Log All Data</button> */}
 					</div>
 				</>
 			) : null}

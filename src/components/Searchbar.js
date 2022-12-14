@@ -5,7 +5,17 @@ import "../App.css";
 
 const Searchbar = forwardRef(
 	(
-		{ handleSubmit, setSelectedChannel, data, handleChannelCreation },
+		{
+			handleSubmit,
+			setSelectedChannel,
+			data,
+			handleChannelCreation,
+			handleChannelDeletion,
+			setDeleting,
+			setDeleteConfirm,
+			setChannelToDelete,
+			deleting,
+		},
 		searchRef
 	) => {
 		const [quickSearch, setQuickSearch] = useState(true);
@@ -13,10 +23,17 @@ const Searchbar = forwardRef(
 		const handleChange = (e) => {
 			if (e.target.value === "Create new channel")
 				return handleChannelCreation();
+			if (e.target.value === "Delete existing channel")
+				return handleChannelDeletion();
 			const channel = data.channels.find(
 				(e) => `${e.data.vc} ${e.data.canal}` === searchRef.current.value
 			);
 			if (!channel) return;
+			if (deleting) {
+				setDeleting(false);
+				setDeleteConfirm(false);
+				setChannelToDelete({});
+			}
 			setSelectedChannel(channel);
 		};
 
@@ -43,6 +60,7 @@ const Searchbar = forwardRef(
 							);
 						})}
 						<option value={`Create new channel`}></option>
+						<option value={`Delete existing channel`}></option>
 					</datalist>
 					<Form.Check
 						type="switch"

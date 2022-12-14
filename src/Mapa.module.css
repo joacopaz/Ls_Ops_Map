@@ -150,3 +150,8 @@
 .closeAlert:hover {
 	cursor: pointer;
 }
+
+.deleteForm {
+	max-width: 100%;
+	overflow-wrap: break-word;
+}
