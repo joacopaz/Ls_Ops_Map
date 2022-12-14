@@ -37,18 +37,24 @@ const useOnLoad = () => {
 						changes.forEach((change) => {
 							const { id } = change;
 							const indexToChange = channels.findIndex((e) => e.id === id);
+							if (indexToChange === -1 && change.type === "Create") {
+								channels.push({ id, data: change });
+							}
 							const newProps = {};
 							for (const key in change) {
 								if (Object.hasOwnProperty.call(change, key)) {
 									const element = change[key];
-									if (key === "channel" || key === "id") continue;
+									if (key === "channel" || key === "id" || key === "type")
+										continue;
 									newProps[key] = element;
 								}
 							}
 							console.log(
-								`Updating VC ${channels[indexToChange].data.vc} ${
-									channels[indexToChange].data.canal
-								} with ${JSON.stringify(newProps)}`
+								`${change.type === "Create" ? "Creating" : "Updating"} VC ${
+									channels[indexToChange].data.vc
+								} ${channels[indexToChange].data.canal} with ${JSON.stringify(
+									newProps
+								)}`
 							);
 							channels[indexToChange].data = {
 								...channels[indexToChange].data,
@@ -61,8 +67,8 @@ const useOnLoad = () => {
 						console.log(
 							`Finished updating local DB to version ${latestStoragedVersion}`
 						);
-						setLoading(false);
 						setData({ version: latestStoragedVersion, channels });
+						setLoading(false);
 					}
 				} else {
 					const data = storage.getAll();

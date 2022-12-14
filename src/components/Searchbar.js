@@ -18,7 +18,6 @@ const Searchbar = forwardRef(
 			);
 			if (!channel) return;
 			setSelectedChannel(channel);
-			console.log(channel);
 		};
 
 		return (

@@ -386,7 +386,7 @@ const Mapa = () => {
 								</Button>
 							) : null}
 						</div>
-						{/* <button onClick={handleClick}>Log All Data</button> */}
+						<button onClick={handleClick}>Log All Data</button>
 					</div>
 				</>
 			) : null}
