@@ -4,15 +4,21 @@ import styles from "../Mapa.module.css";
 import "../App.css";
 
 const Searchbar = forwardRef(
-	({ handleSubmit, setSelectedChannel, data }, searchRef) => {
+	(
+		{ handleSubmit, setSelectedChannel, data, handleChannelCreation },
+		searchRef
+	) => {
 		const [quickSearch, setQuickSearch] = useState(true);
 
 		const handleChange = (e) => {
+			if (e.target.value === "Create new channel")
+				return handleChannelCreation();
 			const channel = data.channels.find(
 				(e) => `${e.data.vc} ${e.data.canal}` === searchRef.current.value
 			);
 			if (!channel) return;
 			setSelectedChannel(channel);
+			console.log(channel);
 		};
 
 		return (
@@ -37,6 +43,7 @@ const Searchbar = forwardRef(
 								></option>
 							);
 						})}
+						<option value={`Create new channel`}></option>
 					</datalist>
 					<Form.Check
 						type="switch"

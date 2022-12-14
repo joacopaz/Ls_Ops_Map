@@ -44,18 +44,77 @@ const Mapa = () => {
 	const [editPayload, setEditPayload] = useState([]);
 	const [editCache, setEditCache] = useState([]);
 	const [property, setProperty] = useState({});
+	const [creatingNew, setCreatingNew] = useState(false);
+	const [alert, setAlert] = useState("");
 
 	useEffect(() => {
 		if (searchRef.current) searchRef.current.focus();
 	}, [searchRef]);
 	const { currentUser } = useAuth();
-	// const handleClick = () => {
-	// 	console.log(data);
-	// 	// if (selectedChannel) console.log(selectedChannel);
-	// };
+	const handleClick = () => {
+		console.log(data);
+		// if (selectedChannel) console.log(selectedChannel);
+	};
+
+	const handleChannelCreation = () => {
+		// if (editPayload.length > 0)
+		// 	return alert(
+		// 		"Please submit or cancel any pending edits before creating a new channel."
+		// 	);
+
+		const lastID = data.channels.reduce((acc, curr) => {
+			if (Number(curr.id) > acc) acc = Number(curr.id);
+			return acc;
+		}, 0);
+		const newID = lastID + 1; // newID to create
+		const newChannel = {
+			id: `${newID}`,
+			data: {
+				GMT: "-",
+				GMTverano: "-",
+				actionPack: "-",
+				analista: "-",
+				canal: "New channel",
+				carga: "-",
+				categoria: "-",
+				contacto: "-",
+				correo: "-",
+				engDesc: "-",
+				esclavo: "-",
+				espejos: "-",
+				frecuencia: "-",
+				grid: "-",
+				horario: "-",
+				img: "-",
+				master: "-",
+				obs: "-",
+				pass: "-",
+				spaDesc: "-",
+				tel: "-",
+				territorio: "-",
+				url: "-",
+				usuario: "-",
+				vc: "TBD",
+			},
+		};
+		setSelectedChannel(newChannel);
+		setEdit(true);
+		setCreatingNew(true);
+		setEditPayload([
+			...editPayload,
+			{ id: `${newID}`, type: "Create", changes: { ...newChannel.data } },
+		]);
+		setEditCache((prev) => [
+			...prev,
+			{ id: `${newID}`, type: "Create", data: { ...newChannel.data } },
+		]);
+	};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
+		if (searchRef.current.value === "Create new channel") {
+			return;
+		}
 		// run search function
 		const channel = data.channels.find(
 			(e) => `${e.data.vc} ${e.data.canal}` === searchRef.current.value
@@ -76,6 +135,23 @@ const Mapa = () => {
 			setShowConfirm(false);
 			return;
 		}
+		if (alert) setAlert("");
+		if (
+			selectedChannel.data.vc === "TBD" ||
+			selectedChannel.data.canal === "New channel"
+		)
+			setAlert(`VC and channel name must be assigned a new value on channel creation
+			(can be modified later).`);
+		if (
+			data.channels.find(
+				(e) =>
+					e.data.canal === selectedChannel.data.canal &&
+					e.id !== selectedChannel.id
+			)
+		)
+			setAlert(
+				`Channel name must be unique, ${selectedChannel.data.canal} is currently in use.`
+			);
 		let string = "";
 		editPayload.forEach((e) => {
 			const channel = editCache.find((channel) => e.id === channel.id);
@@ -96,15 +172,24 @@ const Mapa = () => {
 	const cancelEditingMode = (e) => {
 		const dataToRestore = { ...data };
 		editCache.forEach((e) => {
-			const indexToRestore = dataToRestore.channels.findIndex(
-				(channel) => channel.id === e.id
-			);
-			dataToRestore.channels[indexToRestore].data = e.data;
+			if (e.type === "Create") {
+				const indexToDelete = indexOfChannel(e.id);
+				data.channels.splice(indexToDelete, 1);
+			} else {
+				const indexToRestore = dataToRestore.channels.findIndex(
+					(channel) => channel.id === e.id
+				);
+				dataToRestore.channels[indexToRestore].data = e.data;
+			}
 		});
 		setData(dataToRestore);
 		setEdit(false);
 		setEditCache([]);
 		setEditPayload([]);
+		if (creatingNew) {
+			setCreatingNew(false);
+			setSelectedChannel(data.channels[0]);
+		}
 	};
 	const propertyToString = (property) => {
 		let stringToShow = property;
@@ -151,6 +236,13 @@ const Mapa = () => {
 			const changesForHistory = editPayload.map((e) => {
 				const channelIndex = indexOfChannel(e.id);
 				const channel = data.channels[channelIndex].data.canal;
+				if (e.type)
+					return {
+						channel,
+						id: e.id,
+						type: e.type,
+						...e.changes,
+					};
 				return {
 					channel,
 					id: e.id,
@@ -187,9 +279,14 @@ const Mapa = () => {
 			// update UI to see changes
 			const newData = { ...data };
 			editPayload.forEach((edit) => {
-				const indexOfChange = newData.channels.findIndex(
-					(e) => edit.id === e.id
-				);
+				let indexOfChange = newData.channels.findIndex((e) => edit.id === e.id);
+				if (indexOfChange === -1 && creatingNew) {
+					// update local data with new channel
+					newData.channels.push(selectedChannel);
+					indexOfChange = newData.channels.length - 1;
+				} else if (indexOfChange === -1) {
+					return;
+				}
 				for (const key in edit.changes) {
 					if (Object.hasOwnProperty.call(edit.changes, key)) {
 						const element = edit.changes[key];
@@ -201,6 +298,8 @@ const Mapa = () => {
 				}
 			});
 			setData(newData);
+			console.log(editPayload);
+			console.log(editCache);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [editPayload]);
@@ -223,9 +322,11 @@ const Mapa = () => {
 						showConfirm={showConfirm}
 						setShowConfirm={setShowConfirm}
 						handleConfirm={handleConfirm}
+						alert={alert}
 					/>
 					<EditModal
 						show={show}
+						creatingNew={creatingNew}
 						setShow={setShow}
 						property={property}
 						selectedChannel={selectedChannel}
@@ -237,12 +338,15 @@ const Mapa = () => {
 						data={data}
 					/>
 					<div className={styles.mapa}>
-						<Searchbar
-							handleSubmit={handleSubmit}
-							setSelectedChannel={setSelectedChannel}
-							data={data}
-							ref={searchRef}
-						/>
+						{!creatingNew ? (
+							<Searchbar
+								handleSubmit={handleSubmit}
+								handleChannelCreation={handleChannelCreation}
+								setSelectedChannel={setSelectedChannel}
+								data={data}
+								ref={searchRef}
+							/>
+						) : null}
 
 						{selectedChannel ? (
 							<ChannelData

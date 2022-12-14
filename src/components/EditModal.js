@@ -10,8 +10,7 @@ const EditModal = ({
 	setEditCache,
 	editCache,
 	editPayload,
-	setData,
-	data,
+	creatingNew,
 }) => {
 	const newValRef = useRef();
 	const handleClose = () => setShow(false);
@@ -64,7 +63,7 @@ const EditModal = ({
 				show={show}
 				onHide={handleClose}
 				backdrop="static"
-				keyboard={false}
+				keyboard={true}
 				style={{ color: "black", caretColor: "transparent" }}
 			>
 				<Modal.Header closeButton>
@@ -73,7 +72,11 @@ const EditModal = ({
 					</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
-					<Form.Group className="mb-3" style={{ caretColor: "auto" }}>
+					<Form.Group
+						className="mb-3"
+						style={{ caretColor: "auto" }}
+						onSubmit={(e) => console.log(e)}
+					>
 						<Form.Label>Nuevo valor:</Form.Label>
 						<Form.Control
 							as="textarea"

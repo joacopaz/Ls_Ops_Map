@@ -83,7 +83,7 @@
 	font-size: 1rem;
 	position: absolute;
 	width: max-content;
-	color: rgb(7, 166, 215);
+	color: #00abf482;
 	opacity: 0;
 	transition: opacity 200ms;
 	transform: translate(5px, 2px);
