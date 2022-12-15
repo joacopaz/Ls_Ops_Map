@@ -306,14 +306,15 @@ const Mapa = () => {
 			editPayload.forEach(async (e) => {
 				if (e.changes.type !== "Delete")
 					return await write("channels", e.id, { ...e.changes });
-				del("channels", e.id);
+				await del("channels", e.id);
 			});
 
-			setEdit(false);
-			setShowConfirm(false);
-			checkPatch();
+			await checkPatch();
 		}
 		setLoading(false);
+		setEdit(false);
+		setShowConfirm(false);
+		if (isDelete) setSelectedChannel(data.channels[0]);
 	};
 
 	const handleDeleteInput = (e) => {
