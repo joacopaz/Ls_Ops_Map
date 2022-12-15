@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 
 const EditModal = ({
@@ -10,9 +10,9 @@ const EditModal = ({
 	setEditCache,
 	editCache,
 	editPayload,
-	creatingNew,
 }) => {
 	const newValRef = useRef();
+	const submitRef = useRef();
 	const handleClose = () => setShow(false);
 	const handleClick = () => {
 		if (newValRef.current.value === selectedChannel.data[property.property]) {
@@ -55,7 +55,10 @@ const EditModal = ({
 		handleClose();
 	};
 	const handleKey = (e) => {
-		if (e.key === "Enter") e.preventDefault();
+		if (e.key === "Enter") {
+			e.preventDefault();
+			submitRef.current.click();
+		}
 	};
 	return (
 		<>
@@ -97,7 +100,7 @@ const EditModal = ({
 						<Button variant="secondary" onClick={handleClose}>
 							Cancelar
 						</Button>
-						<Button variant="primary" onClick={handleClick}>
+						<Button variant="primary" onClick={handleClick} ref={submitRef}>
 							Aceptar
 						</Button>
 					</div>

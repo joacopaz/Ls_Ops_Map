@@ -6,7 +6,6 @@ import styles from "../Mapa.module.css";
 const DeleteForm = forwardRef(
 	(
 		{
-			deleteInputRef,
 			handleDeleteInput,
 			deleteConfirm,
 			setDeleteConfirm,

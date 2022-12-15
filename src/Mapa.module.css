@@ -10,7 +10,6 @@
 	color: black;
 	padding: 1rem;
 	padding-bottom: 2rem;
-	width: max-content;
 	font-size: 1.2rem;
 	caret-color: transparent;
 }
@@ -83,10 +82,12 @@
 	font-size: 1rem;
 	position: absolute;
 	width: max-content;
-	color: #00abf482;
+	color: #00abf4;
 	opacity: 0;
 	transition: opacity 200ms;
 	transform: translate(5px, 2px);
+	background-color: white;
+	padding-right: 5px;
 }
 
 .cardImg {

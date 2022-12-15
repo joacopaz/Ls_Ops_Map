@@ -1,4 +1,4 @@
-import React, { forwardRef, useState } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import styles from "../Mapa.module.css";
 import "../App.css";
@@ -6,7 +6,6 @@ import "../App.css";
 const Searchbar = forwardRef(
 	(
 		{
-			handleSubmit,
 			setSelectedChannel,
 			data,
 			handleChannelCreation,
@@ -16,17 +15,36 @@ const Searchbar = forwardRef(
 			setChannelToDelete,
 			deleting,
 		},
-		searchRef
+		ref
 	) => {
 		const [quickSearch, setQuickSearch] = useState(true);
 
+		useEffect(() => {
+			ref.current.focus();
+		});
+
+		const handleSubmit = (e) => {
+			e.preventDefault();
+			if (ref.current.value === "Create new channel") {
+				return;
+			}
+			// run search function
+			const channel = data.channels.find(
+				(e) => `${e.data.vc} ${e.data.canal}` === ref.current.value
+			);
+			if (channel) return setSelectedChannel(channel);
+			const closestMatch = data.channels.find(
+				(e) => ref.current.value.match(/(\d+)/)[1] === e.data.vc
+			);
+			if (closestMatch) setSelectedChannel(closestMatch);
+		};
 		const handleChange = (e) => {
 			if (e.target.value === "Create new channel")
 				return handleChannelCreation();
 			if (e.target.value === "Delete existing channel")
 				return handleChannelDeletion();
 			const channel = data.channels.find(
-				(e) => `${e.data.vc} ${e.data.canal}` === searchRef.current.value
+				(e) => `${e.data.vc} ${e.data.canal}` === ref.current.value
 			);
 			if (!channel) return;
 			if (deleting) {
@@ -46,7 +64,7 @@ const Searchbar = forwardRef(
 						placeholder={"Search by VC or channel name"}
 						onChange={handleChange}
 						list="datalist"
-						ref={searchRef}
+						ref={ref}
 						onClick={(e) => (quickSearch ? (e.target.value = "") : "")}
 					/>
 

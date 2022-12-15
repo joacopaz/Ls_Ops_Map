@@ -1,9 +1,8 @@
 import styles from "../Mapa.module.css";
 import useOnLoad from "../hooks/useOnLoad";
 import { useEffect, useRef, useState } from "react";
-import { Alert, Button, Form } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import Loader from "./Loader";
-// import base from "../base.json";
 import EditModal from "./EditModal";
 import Searchbar from "./Searchbar";
 import ChannelData from "./ChannelData";
@@ -12,29 +11,28 @@ import useRead from "../hooks/useRead";
 import useWrite from "../hooks/useWrite";
 import storage from "../hooks/useStorage";
 import { useAuth } from "../contexts/AuthContext";
-import { round } from "../hooks/useOnLoad";
 import DeleteForm from "./DeleteForm";
 
 const Mapa = () => {
-	const { data, loading, setData, setLoading } = useOnLoad(); // disconnected db to not consume data
-	const searchRef = useRef();
+	const {
+		data,
+		loading,
+		setData,
+		setLoading,
+		round,
+		propertyToString,
+		checkPatch,
+	} = useOnLoad(); // disconnected db to not consume data
 	const { read } = useRead();
 	const write = useWrite();
+	const { currentUser } = useAuth();
 
-	// // DELETE FOR PROD STARTS HERE
-	// const mockData = { version: 0, channels: [] };
-	// base.forEach((obj, i) => {
-	// 	mockData.channels.push({ id: i, data: obj });
-	// });
-	// const [data, setData] = useState(mockData);
-	// const loading = false;
-	// // DELETE FOR PROD ENDS HERE
-
+	const searchRef = useRef();
+	const deleteInputRef = useRef();
 	const [selectedChannel, setSelectedChannel] = useState(() => {
 		if (Object.keys(data).length > 0) return data.channels[0];
 		return null;
 	});
-
 	const [sharedVcs, setSharedVcs] = useState([]);
 	const [edit, setEdit] = useState(false);
 	const [show, setShow] = useState(false);
@@ -48,26 +46,60 @@ const Mapa = () => {
 	const [channelToDelete, setChannelToDelete] = useState({});
 	const [deleteConfirm, setDeleteConfirm] = useState(false);
 
+	const e = selectedChannel?.data;
+
+	// Set first channel as selected on load
 	useEffect(() => {
 		if (Object.keys(data).length > 0 && !selectedChannel)
 			setSelectedChannel(data.channels[0]);
 	}, [data, selectedChannel]);
-
 	useEffect(() => {
-		if (searchRef.current) searchRef.current.focus();
-	}, [searchRef]);
-	const { currentUser } = useAuth();
-	const handleClick = () => {
-		console.log(data);
-		// if (selectedChannel) console.log(selectedChannel);
-	};
+		if (editPayload.length > 0) {
+			// update UI to see changes
+			const newData = { ...data };
+			editPayload.forEach((edit) => {
+				let indexOfChange = newData.channels.findIndex((e) => edit.id === e.id);
+				if (indexOfChange === -1 && creatingNew) {
+					// update local data with new channel
+					newData.channels.push(selectedChannel);
+					indexOfChange = newData.channels.length - 1;
+				} else if (indexOfChange === -1) {
+					return;
+				}
+				for (const key in edit.changes) {
+					if (Object.hasOwnProperty.call(edit.changes, key)) {
+						const element = edit.changes[key];
+						newData.channels[indexOfChange].data = {
+							...newData.channels[indexOfChange].data,
+							[key]: element,
+						};
+					}
+				}
+			});
+			setData(newData);
+			// console.log(editPayload);
+			// console.log(editCache);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [editPayload]);
+	useEffect(() => {
+		if (!e) return;
+		if (deleting) return;
+		const vc = selectedChannel.data.vc;
+		const compartidos = data.channels.filter((e) => e.data.vc === vc);
+		if (compartidos.length === 1) setSharedVcs([]);
+		if (compartidos.length > 1) {
+			setSharedVcs(compartidos);
+		}
+	}, [selectedChannel, data.channels, e, deleting]);
 
-	const handleChannelCreation = () => {
-		// if (editPayload.length > 0)
-		// 	return alert(
-		// 		"Please submit or cancel any pending edits before creating a new channel."
-		// 	);
+	// const handleClick = () => {
+	// 	console.log(data);
+	// 	// if (selectedChannel) console.log(selectedChannel);
+	// };
 
+	const handleChannelCreation = async () => {
+		await checkPatch();
 		const lastID = data.channels.reduce((acc, curr) => {
 			if (Number(curr.id) > acc) acc = Number(curr.id);
 			return acc;
@@ -136,9 +168,6 @@ const Mapa = () => {
 		if (closestMatch) setSelectedChannel(closestMatch);
 	};
 
-	const enterEditingMode = (e) => {
-		setEdit(true);
-	};
 	const finishEditing = (e) => {
 		if (editPayload.length === 0) {
 			setEdit(false);
@@ -155,13 +184,24 @@ const Mapa = () => {
 		if (
 			data.channels.find(
 				(e) =>
-					e.data.canal === selectedChannel.data.canal &&
+					e.data.canal.toLowerCase() ===
+						selectedChannel.data.canal.toLowerCase() &&
 					e.id !== selectedChannel.id
 			)
 		)
 			setAlert(
-				`Channel name must be unique, ${selectedChannel.data.canal} is currently in use.`
+				`Channel name must be unique, ${
+					selectedChannel.data.canal
+				} is currently in use by VC ${
+					data.channels.find(
+						(e) =>
+							e.data.canal.toLowerCase() ===
+								selectedChannel.data.canal.toLowerCase() &&
+							e.id !== selectedChannel.id
+					).data.vc
+				}.`
 			);
+		if (isNaN(selectedChannel.data.vc)) setAlert("VC must be a number");
 		let string = "";
 		editPayload.forEach((e) => {
 			const channel = editCache.find((channel) => e.id === channel.id);
@@ -201,23 +241,7 @@ const Mapa = () => {
 			setSelectedChannel(data.channels[0]);
 		}
 	};
-	const propertyToString = (property) => {
-		let stringToShow = property;
-		if (property === "img") stringToShow = "logo (URL)";
-		if (property === "canal") stringToShow = "nombre";
-		if (property === "GMT") stringToShow = "horario GMT";
-		if (property === "GMTverano") stringToShow = "horario verano";
-		if (property === "actionPack") stringToShow = "action pack";
-		if (property === "categoria") stringToShow = "categoría";
-		if (property === "pass") stringToShow = "password";
-		if (property === "tel") stringToShow = "teléfono";
-		if (property === "url") stringToShow = "página web";
-		if (property === "vc") stringToShow = "VC";
-		if (property === "spaDesc") stringToShow = "descripción (español)";
-		if (property === "engDesc") stringToShow = "descripción (inglés)";
-		if (property === "obs") stringToShow = "observaciones";
-		return stringToShow;
-	};
+
 	const editData = (property) => {
 		const stringToShow = propertyToString(property);
 		setProperty({ property, stringToShow });
@@ -229,7 +253,7 @@ const Mapa = () => {
 	const handleConfirm = async () => {
 		if (editPayload.length === 0) return;
 		setLoading(true);
-		const latestStoragedVersion = round(Number(storage.get("version"))); // localStorage version
+		let latestStoragedVersion = round(Number(storage.get("version"))); // localStorage version
 		const response = await read("history", "current"); // remoteDB version
 		let current;
 		if (response) current = response.current;
@@ -237,10 +261,9 @@ const Mapa = () => {
 			console.log(`Error fetching latest version, falling back on cache`);
 			current = latestStoragedVersion;
 		}
+		await checkPatch();
 		if (round(Number(latestStoragedVersion)) === round(Number(current))) {
-			console.log(
-				`Both versions match, current version is ${current}. Updating DB...`
-			);
+			console.log(`Uploading changes...`);
 			const newVersion = round(Number(latestStoragedVersion)) + 0.01;
 			const user = currentUser.email.match(/(.+)@/)[1];
 			const changesForHistory = editPayload.map((e) => {
@@ -282,50 +305,6 @@ const Mapa = () => {
 		}
 		setLoading(false);
 	};
-	const e = selectedChannel?.data;
-
-	useEffect(() => {
-		if (editPayload.length > 0) {
-			// update UI to see changes
-			const newData = { ...data };
-			editPayload.forEach((edit) => {
-				let indexOfChange = newData.channels.findIndex((e) => edit.id === e.id);
-				if (indexOfChange === -1 && creatingNew) {
-					// update local data with new channel
-					newData.channels.push(selectedChannel);
-					indexOfChange = newData.channels.length - 1;
-				} else if (indexOfChange === -1) {
-					return;
-				}
-				for (const key in edit.changes) {
-					if (Object.hasOwnProperty.call(edit.changes, key)) {
-						const element = edit.changes[key];
-						newData.channels[indexOfChange].data = {
-							...newData.channels[indexOfChange].data,
-							[key]: element,
-						};
-					}
-				}
-			});
-			setData(newData);
-			// console.log(editPayload);
-			// console.log(editCache);
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [editPayload]);
-
-	useEffect(() => {
-		if (!e) return;
-		if (deleting) return;
-		const vc = selectedChannel.data.vc;
-		const compartidos = data.channels.filter((e) => e.data.vc === vc);
-		if (compartidos.length === 1) setSharedVcs([]);
-		if (compartidos.length > 1) {
-			setSharedVcs(compartidos);
-		}
-	}, [selectedChannel, data.channels, e]);
-
-	const deleteInputRef = useRef();
 
 	const handleDeleteInput = (e) => {
 		const channel = data.channels.find(
@@ -392,7 +371,7 @@ const Mapa = () => {
 								<Button
 									variant="primary"
 									className="mt-4"
-									onClick={enterEditingMode}
+									onClick={() => setEdit(true)}
 								>
 									Edit
 								</Button>

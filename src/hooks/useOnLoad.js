@@ -2,13 +2,86 @@ import { useState, useEffect, useRef } from "react";
 import useRead from "./useRead";
 import storage from "./useStorage";
 
-export const round = (num) => Math.round((num + Number.EPSILON) * 100) / 100;
+const round = (num) => Math.round((num + Number.EPSILON) * 100) / 100;
+
+const propertyToString = (property) => {
+	let stringToShow = property;
+	if (property === "img") stringToShow = "logo (URL)";
+	if (property === "canal") stringToShow = "nombre";
+	if (property === "GMT") stringToShow = "horario GMT";
+	if (property === "GMTverano") stringToShow = "horario verano";
+	if (property === "actionPack") stringToShow = "action pack";
+	if (property === "categoria") stringToShow = "categoría";
+	if (property === "pass") stringToShow = "password";
+	if (property === "tel") stringToShow = "teléfono";
+	if (property === "url") stringToShow = "página web";
+	if (property === "vc") stringToShow = "VC";
+	if (property === "spaDesc") stringToShow = "descripción (español)";
+	if (property === "engDesc") stringToShow = "descripción (inglés)";
+	if (property === "obs") stringToShow = "observaciones";
+	return stringToShow;
+};
 
 const useOnLoad = () => {
 	const [data, setData] = useState({});
 	const [loading, setLoading] = useState(false);
 	const { read, readAll } = useRead();
 	const fetched = useRef(null); // to avoid multiple renders, especially during testing (React Strict Mode)
+
+	const checkPatch = async () => {
+		let latestStoragedVersion = round(Number(storage.get("version"))); // localStorage version
+		const response = await read("history", "current"); // remoteDB version
+		let current;
+		if (response) current = response.current;
+		if (!response) {
+			console.log(`Error fetching latest version, falling back on cache`);
+			current = latestStoragedVersion;
+		}
+		console.log("Version is persistent");
+		if (latestStoragedVersion < current)
+			console.log(
+				`Current online version is ${current}, local version is ${latestStoragedVersion}. Running patch`
+			);
+		while (latestStoragedVersion < current) {
+			const data = storage.getAll();
+			const version = round(Number(JSON.parse(data.version)));
+			const channels = JSON.parse(data.channels);
+			const { changes } = await read("history", `v${version}`);
+			changes.forEach((change) => {
+				const { id } = change;
+				const indexToChange = channels.findIndex((e) => e.id === id);
+				if (indexToChange === -1 && change.type === "Create") {
+					channels.push({ id, data: change });
+				}
+				const newProps = {};
+				for (const key in change) {
+					if (Object.hasOwnProperty.call(change, key)) {
+						const element = change[key];
+						if (key === "channel" || key === "id" || key === "type") continue;
+						newProps[key] = element;
+					}
+				}
+				console.log(
+					`${change.type === "Create" ? "Creating" : "Updating"} VC ${
+						channels[indexToChange].data.vc
+					} ${channels[indexToChange].data.canal} with ${JSON.stringify(
+						newProps
+					)}`
+				);
+				channels[indexToChange].data = {
+					...channels[indexToChange].data,
+					...newProps,
+				};
+			});
+			latestStoragedVersion = version + 0.01;
+			storage.set("version", JSON.stringify(latestStoragedVersion));
+			storage.set("channels", JSON.stringify(channels));
+			console.log(
+				`Finished updating local DB to version ${latestStoragedVersion}`
+			);
+			setData({ version: latestStoragedVersion, channels });
+		}
+	};
 
 	useEffect(() => {
 		const hasStorage = Object.keys(storage.getAll()).length !== 0;
@@ -28,48 +101,7 @@ const useOnLoad = () => {
 					`Current online version is ${current}, local version is ${latestStoragedVersion}`
 				);
 				if (latestStoragedVersion < current) {
-					console.log("Fetching updates for " + latestStoragedVersion);
-					while (latestStoragedVersion < current) {
-						const data = storage.getAll();
-						const version = round(Number(JSON.parse(data.version)));
-						const channels = JSON.parse(data.channels);
-						const { changes } = await read("history", `v${version}`);
-						changes.forEach((change) => {
-							const { id } = change;
-							const indexToChange = channels.findIndex((e) => e.id === id);
-							if (indexToChange === -1 && change.type === "Create") {
-								channels.push({ id, data: change });
-							}
-							const newProps = {};
-							for (const key in change) {
-								if (Object.hasOwnProperty.call(change, key)) {
-									const element = change[key];
-									if (key === "channel" || key === "id" || key === "type")
-										continue;
-									newProps[key] = element;
-								}
-							}
-							console.log(
-								`${change.type === "Create" ? "Creating" : "Updating"} VC ${
-									channels[indexToChange].data.vc
-								} ${channels[indexToChange].data.canal} with ${JSON.stringify(
-									newProps
-								)}`
-							);
-							channels[indexToChange].data = {
-								...channels[indexToChange].data,
-								...newProps,
-							};
-						});
-						latestStoragedVersion = version + 0.01;
-						storage.set("version", JSON.stringify(latestStoragedVersion));
-						storage.set("channels", JSON.stringify(channels));
-						console.log(
-							`Finished updating local DB to version ${latestStoragedVersion}`
-						);
-						setData({ version: latestStoragedVersion, channels });
-						setLoading(false);
-					}
+					await checkPatch();
 				} else {
 					const data = storage.getAll();
 					const version = round(Number(current));
@@ -105,7 +137,15 @@ const useOnLoad = () => {
 		}
 	}, [read, readAll]);
 
-	return { data, loading, setData, setLoading };
+	return {
+		data,
+		loading,
+		setData,
+		setLoading,
+		round,
+		propertyToString,
+		checkPatch,
+	};
 };
 
 export default useOnLoad;
