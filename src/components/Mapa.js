@@ -24,7 +24,7 @@ const Mapa = () => {
 		checkPatch,
 	} = useOnLoad(); // disconnected db to not consume data
 	const { read } = useRead();
-	const write = useWrite();
+	const { write, del } = useWrite();
 	const { currentUser } = useAuth();
 
 	const searchRef = useRef();
@@ -97,60 +97,6 @@ const Mapa = () => {
 	// 	console.log(data);
 	// 	// if (selectedChannel) console.log(selectedChannel);
 	// };
-
-	const handleChannelCreation = async () => {
-		await checkPatch();
-		const lastID = data.channels.reduce((acc, curr) => {
-			if (Number(curr.id) > acc) acc = Number(curr.id);
-			return acc;
-		}, 0);
-		const newID = lastID + 1; // newID to create
-		const newChannel = {
-			id: `${newID}`,
-			data: {
-				GMT: "-",
-				GMTverano: "-",
-				actionPack: "-",
-				analista: "-",
-				canal: "New channel",
-				carga: "-",
-				categoria: "-",
-				contacto: "-",
-				correo: "-",
-				engDesc: "-",
-				esclavo: "-",
-				espejos: "-",
-				frecuencia: "-",
-				grid: "-",
-				horario: "-",
-				img: "-",
-				master: "-",
-				obs: "-",
-				pass: "-",
-				spaDesc: "-",
-				tel: "-",
-				territorio: "-",
-				url: "-",
-				usuario: "-",
-				vc: "TBD",
-			},
-		};
-		setSelectedChannel(newChannel);
-		setEdit(true);
-		setCreatingNew(true);
-		setEditPayload([
-			...editPayload,
-			{ id: `${newID}`, type: "Create", changes: { ...newChannel.data } },
-		]);
-		setEditCache((prev) => [
-			...prev,
-			{ id: `${newID}`, type: "Create", data: { ...newChannel.data } },
-		]);
-	};
-
-	const handleChannelDeletion = () => {
-		if (deleting === false) setDeleting(true);
-	};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -250,7 +196,71 @@ const Mapa = () => {
 	const indexOfChannel = (id) => {
 		return data.channels.findIndex((e) => e.id === id);
 	};
-	const handleConfirm = async () => {
+	const handleChannelCreation = async () => {
+		await checkPatch();
+		const lastID = data.channels.reduce((acc, curr) => {
+			if (Number(curr.id) > acc) acc = Number(curr.id);
+			return acc;
+		}, 0);
+		const newID = lastID + 1; // newID to create
+		const newChannel = {
+			id: `${newID}`,
+			data: {
+				GMT: "-",
+				GMTverano: "-",
+				actionPack: "-",
+				analista: "-",
+				canal: "New channel",
+				carga: "-",
+				categoria: "-",
+				contacto: "-",
+				correo: "-",
+				engDesc: "-",
+				esclavo: "-",
+				espejos: "-",
+				frecuencia: "-",
+				grid: "-",
+				horario: "-",
+				img: "-",
+				master: "-",
+				obs: "-",
+				pass: "-",
+				spaDesc: "-",
+				tel: "-",
+				territorio: "-",
+				url: "-",
+				usuario: "-",
+				vc: "TBD",
+			},
+		};
+		setSelectedChannel(newChannel);
+		setEdit(true);
+		setCreatingNew(true);
+		setEditPayload([
+			...editPayload,
+			{ id: `${newID}`, type: "Create", changes: { ...newChannel.data } },
+		]);
+		setEditCache((prev) => [
+			...prev,
+			{ id: `${newID}`, type: "Create", data: { ...newChannel.data } },
+		]);
+	};
+
+	const handleChannelDeletion = () => {
+		if (deleting === false) setDeleting(true);
+	};
+
+	const handleConfirm = async (isDelete) => {
+		if (isDelete)
+			setEditPayload((prev) => [
+				...prev,
+				{
+					id: channelToDelete.id,
+					changes: {
+						type: "Delete",
+					},
+				},
+			]);
 		if (editPayload.length === 0) return;
 		setLoading(true);
 		let latestStoragedVersion = round(Number(storage.get("version"))); // localStorage version
@@ -288,20 +298,19 @@ const Mapa = () => {
 				timestamp,
 				user,
 			});
-			storage.set("version", JSON.stringify(newVersion));
-			storage.set("channels", JSON.stringify(data.channels));
-			write("history", "current", {
+			await write("history", "current", {
 				current: newVersion,
 				created: timestamp,
 				user,
 			});
 			editPayload.forEach(async (e) => {
-				await write("channels", e.id, { ...e.changes });
+				if (e.changes.type !== "Delete")
+					await write("channels", e.id, { ...e.changes });
 			});
 
 			setEdit(false);
 			setShowConfirm(false);
-			console.log(`DB updated to v${newVersion}`);
+			checkPatch();
 		}
 		setLoading(false);
 	};
@@ -312,9 +321,6 @@ const Mapa = () => {
 		);
 		if (!channel) return;
 		setChannelToDelete(channel);
-	};
-	const handleWillDelete = (e) => {
-		console.log("Starting deletion process");
 	};
 
 	return (
@@ -402,7 +408,7 @@ const Mapa = () => {
 								deleteConfirm={deleteConfirm}
 								setDeleteConfirm={setDeleteConfirm}
 								channelToDelete={channelToDelete}
-								handleWillDelete={handleWillDelete}
+								handleWillDelete={() => handleConfirm(true)}
 							/>
 						) : null}
 						{/* <button onClick={handleClick}>Log All Data</button> */}

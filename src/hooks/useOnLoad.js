@@ -54,24 +54,34 @@ const useOnLoad = () => {
 					indexToChange = channels.length - 1;
 				}
 				const newProps = {};
-				for (const key in change) {
-					if (Object.hasOwnProperty.call(change, key)) {
-						const element = change[key];
-						if (key === "channel" || key === "id" || key === "type") continue;
-						newProps[key] = element;
+				if (change.type === "Delete") {
+					channels[indexToChange].splice(1, 0);
+				} else {
+					for (const key in change) {
+						if (Object.hasOwnProperty.call(change, key)) {
+							const element = change[key];
+							if (key === "channel" || key === "id" || key === "type") continue;
+							newProps[key] = element;
+						}
 					}
+					channels[indexToChange].data = {
+						...channels[indexToChange].data,
+						...newProps,
+					};
 				}
 				console.log(
-					`${change.type === "Create" ? "Creating" : "Updating"} VC ${
-						channels[indexToChange].data.vc
-					} ${channels[indexToChange].data.canal} with ${JSON.stringify(
-						newProps
-					)}`
+					`${
+						change.type === "Create"
+							? "Creating"
+							: change.type === "Delete"
+							? "Deleting"
+							: "Updating"
+					} VC ${channels[indexToChange].data.vc} ${
+						channels[indexToChange].data.canal
+					} ${
+						change.type === "Delete" ? "." : "with " + JSON.stringify(newProps)
+					}`
 				);
-				channels[indexToChange].data = {
-					...channels[indexToChange].data,
-					...newProps,
-				};
 			});
 			latestStoragedVersion = version + 0.01;
 			storage.set("version", JSON.stringify(latestStoragedVersion));
@@ -81,7 +91,7 @@ const useOnLoad = () => {
 			);
 			setData({ version: latestStoragedVersion, channels });
 		}
-		console.log("Version is persistent");
+		console.log("No patching needed.");
 	}, [read]);
 
 	useEffect(() => {
@@ -132,7 +142,11 @@ const useOnLoad = () => {
 				console.log(`Updated local storage to version ${current} of DB`);
 				setLoading(false);
 			};
-			getRemoteDB();
+			try {
+				getRemoteDB();
+			} catch (error) {
+				console.log(error);
+			}
 		}
 	}, [read, readAll, checkPatch]);
 

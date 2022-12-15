@@ -1,5 +1,5 @@
 import { db } from "../firebase-config";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, deleteDoc } from "firebase/firestore";
 
 const write = async (collectionName, path, dataObj) => {
 	try {
@@ -12,8 +12,16 @@ const write = async (collectionName, path, dataObj) => {
 	}
 };
 
+const del = async (collectionName, path) => {
+	try {
+		await deleteDoc(doc(db, collectionName, path));
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 const useWrite = () => {
-	return write;
+	return { write, del };
 };
 
 export default useWrite;
