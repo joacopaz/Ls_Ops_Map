@@ -93,10 +93,10 @@ const Mapa = () => {
 		}
 	}, [selectedChannel, data.channels, e, deleting]);
 
-	// const handleClick = () => {
-	// 	console.log(data);
-	// 	// if (selectedChannel) console.log(selectedChannel);
-	// };
+	const handleClick = () => {
+		console.log(data);
+		// if (selectedChannel) console.log(selectedChannel);
+	};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -266,7 +266,7 @@ const Mapa = () => {
 		let latestStoragedVersion = round(Number(storage.get("version"))); // localStorage version
 		const response = await read("history", "current"); // remoteDB version
 		let current;
-		if (response) current = response.current;
+		if (response) current = round(Number(response.current));
 		if (!response) {
 			console.log(`Error fetching latest version, falling back on cache`);
 			current = latestStoragedVersion;
@@ -305,7 +305,8 @@ const Mapa = () => {
 			});
 			editPayload.forEach(async (e) => {
 				if (e.changes.type !== "Delete")
-					await write("channels", e.id, { ...e.changes });
+					return await write("channels", e.id, { ...e.changes });
+				del("channels", e.id);
 			});
 
 			setEdit(false);
@@ -408,10 +409,10 @@ const Mapa = () => {
 								deleteConfirm={deleteConfirm}
 								setDeleteConfirm={setDeleteConfirm}
 								channelToDelete={channelToDelete}
-								handleWillDelete={() => handleConfirm(true)}
+								handleWillDelete={handleConfirm}
 							/>
 						) : null}
-						{/* <button onClick={handleClick}>Log All Data</button> */}
+						<button onClick={handleClick}>Log All Data</button>
 					</div>
 				</>
 			) : null}

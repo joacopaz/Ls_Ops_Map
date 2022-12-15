@@ -37,7 +37,7 @@ const DeleteForm = forwardRef(
 					className="d-block m-auto mt-3"
 					onClick={(e) => {
 						if (!deleteConfirm) return setDeleteConfirm(true);
-						if (window.confirm("Absolutely sure?")) handleWillDelete();
+						if (window.confirm("Absolutely sure?")) handleWillDelete(true);
 						setDeleteConfirm(false);
 					}}
 				>

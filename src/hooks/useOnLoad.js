@@ -45,6 +45,7 @@ const useOnLoad = () => {
 			const data = storage.getAll();
 			const version = round(Number(JSON.parse(data.version)));
 			const channels = JSON.parse(data.channels);
+
 			const { changes } = await read("history", `v${version}`);
 			changes.forEach((change) => {
 				const { id } = change;
@@ -54,8 +55,9 @@ const useOnLoad = () => {
 					indexToChange = channels.length - 1;
 				}
 				const newProps = {};
+				let deletedChannel;
 				if (change.type === "Delete") {
-					channels[indexToChange].splice(1, 0);
+					deletedChannel = channels.splice(indexToChange, 1);
 				} else {
 					for (const key in change) {
 						if (Object.hasOwnProperty.call(change, key)) {
@@ -74,7 +76,10 @@ const useOnLoad = () => {
 						change.type === "Create"
 							? "Creating"
 							: change.type === "Delete"
-							? "Deleting"
+							? "Deleting" +
+							  " VC " +
+							  deletedChannel[0].data.vc +
+							  deletedChannel[0].data.canal
 							: "Updating"
 					} VC ${channels[indexToChange].data.vc} ${
 						channels[indexToChange].data.canal
@@ -83,12 +88,13 @@ const useOnLoad = () => {
 					}`
 				);
 			});
-			latestStoragedVersion = version + 0.01;
+			latestStoragedVersion = round(version + 0.01);
 			storage.set("version", JSON.stringify(latestStoragedVersion));
 			storage.set("channels", JSON.stringify(channels));
 			console.log(
 				`Finished updating local DB to version ${latestStoragedVersion}`
 			);
+			channels.sort((a, b) => Number(a.data.vc) > Number(b.data.vc));
 			setData({ version: latestStoragedVersion, channels });
 		}
 		console.log("No patching needed.");
@@ -106,7 +112,7 @@ const useOnLoad = () => {
 				if (response) current = response.current;
 				if (!response) {
 					console.log(`Error fetching latest version, falling back on cache`);
-					current = latestStoragedVersion;
+					current = round(latestStoragedVersion);
 				}
 				if (latestStoragedVersion < current) {
 					await checkPatch();
@@ -119,6 +125,7 @@ const useOnLoad = () => {
 						storage.set("version", JSON.stringify(current));
 					}
 					const channels = JSON.parse(data.channels);
+					channels.sort((a, b) => Number(a.data.vc) > Number(b.data.vc));
 					setData({ version, channels });
 					console.log("Parsed local data");
 					setLoading(false);
@@ -136,6 +143,7 @@ const useOnLoad = () => {
 				console.log("Fetching remote data");
 				const channels = await readAll("channels");
 				const { current } = await read("history", "current"); // remoteDB version
+				channels.sort((a, b) => Number(a.data.vc) > Number(b.data.vc));
 				setData({ version: current, channels });
 				storage.set("channels", JSON.stringify(channels));
 				storage.set("version", JSON.stringify(current));
