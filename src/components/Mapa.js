@@ -263,6 +263,7 @@ const Mapa = () => {
 			]);
 		if (editPayload.length === 0) return;
 		setLoading(true);
+		await checkPatch();
 		let latestStoragedVersion = round(Number(storage.get("version"))); // localStorage version
 		const response = await read("history", "current"); // remoteDB version
 		let current;
@@ -271,7 +272,6 @@ const Mapa = () => {
 			console.log(`Error fetching latest version, falling back on cache`);
 			current = latestStoragedVersion;
 		}
-		await checkPatch();
 		if (round(Number(latestStoragedVersion)) === round(Number(current))) {
 			console.log(`Uploading changes...`);
 			const newVersion = round(Number(latestStoragedVersion)) + 0.01;
