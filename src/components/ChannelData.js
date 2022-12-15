@@ -386,7 +386,10 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					</li>
 				) : null}
 			</ul>
-			<ul className={`${styles.ul} ${edit ? styles.edit : ""}`}>
+			<ul
+				className={`${styles.ul} ${edit ? styles.edit : ""}`}
+				style={{ paddingTop: "0", paddingBottom: "1rem" }}
+			>
 				{e.spaDesc !== "-" || edit ? (
 					<li>
 						<strong>Descripción:</strong>
