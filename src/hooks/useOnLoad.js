@@ -81,11 +81,12 @@ const useOnLoad = () => {
 					console.log(
 						`Deleting VC ${deletedChannel[0]?.data.vc} ${deletedChannel[0]?.data.canal}`
 					);
-				console.log(
-					`Updating VC ${channels[indexToChange]?.data?.vc} ${
-						channels[indexToChange]?.data?.canal
-					} with ${JSON.stringify(newProps)}`
-				);
+				if (!change.type)
+					console.log(
+						`Updating VC ${channels[indexToChange]?.data?.vc} ${
+							channels[indexToChange]?.data?.canal
+						} with ${JSON.stringify(newProps)}`
+					);
 			});
 			latestStoragedVersion = round(version + 0.01);
 			storage.set("version", JSON.stringify(latestStoragedVersion));
@@ -96,7 +97,7 @@ const useOnLoad = () => {
 			channels.sort((a, b) => Number(a.data.vc) > Number(b.data.vc));
 			setData({ version: latestStoragedVersion, channels });
 		}
-		console.log("No patching needed.");
+		console.log("No further patching needed.");
 	});
 
 	useEffect(() => {
@@ -155,7 +156,7 @@ const useOnLoad = () => {
 				console.log(error);
 			}
 		}
-	}, [read, readAll, checkPatch]);
+	});
 
 	return {
 		data,

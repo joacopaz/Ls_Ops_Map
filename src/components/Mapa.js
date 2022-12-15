@@ -29,10 +29,7 @@ const Mapa = () => {
 
 	const searchRef = useRef();
 	const deleteInputRef = useRef();
-	const [selectedChannel, setSelectedChannel] = useState(() => {
-		if (Object.keys(data).length > 0) return data.channels[0];
-		return null;
-	});
+	const [selectedChannel, setSelectedChannel] = useState(null);
 	const [sharedVcs, setSharedVcs] = useState([]);
 	const [edit, setEdit] = useState(false);
 	const [show, setShow] = useState(false);
@@ -54,8 +51,9 @@ const Mapa = () => {
 			Object.keys(data).length > 0 &&
 			!selectedChannel &&
 			!data.channels[0].type
-		)
+		) {
 			setSelectedChannel(data.channels[0]);
+		}
 	}, [data, selectedChannel]);
 	useEffect(() => {
 		if (editPayload.length > 0) {
@@ -97,10 +95,10 @@ const Mapa = () => {
 		}
 	}, [selectedChannel, data.channels, e, deleting]);
 
-	const handleClick = () => {
-		console.log(data);
-		// if (selectedChannel) console.log(selectedChannel);
-	};
+	// const handleClick = () => {
+	// 	console.log(data);
+	// 	// if (selectedChannel) console.log(selectedChannel);
+	// };
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -309,10 +307,16 @@ const Mapa = () => {
 		setLoading(false);
 		setEdit(false);
 		setShowConfirm(false);
+		setCreatingNew(false);
+		setEditPayload([]);
+		setDeleting(false);
 		if (isDelete) {
+			if (data.channels[0] === channelToDelete) {
+				setSelectedChannel(data.channels[1]);
+				return setChannelToDelete({});
+			}
 			setSelectedChannel(data.channels[0]);
-			setDeleting(false);
-			setCreatingNew(false);
+			setChannelToDelete({});
 		}
 	};
 

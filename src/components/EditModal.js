@@ -75,11 +75,7 @@ const EditModal = ({
 					</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
-					<Form.Group
-						className="mb-3"
-						style={{ caretColor: "auto" }}
-						onSubmit={(e) => console.log(e)}
-					>
+					<Form.Group className="mb-3" style={{ caretColor: "auto" }}>
 						<Form.Label>Nuevo valor:</Form.Label>
 						<Form.Control
 							as="textarea"

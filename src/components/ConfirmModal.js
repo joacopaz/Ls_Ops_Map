@@ -37,7 +37,13 @@ const ConfirmModal = ({
 					<Button variant="secondary" onClick={handleClose}>
 						Cancel
 					</Button>
-					<Button variant="primary" onClick={handleConfirm} disabled={alert}>
+					<Button
+						variant="primary"
+						onClick={() => {
+							handleConfirm(false);
+						}}
+						disabled={alert}
+					>
 						Save Changes
 					</Button>
 				</Modal.Footer>
