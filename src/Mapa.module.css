@@ -86,7 +86,7 @@
 	color: #00abf4;
 	opacity: 0;
 	transition: opacity 200ms;
-	transform: translate(5px, 2px);
+	transform: translate(5px, -2px);
 	background-color: white;
 	padding-right: 5px;
 }
