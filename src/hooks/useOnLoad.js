@@ -71,21 +71,20 @@ const useOnLoad = () => {
 						...newProps,
 					};
 				}
+				if (change.type === "Create")
+					console.log(
+						`Creating VC ${channels[indexToChange]?.data?.vc} ${
+							channels[indexToChange]?.data?.canal
+						} with ${JSON.stringify(newProps)}`
+					);
+				if (change.type === "Delete")
+					console.log(
+						`Deleting VC ${deletedChannel[0]?.data.vc} ${deletedChannel[0]?.data.canal}`
+					);
 				console.log(
-					`${
-						change.type === "Create"
-							? "Creating"
-							: change.type === "Delete"
-							? "Deleting" +
-							  " VC " +
-							  deletedChannel[0].data.vc +
-							  deletedChannel[0].data.canal
-							: "Updating"
-					} VC ${channels[indexToChange].data.vc} ${
-						channels[indexToChange].data.canal
-					} ${
-						change.type === "Delete" ? "." : "with " + JSON.stringify(newProps)
-					}`
+					`Updating VC ${channels[indexToChange]?.data?.vc} ${
+						channels[indexToChange]?.data?.canal
+					} with ${JSON.stringify(newProps)}`
 				);
 			});
 			latestStoragedVersion = round(version + 0.01);
