@@ -48,10 +48,10 @@ const useOnLoad = () => {
 			const { changes } = await read("history", `v${version}`);
 			changes.forEach((change) => {
 				const { id } = change;
-				const indexToChange = channels.findIndex((e) => e.id === id);
+				let indexToChange = channels.findIndex((e) => e.id === id);
 				if (indexToChange === -1 && change.type === "Create") {
-					console.log("Creating new data");
 					channels.push({ id, data: change });
+					indexToChange = channels.length - 1;
 				}
 				const newProps = {};
 				for (const key in change) {
