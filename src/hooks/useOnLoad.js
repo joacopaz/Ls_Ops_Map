@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import useRead from "./useRead";
 import storage from "./useStorage";
 
@@ -28,7 +28,7 @@ const useOnLoad = () => {
 	const { read, readAll } = useRead();
 	const fetched = useRef(null); // to avoid multiple renders, especially during testing (React Strict Mode)
 
-	const checkPatch = async () => {
+	const checkPatch = useCallback(async () => {
 		let latestStoragedVersion = round(Number(storage.get("version"))); // localStorage version
 		const response = await read("history", "current"); // remoteDB version
 		let current;
@@ -82,7 +82,7 @@ const useOnLoad = () => {
 			setData({ version: latestStoragedVersion, channels });
 		}
 		console.log("Version is persistent");
-	};
+	}, [read]);
 
 	useEffect(() => {
 		const hasStorage = Object.keys(storage.getAll()).length !== 0;
@@ -100,6 +100,7 @@ const useOnLoad = () => {
 				}
 				if (latestStoragedVersion < current) {
 					await checkPatch();
+					setLoading(false);
 				} else {
 					const data = storage.getAll();
 					const version = round(Number(current));
