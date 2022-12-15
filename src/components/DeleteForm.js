@@ -48,7 +48,7 @@ const DeleteForm = forwardRef(
 									},
 								},
 							]);
-							console.log("Payload set");
+							console.log("Payload set for deletion");
 							return setDeleteConfirm(true);
 						}
 						if (window.confirm("Absolutely sure?")) {
@@ -56,7 +56,7 @@ const DeleteForm = forwardRef(
 							setDeleteConfirm(false);
 							return;
 						}
-						console.log("Payload unset");
+						console.log("Payload unset for deletion");
 
 						// channels.findIndex((e) => e.id === channelToDelete.id);
 						// resolve how to clear the payload if they cancel channel deletion while keeping prev
