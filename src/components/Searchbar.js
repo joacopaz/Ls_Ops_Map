@@ -57,7 +57,7 @@ const Searchbar = forwardRef(
 
 		return (
 			<Form onSubmit={handleSubmit} className="position-relative">
-				<Form.Group className="mb-3" controlId="search">
+				<Form.Group controlId="search">
 					<Form.Control
 						type="text"
 						className={`${styles.search} w-100`}

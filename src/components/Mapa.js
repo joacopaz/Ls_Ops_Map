@@ -96,7 +96,11 @@ const Mapa = () => {
 	}, [selectedChannel, data.channels, e, deleting]);
 
 	// const handleClick = () => {
-	// 	console.log(data);
+	// 	data.channels.forEach(async (channel) => {
+	// 		await write("channels", channel.id, {
+	// 			img: `https://www.directv.com.ar/content/dam/public-sites/channels/${channel.data.vc}.png`,
+	// 		});
+	// 	});
 	// 	// if (selectedChannel) console.log(selectedChannel);
 	// };
 
