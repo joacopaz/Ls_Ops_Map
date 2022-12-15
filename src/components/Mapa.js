@@ -316,6 +316,7 @@ const Mapa = () => {
 		setEdit(false);
 		setShowConfirm(false);
 		if (isDelete) setSelectedChannel(data.channels[0]);
+		if (isDelete) setDeleting(false);
 	};
 
 	const handleDeleteInput = (e) => {
