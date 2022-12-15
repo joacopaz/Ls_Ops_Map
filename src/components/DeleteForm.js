@@ -12,6 +12,7 @@ const DeleteForm = forwardRef(
 			channelToDelete,
 			handleWillDelete,
 			setEditPayload,
+			channels,
 		},
 		ref
 	) => {
@@ -53,7 +54,13 @@ const DeleteForm = forwardRef(
 						if (window.confirm("Absolutely sure?")) {
 							handleWillDelete(true);
 							setDeleteConfirm(false);
+							return;
 						}
+						console.log("Payload unset");
+
+						// channels.findIndex((e) => e.id === channelToDelete.id);
+						// resolve how to clear the payload if they cancel channel deletion while keeping prev
+						setEditPayload([]);
 					}}
 				>
 					{deleteConfirm ? "Delete All Information" : "Delete"}
