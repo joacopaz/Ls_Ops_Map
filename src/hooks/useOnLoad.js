@@ -37,7 +37,6 @@ const useOnLoad = () => {
 			console.log(`Error fetching latest version, falling back on cache`);
 			current = latestStoragedVersion;
 		}
-		console.log("Version is persistent");
 		if (latestStoragedVersion < current)
 			console.log(
 				`Current online version is ${current}, local version is ${latestStoragedVersion}. Running patch`
@@ -51,6 +50,7 @@ const useOnLoad = () => {
 				const { id } = change;
 				const indexToChange = channels.findIndex((e) => e.id === id);
 				if (indexToChange === -1 && change.type === "Create") {
+					console.log("Creating new data");
 					channels.push({ id, data: change });
 				}
 				const newProps = {};
@@ -81,6 +81,7 @@ const useOnLoad = () => {
 			);
 			setData({ version: latestStoragedVersion, channels });
 		}
+		console.log("Version is persistent");
 	};
 
 	useEffect(() => {
@@ -97,9 +98,6 @@ const useOnLoad = () => {
 					console.log(`Error fetching latest version, falling back on cache`);
 					current = latestStoragedVersion;
 				}
-				console.log(
-					`Current online version is ${current}, local version is ${latestStoragedVersion}`
-				);
 				if (latestStoragedVersion < current) {
 					await checkPatch();
 				} else {
@@ -135,7 +133,7 @@ const useOnLoad = () => {
 			};
 			getRemoteDB();
 		}
-	}, [read, readAll]);
+	}, [read, readAll, checkPatch]);
 
 	return {
 		data,
