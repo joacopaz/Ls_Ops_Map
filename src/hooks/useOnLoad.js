@@ -97,7 +97,7 @@ const useOnLoad = () => {
 			setData({ version: latestStoragedVersion, channels });
 		}
 		console.log("No patching needed.");
-	}, [read]);
+	});
 
 	useEffect(() => {
 		const hasStorage = Object.keys(storage.getAll()).length !== 0;

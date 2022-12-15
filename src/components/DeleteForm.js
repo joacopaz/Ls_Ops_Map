@@ -11,6 +11,7 @@ const DeleteForm = forwardRef(
 			setDeleteConfirm,
 			channelToDelete,
 			handleWillDelete,
+			setEditPayload,
 		},
 		ref
 	) => {
@@ -36,9 +37,23 @@ const DeleteForm = forwardRef(
 					variant="danger"
 					className="d-block m-auto mt-3"
 					onClick={(e) => {
-						if (!deleteConfirm) return setDeleteConfirm(true);
-						if (window.confirm("Absolutely sure?")) handleWillDelete(true);
-						setDeleteConfirm(false);
+						if (!deleteConfirm) {
+							setEditPayload((prev) => [
+								...prev,
+								{
+									id: channelToDelete.id,
+									changes: {
+										type: "Delete",
+									},
+								},
+							]);
+							console.log("Payload set");
+							return setDeleteConfirm(true);
+						}
+						if (window.confirm("Absolutely sure?")) {
+							handleWillDelete(true);
+							setDeleteConfirm(false);
+						}
 					}}
 				>
 					{deleteConfirm ? "Delete All Information" : "Delete"}

@@ -50,7 +50,11 @@ const Mapa = () => {
 
 	// Set first channel as selected on load
 	useEffect(() => {
-		if (Object.keys(data).length > 0 && !selectedChannel)
+		if (
+			Object.keys(data).length > 0 &&
+			!selectedChannel &&
+			!data.channels[0].type
+		)
 			setSelectedChannel(data.channels[0]);
 	}, [data, selectedChannel]);
 	useEffect(() => {
@@ -251,16 +255,6 @@ const Mapa = () => {
 	};
 
 	const handleConfirm = async (isDelete) => {
-		if (isDelete)
-			setEditPayload((prev) => [
-				...prev,
-				{
-					id: channelToDelete.id,
-					changes: {
-						type: "Delete",
-					},
-				},
-			]);
 		if (editPayload.length === 0) return;
 		setLoading(true);
 		await checkPatch();
@@ -274,7 +268,7 @@ const Mapa = () => {
 		}
 		if (round(Number(latestStoragedVersion)) === round(Number(current))) {
 			console.log(`Uploading changes...`);
-			const newVersion = round(Number(latestStoragedVersion)) + 0.01;
+			const newVersion = round(Number(latestStoragedVersion) + 0.01);
 			const user = currentUser.email.match(/(.+)@/)[1];
 			const changesForHistory = editPayload.map((e) => {
 				const channelIndex = indexOfChannel(e.id);
@@ -315,8 +309,11 @@ const Mapa = () => {
 		setLoading(false);
 		setEdit(false);
 		setShowConfirm(false);
-		if (isDelete) setSelectedChannel(data.channels[0]);
-		if (isDelete) setDeleting(false);
+		if (isDelete) {
+			setSelectedChannel(data.channels[0]);
+			setDeleting(false);
+			setCreatingNew(false);
+		}
 	};
 
 	const handleDeleteInput = (e) => {
@@ -413,6 +410,7 @@ const Mapa = () => {
 								setDeleteConfirm={setDeleteConfirm}
 								channelToDelete={channelToDelete}
 								handleWillDelete={handleConfirm}
+								setEditPayload={setEditPayload}
 							/>
 						) : null}
 						{/* <button onClick={handleClick}>Log All Data</button> */}
