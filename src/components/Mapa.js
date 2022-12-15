@@ -307,6 +307,7 @@ const Mapa = () => {
 				if (e.changes.type !== "Delete")
 					return await write("channels", e.id, { ...e.changes });
 				await del("channels", e.id);
+				console.log("Deleted " + e.id);
 			});
 
 			await checkPatch();
