@@ -14,7 +14,6 @@ const DeleteForm = forwardRef(
 		},
 		ref
 	) => {
-		const deleteRef = useRef();
 		useEffect(() => {
 			ref.current.focus();
 		});
