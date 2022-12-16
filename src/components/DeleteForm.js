@@ -16,7 +16,7 @@ const DeleteForm = forwardRef(
 	) => {
 		const deleteRef = useRef();
 		useEffect(() => {
-			deleteRef.current.focus();
+			ref.current.focus();
 		});
 		return (
 			<Form className={styles.deleteForm}>
@@ -26,7 +26,7 @@ const DeleteForm = forwardRef(
 					placeholder={"Search channel to delete"}
 					list="datalist"
 					onChange={handleDeleteInput}
-					ref={deleteRef}
+					ref={ref}
 				/>
 				{deleteConfirm ? (
 					<Alert variant="danger" className="mt-3 text-center ">
