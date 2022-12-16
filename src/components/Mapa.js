@@ -79,8 +79,6 @@ const Mapa = () => {
 				}
 			});
 			setData(newData);
-			// console.log(editPayload);
-			// console.log(editCache);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [editPayload]);
@@ -94,15 +92,6 @@ const Mapa = () => {
 			setSharedVcs(compartidos);
 		}
 	}, [selectedChannel, data.channels, e, deleting]);
-
-	// const handleClick = () => {
-	// 	data.channels.forEach(async (channel) => {
-	// 		await write("channels", channel.id, {
-	// 			img: `https://www.directv.com.ar/content/dam/public-sites/channels/${channel.data.vc}.png`,
-	// 		});
-	// 	});
-	// 	// if (selectedChannel) console.log(selectedChannel);
-	// };
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -425,7 +414,6 @@ const Mapa = () => {
 								channels={data.channels}
 							/>
 						) : null}
-						{/* <button onClick={handleClick}>Log All Data</button> */}
 					</div>
 				</>
 			) : null}

@@ -56,7 +56,7 @@ const Searchbar = forwardRef(
 		};
 
 		return (
-			<Form onSubmit={handleSubmit} className="position-relative">
+			<Form onSubmit={handleSubmit} className="position-relative mt-4">
 				<Form.Group controlId="search">
 					<Form.Control
 						type="text"
