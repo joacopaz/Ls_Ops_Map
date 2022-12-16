@@ -1,5 +1,4 @@
-import { refEqual } from "firebase/firestore";
-import React, { forwardRef } from "react";
+import React, { forwardRef, useEffect, useRef } from "react";
 import { Alert, Button, Form } from "react-bootstrap";
 import styles from "../Mapa.module.css";
 
@@ -12,19 +11,22 @@ const DeleteForm = forwardRef(
 			channelToDelete,
 			handleWillDelete,
 			setEditPayload,
-			channels,
 		},
 		ref
 	) => {
+		const deleteRef = useRef();
+		useEffect(() => {
+			deleteRef.current.focus();
+		});
 		return (
 			<Form className={styles.deleteForm}>
 				<Form.Control
 					type="text"
-					className="w-100 d-block text-center mt-3"
-					placeholder={"Search by VC or channel name"}
+					className={`w-100 d-block text-center mt-3 ${styles.search}`}
+					placeholder={"Search channel to delete"}
 					list="datalist"
-					ref={ref}
 					onChange={handleDeleteInput}
+					ref={deleteRef}
 				/>
 				{deleteConfirm ? (
 					<Alert variant="danger" className="mt-3 text-center ">

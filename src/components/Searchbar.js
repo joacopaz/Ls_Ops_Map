@@ -68,7 +68,7 @@ const Searchbar = forwardRef(
 						onClick={(e) => (quickSearch ? (e.target.value = "") : "")}
 					/>
 
-					<datalist id="datalist" className={styles.dataList}>
+					<datalist id="datalist">
 						{data?.channels?.map((e) => {
 							return (
 								<option

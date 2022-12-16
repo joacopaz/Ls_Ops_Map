@@ -411,7 +411,6 @@ const Mapa = () => {
 								channelToDelete={channelToDelete}
 								handleWillDelete={handleConfirm}
 								setEditPayload={setEditPayload}
-								channels={data.channels}
 							/>
 						) : null}
 					</div>
