@@ -20,7 +20,7 @@ const DeleteForm = forwardRef(
 			<Form className={styles.deleteForm}>
 				<Form.Control
 					type="text"
-					className="w-100 d-block text-center"
+					className="w-100 d-block text-center mt-3"
 					placeholder={"Search by VC or channel name"}
 					list="datalist"
 					ref={ref}
@@ -57,9 +57,7 @@ const DeleteForm = forwardRef(
 							return;
 						}
 						console.log("Payload unset for deletion");
-
-						// channels.findIndex((e) => e.id === channelToDelete.id);
-						// resolve how to clear the payload if they cancel channel deletion while keeping prev
+						setDeleteConfirm(false);
 						setEditPayload([]);
 					}}
 				>

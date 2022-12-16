@@ -203,6 +203,8 @@ const Mapa = () => {
 		return data.channels.findIndex((e) => e.id === id);
 	};
 	const handleChannelCreation = async () => {
+		setDeleting(false);
+		setLoading(true);
 		await checkPatch();
 		const lastID = data.channels.reduce((acc, curr) => {
 			if (Number(curr.id) > acc) acc = Number(curr.id);
@@ -250,6 +252,7 @@ const Mapa = () => {
 			...prev,
 			{ id: `${newID}`, type: "Create", data: { ...newChannel.data } },
 		]);
+		setLoading(false);
 	};
 
 	const handleChannelDeletion = () => {
@@ -308,12 +311,12 @@ const Mapa = () => {
 
 			await checkPatch();
 		}
-		setLoading(false);
 		setEdit(false);
 		setShowConfirm(false);
 		setCreatingNew(false);
 		setEditPayload([]);
 		setDeleting(false);
+		setLoading(false);
 		if (isDelete) {
 			if (data.channels[0] === channelToDelete) {
 				setSelectedChannel(data.channels[1]);
