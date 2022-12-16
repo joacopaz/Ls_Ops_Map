@@ -1,7 +1,8 @@
 import React, { useLayoutEffect, useRef, useState } from "react";
 import styles from "../Mapa.module.css";
-import { Button, Spinner } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import MultiChannelAlert from "./MultiChannelAlert";
+import Loader from "./Loader";
 const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 	const [loaded, setLoaded] = useState(false);
 	const imgRef = useRef();
@@ -12,26 +13,17 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 
 	return (
 		<>
-			<div className="d-flex justify-content-center align-items-center">
-				{e.img && e.img.substring(0, 4) === "http" && !loaded ? (
-					<Spinner
-						role="status"
-						aria-hidden="true"
-						className="position-absolute  spinner-grow"
-						variant="info"
-					/>
-				) : null}
+			{e.img && e.img.substring(0, 4) === "http" && !loaded ? <Loader /> : null}
 
-				{e.img && e.img.substring(0, 4) === "http" ? (
-					<img
-						className={styles.cardImg}
-						src={e.img}
-						alt={` `}
-						onLoad={(e) => setLoaded(true)}
-						ref={imgRef}
-					></img>
-				) : null}
-			</div>
+			{e.img && e.img.substring(0, 4) === "http" ? (
+				<img
+					className={styles.cardImg}
+					src={e.img}
+					alt={` `}
+					onLoad={(e) => setLoaded(true)}
+					ref={imgRef}
+				></img>
+			) : null}
 			<h5 className={styles.title}>{e.canal}</h5>
 			<ul className={`${styles.ul} ${styles.split} ${edit ? styles.edit : ""}`}>
 				{edit ? (
