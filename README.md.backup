@@ -1,8 +1,0 @@
-# LS Ops Map
-
-Full stack React App designed with a firebase back-end.
-
-Navigate all the TV channels of the company and get, edit and control all the data.
-
-Optimized with version control, authentication and minimize server usage to reduce overhead by relying on local storage and only patching databases on a need only 
-
