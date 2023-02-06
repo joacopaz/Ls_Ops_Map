@@ -20,7 +20,10 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					className={styles.cardImg}
 					src={e.img}
 					alt={` `}
-					onLoad={(e) => setLoaded(true)}
+					onLoadedData={(e) => {
+						console.log("Loaded img");
+						setLoaded(true);
+					}}
 					ref={imgRef}
 				></img>
 			) : null}

@@ -5,8 +5,8 @@ import useGrant from "../hooks/useGrant";
 import PopupControllers from "./PopupControllers";
 const Dashboard = () => {
 	useGrant();
-	const [error, setError] = useState("");
-	const { currentUser, logout } = useAuth();
+	// const [error, setError] = useState("");
+	const { currentUser /*, logout*/ } = useAuth();
 	/*
 	We won't be handling Logout since it's a closed app
 	async function handleLogout() {
