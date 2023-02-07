@@ -20,8 +20,8 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					className={styles.cardImg}
 					src={e.img}
 					alt={` `}
-					onLoadedData={(e) => {
-						// console.log("Loaded img"); change this line for testing
+					onLoad={(e) => {
+						console.log("Loaded img"); //change this line for testing
 						setLoaded(true);
 					}}
 					ref={imgRef}
