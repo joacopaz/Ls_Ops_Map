@@ -13,6 +13,10 @@ import storage from "../hooks/useStorage";
 import { useAuth } from "../contexts/AuthContext";
 import DeleteForm from "./DeleteForm";
 
+// script import
+// import useScripts from "../hooks/useScripts";
+// import DB from "../temp/DB.json";
+
 const Mapa = () => {
 	const {
 		data,
@@ -26,6 +30,10 @@ const Mapa = () => {
 	const { read } = useRead();
 	const { write, del } = useWrite();
 	const { currentUser } = useAuth();
+
+	// Script environment
+	// const scripts = useScripts();
+	//
 
 	const searchRef = useRef();
 	const deleteInputRef = useRef();
@@ -234,7 +242,7 @@ const Mapa = () => {
 				url: "-",
 				usuario: "-",
 				vc: "TBD",
-				proveedores: "",
+				proveedor: "",
 			},
 		};
 		setSelectedChannel(newChannel);
@@ -427,6 +435,7 @@ const Mapa = () => {
 							/>
 						) : null}
 					</div>
+					{/* <Button onClick={() => scripts.uploadDB(DB)}>Script</Button> */}
 				</>
 			) : null}
 			<div className={styles.build}>Build 0.1</div>

@@ -404,6 +404,23 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 						) : null}
 					</li>
 				) : null}
+				{e.proveedor !== "-" || edit ? (
+					<li>
+						<strong>Proveedor:</strong>
+						{e.proveedor}
+						{edit ? (
+							<Button
+								variant="outline-danger"
+								size="sm"
+								className={styles.editBtn}
+								onClick={(e) => editData(e.target.dataset.edit)}
+								data-edit="proveedor"
+							>
+								Edit
+							</Button>
+						) : null}
+					</li>
+				) : null}
 			</ul>
 			<ul
 				className={`${styles.ul} ${edit ? styles.edit : ""}`}

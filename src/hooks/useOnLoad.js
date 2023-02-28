@@ -19,7 +19,7 @@ const propertyToString = (property) => {
 	if (property === "spaDesc") stringToShow = "descripción (español)";
 	if (property === "engDesc") stringToShow = "descripción (inglés)";
 	if (property === "obs") stringToShow = "observaciones";
-	if (property === "proveedores") stringToShow = "proveedores";
+	if (property === "proveedor") stringToShow = "proveedor";
 	return stringToShow;
 };
 
