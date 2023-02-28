@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 
 const EditModal = ({
@@ -11,6 +11,12 @@ const EditModal = ({
 	editCache,
 	editPayload,
 }) => {
+	// debugging
+	// useEffect(() => {
+	// 	console.log(editPayload);
+	// }, [editPayload]);
+	// debugging
+
 	const newValRef = useRef();
 	const submitRef = useRef();
 	const handleClose = () => setShow(false);
@@ -38,7 +44,12 @@ const EditModal = ({
 			newPayload[pendingEditsIndex].changes = {
 				...editPayload[pendingEditsIndex].changes,
 				[property.property]: newValRef.current.value,
+				prevState: {
+					...newPayload[pendingEditsIndex].changes.prevState,
+					[property.property]: selectedChannel.data[property.property],
+				},
 			};
+
 			setEditPayload(newPayload);
 		} else {
 			setEditPayload((prev) => [
@@ -47,11 +58,13 @@ const EditModal = ({
 					id: selectedChannel.id,
 					changes: {
 						[property.property]: newValRef.current.value,
+						prevState: {
+							[property.property]: selectedChannel.data[property.property],
+						},
 					},
 				},
 			]);
 		}
-		
 		handleClose();
 	};
 	const handleKey = (e) => {

@@ -62,6 +62,7 @@ const Mapa = () => {
 	}, [data]);
 	useEffect(() => {
 		if (editPayload.length > 0) {
+			console.log(editPayload); // debug
 			// update UI to see changes
 			const newData = { ...data };
 			editPayload.forEach((edit) => {
@@ -155,6 +156,7 @@ const Mapa = () => {
 			} ${channel.data.canal.toUpperCase()}</span><br>`;
 			for (const key in e.changes) {
 				if (Object.hasOwnProperty.call(e.changes, key)) {
+					if (key === "prevState") continue;
 					const element = e.changes[key];
 					const prop = propertyToString(key);
 					string += `${prop} &#8594; ${element} <br>`;
@@ -272,6 +274,8 @@ const Mapa = () => {
 			const changesForHistory = editPayload.map((e) => {
 				const channelIndex = indexOfChannel(e.id);
 				const channel = data.channels[channelIndex].data.canal;
+				if (e.type === "Create" && e.changes.prevState)
+					delete e.changes.prevState;
 				if (e.type)
 					return {
 						channel,
@@ -297,8 +301,10 @@ const Mapa = () => {
 				user,
 			});
 			editPayload.forEach(async (e) => {
-				if (e.changes.type !== "Delete")
+				if (e.changes.type !== "Delete") {
+					if (e.changes.prevState) delete e.changes.prevState;
 					return await write("channels", e.id, { ...e.changes });
+				}
 				await del("channels", e.id);
 				console.log("Deleted " + e.id);
 			});
@@ -423,7 +429,7 @@ const Mapa = () => {
 					</div>
 				</>
 			) : null}
-			<div className={styles.build}>Build beta 0.1</div>
+			<div className={styles.build}>Build 0.1</div>
 		</>
 	);
 };

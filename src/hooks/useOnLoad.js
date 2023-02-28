@@ -29,7 +29,7 @@ const useOnLoad = () => {
 	const { read, readAll } = useRead();
 	const fetched = useRef(null); // to avoid multiple renders, especially during testing (React Strict Mode)
 
-	const checkPatch = useCallback(async () => {
+	const checkPatch = async () => {
 		let latestStoragedVersion = round(Number(storage.get("version"))); // localStorage version
 		const response = await read("history", "current"); // remoteDB version
 		let current;
@@ -52,6 +52,8 @@ const useOnLoad = () => {
 				const { id } = change;
 				let indexToChange = channels.findIndex((e) => e.id === id);
 				if (indexToChange === -1 && change.type === "Create") {
+					// prevent new channels from being created with prevState
+					if (change.prevState) delete change.prevState;
 					channels.push({ id, data: change });
 					indexToChange = channels.length - 1;
 				}
@@ -63,7 +65,13 @@ const useOnLoad = () => {
 					for (const key in change) {
 						if (Object.hasOwnProperty.call(change, key)) {
 							const element = change[key];
-							if (key === "channel" || key === "id" || key === "type") continue;
+							if (
+								key === "channel" ||
+								key === "id" ||
+								key === "type" ||
+								key === "prevState"
+							)
+								continue;
 							newProps[key] = element;
 						}
 					}
@@ -99,7 +107,7 @@ const useOnLoad = () => {
 			setData({ version: latestStoragedVersion, channels });
 		}
 		console.log("No further patching needed.");
-	});
+	};
 
 	useEffect(() => {
 		const hasStorage = Object.keys(storage.getAll()).length !== 0;
