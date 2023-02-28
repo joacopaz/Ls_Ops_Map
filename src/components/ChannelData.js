@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useLayoutEffect, useRef, useState, useEffect } from "react";
 import styles from "../Mapa.module.css";
 import { Button } from "react-bootstrap";
 import MultiChannelAlert from "./MultiChannelAlert";
@@ -9,6 +9,8 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 
 	useLayoutEffect(() => {
 		setLoaded(false);
+		setTimeout(() => setLoaded(true), 500);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [e]);
 
 	return (
@@ -21,7 +23,6 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					src={e.img}
 					alt={` `}
 					onLoad={(e) => {
-						console.log("Loaded img"); //change this line for testing
 						setLoaded(true);
 					}}
 					ref={imgRef}

@@ -43,10 +43,8 @@ const Mapa = () => {
 	const [channelToDelete, setChannelToDelete] = useState({});
 	const [deleteConfirm, setDeleteConfirm] = useState(false);
 
-	const e = selectedChannel?.data;
-
-	// Set first channel as selected on load
 	useEffect(() => {
+		// Set first channel as selected on load
 		if (
 			Object.keys(data).length > 0 &&
 			!selectedChannel &&
@@ -54,7 +52,14 @@ const Mapa = () => {
 		) {
 			setSelectedChannel(data.channels[0]);
 		}
-	}, [data, selectedChannel]);
+		// Force re-assignment of channels every time data changes, to fix edits not rendering when editing same channel twice
+		if (Object.keys(data).length > 0 && selectedChannel)
+			setSelectedChannel(
+				data.channels[
+					data.channels.findIndex((chan) => chan.id === selectedChannel.id)
+				]
+			);
+	}, [data]);
 	useEffect(() => {
 		if (editPayload.length > 0) {
 			// update UI to see changes
@@ -80,10 +85,9 @@ const Mapa = () => {
 			});
 			setData(newData);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [editPayload]);
 	useEffect(() => {
-		if (!e) return;
+		if (!selectedChannel) return;
 		if (deleting) return;
 		const vc = selectedChannel.data.vc;
 		const compartidos = data.channels.filter((e) => e.data.vc === vc);
@@ -91,7 +95,7 @@ const Mapa = () => {
 		if (compartidos.length > 1) {
 			setSharedVcs(compartidos);
 		}
-	}, [selectedChannel, data.channels, e, deleting]);
+	}, [selectedChannel, data.channels, deleting]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -228,6 +232,7 @@ const Mapa = () => {
 				url: "-",
 				usuario: "-",
 				vc: "TBD",
+				proveedores: "",
 			},
 		};
 		setSelectedChannel(newChannel);
@@ -297,15 +302,17 @@ const Mapa = () => {
 				await del("channels", e.id);
 				console.log("Deleted " + e.id);
 			});
-
 			await checkPatch();
 		}
+
 		setEdit(false);
 		setShowConfirm(false);
 		setCreatingNew(false);
 		setEditPayload([]);
 		setDeleting(false);
 		setLoading(false);
+		setProperty({});
+		setEditCache([]);
 		if (isDelete) {
 			if (data.channels[0] === channelToDelete) {
 				setSelectedChannel(data.channels[1]);
@@ -366,7 +373,7 @@ const Mapa = () => {
 
 						{selectedChannel && !deleting ? (
 							<ChannelData
-								e={e}
+								e={selectedChannel.data}
 								edit={edit}
 								editData={editData}
 								sharedVcs={sharedVcs}
@@ -416,6 +423,7 @@ const Mapa = () => {
 					</div>
 				</>
 			) : null}
+			<div className={styles.build}>Build beta 0.1</div>
 		</>
 	);
 };

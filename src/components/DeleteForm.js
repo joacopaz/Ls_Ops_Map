@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useRef } from "react";
+import React, { forwardRef, useEffect } from "react";
 import { Alert, Button, Form } from "react-bootstrap";
 import styles from "../Mapa.module.css";
 
@@ -46,6 +46,7 @@ const DeleteForm = forwardRef(
 									id: channelToDelete.id,
 									changes: {
 										type: "Delete",
+										lastState: { ...channelToDelete.data },
 									},
 								},
 							]);

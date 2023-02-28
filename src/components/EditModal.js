@@ -21,7 +21,7 @@ const EditModal = ({
 		}
 		const isInCache = editCache.find((e) => e.id === selectedChannel.id);
 		if (!isInCache) {
-			// if the channel has not been cached we cached to revert changes
+			// if the channel has not been cached we cache to possibly revert changes
 			setEditCache((prev) => [
 				...prev,
 				{ id: selectedChannel.id, data: selectedChannel.data },
@@ -51,7 +51,7 @@ const EditModal = ({
 				},
 			]);
 		}
-
+		
 		handleClose();
 	};
 	const handleKey = (e) => {
