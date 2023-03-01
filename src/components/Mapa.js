@@ -70,7 +70,7 @@ const Mapa = () => {
 	}, [data]);
 	useEffect(() => {
 		if (editPayload.length > 0) {
-			console.log(editPayload); // debug
+			// console.log(editPayload); // debug
 			// update UI to see changes
 			const newData = { ...data };
 			editPayload.forEach((edit) => {
