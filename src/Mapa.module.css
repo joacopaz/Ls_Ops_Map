@@ -168,3 +168,9 @@
 	left: 0 !important;
 	padding: 0.5rem;
 }
+
+.scriptBtn {
+	position: absolute;
+	bottom: 2rem;
+	right: 2rem;
+}

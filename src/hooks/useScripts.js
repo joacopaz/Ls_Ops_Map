@@ -1,4 +1,5 @@
 import useWrite from "./useWrite";
+import {utils, writeFile} from "xlsx";
 
 export default function useScripts() {
 	const { write, del } = useWrite();
@@ -47,5 +48,18 @@ export default function useScripts() {
 		console.log("UploadDB script finished");
 		return;
 	};
-	return { deleteHistory, uploadDB };
+
+	const exportData = (data) => {
+		try {
+			const filename = "mapa.xlsx";
+			const ws = utils.json_to_sheet(data);
+			const wb = utils.book_new();
+			utils.book_append_sheet(wb, ws, "People");
+			writeFile(wb, filename);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	return { deleteHistory, uploadDB, exportData };
 }

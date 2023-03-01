@@ -14,7 +14,7 @@ import { useAuth } from "../contexts/AuthContext";
 import DeleteForm from "./DeleteForm";
 
 // script import
-// import useScripts from "../hooks/useScripts";
+import useScripts from "../hooks/useScripts";
 // import DB from "../temp/DB.json";
 
 const Mapa = () => {
@@ -32,7 +32,8 @@ const Mapa = () => {
 	const { currentUser } = useAuth();
 
 	// Script environment
-	// const scripts = useScripts();
+	const scripts = useScripts();
+	const btn = useRef(null);
 	//
 
 	const searchRef = useRef();
@@ -345,9 +346,51 @@ const Mapa = () => {
 		setChannelToDelete(channel);
 	};
 
+	const exportData = async () => {
+		setLoading(true);
+		await checkPatch();
+		const finalObject = [];
+		data.channels.forEach((channel) => {
+			const { data } = channel;
+			finalObject.push({
+				ID: channel.id,
+				VC: data.vc,
+				CANAL: data.canal,
+				TERRITORIO: data.territorio,
+				FRECUENCIA: data.frecuencia,
+				GMT: data.GMT,
+				"GMT VERANO": data.GMTverano,
+				"FEED | GRILLA": data.grid,
+				HORARIO: data.horario,
+				CONTACTO: data.contacto,
+				CORREO: data.correo,
+				TELÉFONO: data.tel,
+				"ACTION PACK": data.actionPack,
+				WEB: data.url,
+				USUARIO: data.usuario,
+				PASSWORD: data.pass,
+				OBSERVACIONES: data.obs,
+				ESPEJOS: data.espejos,
+				CATEGORÍA: data.categoria,
+				"DESCRIPCIÓN ESPAÑOL": data.spaDesc,
+				"ENGLISH DESCRIPTION": data.engDesc,
+				ANALISTA: data.analista,
+				CARGA: data.carga,
+				ESCLAVO: data.esclavo,
+				MASTER: data.master,
+				PROVEEDOR: data.proveedor,
+			});
+		});
+		scripts.exportData(finalObject);
+		setLoading(false);
+	};
 	return (
 		<>
+			{/* Header */}
+
 			{loading ? <Loader /> : null}
+
+			{/* Interactive section */}
 			{!loading && selectedChannel ? (
 				<>
 					<ConfirmModal
@@ -435,9 +478,15 @@ const Mapa = () => {
 							/>
 						) : null}
 					</div>
-					{/* <Button onClick={() => scripts.uploadDB(DB)}>Script</Button> */}
 				</>
 			) : null}
+			{!loading && (
+				<Button className={styles.scriptBtn} ref={btn} onClick={exportData}>
+					Export XLSX
+				</Button>
+			)}
+
+			{/* Footer */}
 			<div className={styles.build}>Build 0.1</div>
 		</>
 	);
