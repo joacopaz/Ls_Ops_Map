@@ -163,14 +163,14 @@
 }
 
 .build {
-	position: absolute !important;
+	position: fixed;
 	bottom: 0 !important;
 	left: 0 !important;
 	padding: 0.5rem;
 }
 
 .scriptBtn {
-	position: absolute;
-	bottom: 2rem;
-	right: 2rem;
+	position: fixed;
+	bottom: 1rem;
+	right: 1rem;
 }
