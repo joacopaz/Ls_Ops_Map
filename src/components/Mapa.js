@@ -68,6 +68,8 @@ const Mapa = () => {
 					data.channels.findIndex((chan) => chan.id === selectedChannel.id)
 				]
 			);
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [data]);
 	useEffect(() => {
 		if (editPayload.length > 0) {
@@ -95,6 +97,7 @@ const Mapa = () => {
 			});
 			setData(newData);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [editPayload]);
 	useEffect(() => {
 		if (!selectedChannel) return;
@@ -348,6 +351,7 @@ const Mapa = () => {
 
 	const exportData = async () => {
 		setLoading(true);
+
 		await checkPatch();
 		const finalObject = [];
 		data.channels.forEach((channel) => {
@@ -381,7 +385,10 @@ const Mapa = () => {
 				PROVEEDOR: data.proveedor,
 			});
 		});
+		finalObject.sort((a, b) => a.ID - b.ID);
 		scripts.exportData(finalObject);
+
+		// console.log(finalObject);
 		setLoading(false);
 	};
 	return (
