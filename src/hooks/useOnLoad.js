@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useAuth } from "../contexts/AuthContext";
 import useRead from "./useRead";
 import storage from "./useStorage";
 
@@ -24,6 +25,7 @@ const propertyToString = (property) => {
 };
 
 const useOnLoad = () => {
+	const { currentUser } = useAuth();
 	const [data, setData] = useState({});
 	const [loading, setLoading] = useState(false);
 	const { read, readAll } = useRead();
@@ -111,6 +113,7 @@ const useOnLoad = () => {
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(() => {
+		if (!currentUser) return;
 		const hasStorage = Object.keys(storage.getAll()).length !== 0;
 		if (hasStorage && !fetched.current) {
 			setLoading(true);
@@ -166,7 +169,9 @@ const useOnLoad = () => {
 				console.log(error);
 			}
 		}
-	});
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [currentUser]);
 
 	return {
 		data,

@@ -235,7 +235,7 @@ const Mapa = ({
 				url: "-",
 				usuario: "-",
 				vc: "TBD",
-				proveedor: "",
+				proveedor: "-",
 			},
 		};
 		setSelectedChannel(newChannel);
