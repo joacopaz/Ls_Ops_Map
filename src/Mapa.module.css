@@ -180,6 +180,7 @@
 	top: 1rem;
 	right: 1rem;
 	max-height: 2rem;
+	caret-color: none;
 }
 
 .admin:hover {
@@ -203,7 +204,7 @@
 	right: 0;
 	background-color: rgba(0, 0, 0, 0.539);
 	display: flex;
-	align-items: center;
+	align-items: flex-start;
 	justify-content: center;
 	height: 80%;
 	transform: translate(100%);
@@ -213,14 +214,15 @@
 
 .adminCommandsContainer nav {
 	display: flex;
+	gap: 1rem;
+	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+	caret-color: transparent;
 }
 
-.adminCommandsContainer ul {
-	list-style: none;
-	padding: 0;
-	margin: 0;
+.adminCommandsContainer nav > * {
+	width: 100%;
 }
 
 .active {

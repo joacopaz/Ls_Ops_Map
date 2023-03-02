@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useRef } from "react";
 import styles from "../Mapa.module.css";
 import { Button } from "react-bootstrap";
 import cog from "../cog.png";
@@ -12,7 +11,6 @@ export default function AdminCommands({ data, checkPatch, setLoading }) {
 
 	// Script environment
 	const scripts = useScripts();
-	const btn = useRef(null);
 	//
 
 	const exportData = async () => {
@@ -74,13 +72,13 @@ export default function AdminCommands({ data, checkPatch, setLoading }) {
 				}
 			>
 				<nav>
-					<ul>
-						<li>
-							<Button ref={btn} onClick={exportData}>
-								Export XLSX
-							</Button>
-						</li>
-					</ul>
+					<Button onClick={exportData}>Export XLSX</Button>
+					<Button disabled onClick={() => console.log("TBD")}>
+						Manage Users - TBD
+					</Button>
+					<Button disabled onClick={() => console.log("TBD")}>
+						Manage DB - TBD
+					</Button>
 				</nav>
 			</div>
 		</>
