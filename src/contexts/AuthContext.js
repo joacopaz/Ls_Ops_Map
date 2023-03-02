@@ -14,6 +14,7 @@ export default function AuthProvider({ children }) {
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
+		auth.setPersistence("session");
 		const unsub = auth.onAuthStateChanged((user) => {
 			setCurrentUser(user);
 			setLoading(false);
