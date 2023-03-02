@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState, useEffect } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import styles from "../Mapa.module.css";
 import { Button } from "react-bootstrap";
 import MultiChannelAlert from "./MultiChannelAlert";

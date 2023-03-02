@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { useAuth } from "../contexts/AuthContext";
 import Mapa from "./Mapa";
 import useGrant from "../hooks/useGrant";
-import PopupControllers from "./PopupControllers";
+import AdminCommands from "./AdminCommands";
+import useOnLoad from "../hooks/useOnLoad";
+
 const Dashboard = () => {
 	useGrant();
 	// const [error, setError] = useState("");
@@ -21,12 +23,35 @@ const Dashboard = () => {
 			);
 		}
 	}*/
+	const {
+		data,
+		loading,
+		setData,
+		setLoading,
+		round,
+		propertyToString,
+		checkPatch,
+	} = useOnLoad();
 	return (
 		<>
 			{currentUser ? (
 				<>
-					<Mapa />
-					<PopupControllers />
+					{currentUser.isAdmin && !loading && (
+						<AdminCommands
+							data={data}
+							setLoading={setLoading}
+							checkPatch={checkPatch}
+						/>
+					)}
+					<Mapa
+						data={data}
+						loading={loading}
+						setData={setData}
+						setLoading={setLoading}
+						round={round}
+						propertyToString={propertyToString}
+						checkPatch={checkPatch}
+					/>
 				</>
 			) : (
 				"This content is restricted"

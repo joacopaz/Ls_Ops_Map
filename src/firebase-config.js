@@ -1,8 +1,7 @@
 import firebase from "firebase/compat/app";
-import { Firestore } from "firebase/firestore";
 // import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 import "firebase/compat/auth";
-import { getFirestore, enableIndexedDbPersistence } from "firebase/firestore";
+import { getFirestore } from "firebase/firestore";
 import { initializeFirestore } from "firebase/firestore";
 
 const app = firebase.initializeApp({

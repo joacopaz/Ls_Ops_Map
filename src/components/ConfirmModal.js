@@ -23,9 +23,7 @@ const ConfirmModal = ({
 				<Alert variant="danger" className="w-100 text-center">
 					{alert
 						? alert
-						: `The following changes will be logged for ${
-								currentUser.email.match(/(.+)@/)[1]
-						  }`}
+						: `The following changes will be logged for ${currentUser.username}`}
 				</Alert>
 				{!alert ? (
 					<Modal.Body

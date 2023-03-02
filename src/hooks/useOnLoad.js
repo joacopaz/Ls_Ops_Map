@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import useRead from "./useRead";
 import storage from "./useStorage";
 
@@ -109,6 +109,7 @@ const useOnLoad = () => {
 		console.log("No further patching needed.");
 	};
 
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(() => {
 		const hasStorage = Object.keys(storage.getAll()).length !== 0;
 		if (hasStorage && !fetched.current) {

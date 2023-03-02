@@ -174,3 +174,55 @@
 	bottom: 1rem;
 	right: 1rem;
 }
+
+.admin {
+	position: fixed;
+	top: 1rem;
+	right: 1rem;
+	max-height: 2rem;
+}
+
+.admin:hover {
+	cursor: pointer;
+	animation: rotate 1.5s infinite;
+	animation-timing-function: linear;
+	animation-fill-mode: forwards;
+}
+
+@keyframes rotate {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.adminCommandsContainer {
+	position: fixed;
+	right: 0;
+	background-color: rgba(0, 0, 0, 0.539);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 80%;
+	transform: translate(100%);
+	transition: 300ms;
+	padding: 1rem;
+}
+
+.adminCommandsContainer nav {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.adminCommandsContainer ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.active {
+	transform: translate(0%);
+}

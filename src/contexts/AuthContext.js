@@ -36,6 +36,12 @@ export default function AuthProvider({ children }) {
 
 	const value = { currentUser, signup, login, logout, recover };
 
+	if (currentUser) {
+		currentUser.username = currentUser.email.match(/(.+)@/)[1];
+		const admins = process.env.REACT_APP_ADMINS.split(", ");
+		currentUser.isAdmin = admins.some((user) => user === currentUser.username);
+	}
+
 	return (
 		<AuthContext.Provider value={value}>
 			{!loading ? children : <Loader />}
