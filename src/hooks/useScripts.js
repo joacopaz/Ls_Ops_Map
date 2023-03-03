@@ -1,5 +1,5 @@
 import useWrite from "./useWrite";
-import {utils, writeFile} from "xlsx";
+import { utils, writeFile } from "xlsx";
 
 export default function useScripts() {
 	const { write, del } = useWrite();
@@ -16,22 +16,22 @@ export default function useScripts() {
 			img: `https://www.directv.com.ar/content/dam/public-sites/channels/${channel.VC}.png`,
 			vc: channel.VC,
 			canal: channel.CANAL,
-			GMT: channel.GMT,
-			GMTverano: channel["GMT VERANO"],
-			actionPack: channel["ACTION PACK"],
-			categoria: channel["CATEGORÍA"],
-			pass: channel["CONTRASEÑA"],
-			tel: channel["TELÉFONO"],
 			territorio: channel.TERRITORIO,
 			frecuencia: channel.FRECUENCIA,
+			GMT: channel.GMT,
+			GMTverano: channel["GMT VERANO"],
 			grid: channel["FEED | GRILLA"],
 			horario: channel.HORARIO,
 			contacto: channel.CONTACTO,
 			correo: channel.CORREO,
+			tel: channel["TELÉFONO"],
+			actionPack: channel["ACTION PACK"],
 			url: channel.WEB,
 			usuario: channel.USUARIO,
+			pass: channel["CONTRASEÑA"],
 			obs: channel.OBSERVACIONES,
 			espejos: channel.ESPEJOS,
+			categoria: channel["CATEGORÍA"],
 			spaDesc: channel["DESCRIPCIÓN ESPAÑOL"],
 			engDesc: channel["ENGLISH DESCRIPTION"],
 			analista: channel.ANALISTA,
@@ -39,9 +39,11 @@ export default function useScripts() {
 			esclavo: channel.ESCLAVO,
 			master: channel.MASTER,
 			proveedor: channel.PROVEEDOR,
+			type: channel.TYPE,
+			sid: channel.SID,
 		}));
 
-		finalDB.forEach(async (channel, i) => {
+		await finalDB.forEach(async (channel, i) => {
 			await write("channels", `${i}`, channel);
 			console.log(`Written channel ${channel.canal}`);
 		});
@@ -61,5 +63,15 @@ export default function useScripts() {
 		}
 	};
 
-	return { deleteHistory, uploadDB, exportData };
+	const uploadColumns = async (jsonObject) => {
+		const { data } = jsonObject;
+		await data.forEach(async (column, i) => {
+			await write("columns", `${i}`, column);
+			console.log(`Written column ${column.title}`);
+		});
+		console.log("Upload Columns script finished");
+		return;
+	};
+
+	return { deleteHistory, uploadDB, exportData, uploadColumns };
 }

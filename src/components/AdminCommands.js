@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styles from "../Mapa.module.css";
 import { Button } from "react-bootstrap";
 import cog from "../cog.png";
+import DB from "../temp/DB.json";
 
 // script import
 import useScripts from "../hooks/useScripts";
@@ -79,6 +80,7 @@ export default function AdminCommands({ data, checkPatch, setLoading }) {
 					<Button disabled onClick={() => console.log("TBD")}>
 						Manage DB - TBD
 					</Button>
+					<Button onClick={() => scripts.uploadDB(DB)}>Run Script</Button>
 				</nav>
 			</div>
 		</>

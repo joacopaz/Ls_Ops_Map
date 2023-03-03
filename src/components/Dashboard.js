@@ -4,6 +4,7 @@ import Mapa from "./Mapa";
 import useGrant from "../hooks/useGrant";
 import AdminCommands from "./AdminCommands";
 import useOnLoad from "../hooks/useOnLoad";
+import ReportBug from "./ReportBug";
 
 const Dashboard = () => {
 	useGrant();
@@ -23,7 +24,6 @@ const Dashboard = () => {
 			);
 		}
 	}*/
-
 	const {
 		data,
 		loading,
@@ -44,6 +44,7 @@ const Dashboard = () => {
 							checkPatch={checkPatch}
 						/>
 					)}
+					<ReportBug user={currentUser.username} setLoading={setLoading} />
 					<Mapa
 						data={data}
 						loading={loading}

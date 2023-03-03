@@ -24,7 +24,6 @@ const Mapa = ({
 	const { read } = useRead();
 	const { write, del } = useWrite();
 	const { currentUser } = useAuth();
-
 	const searchRef = useRef();
 	const deleteInputRef = useRef();
 	const [selectedChannel, setSelectedChannel] = useState(null);
@@ -236,6 +235,8 @@ const Mapa = ({
 				usuario: "-",
 				vc: "TBD",
 				proveedor: "-",
+				type: "-",
+				sid: "-",
 			},
 		};
 		setSelectedChannel(newChannel);
@@ -436,7 +437,7 @@ const Mapa = ({
 			) : null}
 
 			{/* Footer */}
-			<div className={styles.build}>Build 0.3</div>
+			<div className={styles.build}>Build 0.4</div>
 		</>
 	);
 };

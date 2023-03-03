@@ -30,15 +30,22 @@ const useOnLoad = () => {
 	const [loading, setLoading] = useState(false);
 	const { read, readAll } = useRead();
 	const fetched = useRef(null); // to avoid multiple renders, especially during testing (React Strict Mode)
-
+	const handleVersionMismatch = () => {
+		localStorage.clear();
+		alert("Hay una nueva versión de la base, recargando página");
+		window.location.reload();
+	};
 	const checkPatch = async () => {
 		let latestStoragedVersion = round(Number(storage.get("version"))); // localStorage version
 		const response = await read("history", "current"); // remoteDB version
 		let current;
 		if (response) current = response.current;
 		if (!response) {
-			console.log(`Error fetching latest version, falling back on cache`);
-			current = latestStoragedVersion;
+			const useOffline = window.confirm(
+				"Hubo un problema accediendo a la base (probablemente con tu conexión). ¿Querés usarla offline? Tené en cuenta que si hubo actualizaciones no las recibirás. Confirmá para usarla offline, de lo contrario se recargará la página para intentar resolverlo."
+			);
+			if (!useOffline) return window.location.reload();
+			current = round(latestStoragedVersion);
 		}
 		if (latestStoragedVersion < current)
 			console.log(
@@ -50,6 +57,7 @@ const useOnLoad = () => {
 			const channels = JSON.parse(data.channels);
 
 			const { changes } = await read("history", `v${version}`);
+			if (!changes) return handleVersionMismatch();
 			changes.forEach((change) => {
 				const { id } = change;
 				let indexToChange = channels.findIndex((e) => e.id === id);
@@ -124,7 +132,10 @@ const useOnLoad = () => {
 				let current;
 				if (response) current = response.current;
 				if (!response) {
-					console.log(`Error fetching latest version, falling back on cache`);
+					const useOffline = window.confirm(
+						"Hubo un problema accediendo a la base (probablemente con tu conexión). ¿Querés usarla offline? Tené en cuenta que si hubo actualizaciones no las recibirás. Confirmá para usarla offline, de lo contrario se recargará la página para intentar resolverlo."
+					);
+					if (!useOffline) return window.location.reload();
 					current = round(latestStoragedVersion);
 				}
 				if (latestStoragedVersion < current) {
@@ -134,8 +145,7 @@ const useOnLoad = () => {
 					const data = storage.getAll();
 					const version = round(Number(current));
 					if (latestStoragedVersion > current) {
-						console.log("Fixing version mismatch");
-						storage.set("version", JSON.stringify(current));
+						handleVersionMismatch();
 					}
 					const channels = JSON.parse(data.channels);
 					channels.sort((a, b) => Number(a.data.vc) > Number(b.data.vc));

@@ -3,16 +3,18 @@ import styles from "../Mapa.module.css";
 import { Button } from "react-bootstrap";
 import MultiChannelAlert from "./MultiChannelAlert";
 import Loader from "./Loader";
+import ChannelDataColumn from "./ChannelDataColumn";
+import useColumns from "../hooks/useColumns";
+
 const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 	const [loaded, setLoaded] = useState(false);
 	const imgRef = useRef();
-
 	useLayoutEffect(() => {
 		setLoaded(false);
 		setTimeout(() => setLoaded(true), 500);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [e]);
-
+	useColumns();
 	return (
 		<>
 			{e.img && e.img.substring(0, 4) === "http" && !loaded ? <Loader /> : null}
@@ -46,106 +48,64 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 						) : null}
 					</li>
 				) : null}
-				{e.vc !== "-" || edit ? (
-					<li>
-						<strong>VC:</strong>
-						{e.vc}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="vc"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
-				{edit ? (
-					<li>
-						<strong>Nombre:</strong> {e.canal}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="canal"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
-				{e.GMT !== "-" || edit ? (
-					<li>
-						<strong>Horario GMT:</strong> {e.GMT.replace(/[()]/g, "")}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="GMT"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
-				{e.GMTverano !== "-" || edit ? (
-					<li>
-						<strong>Horario verano:</strong>
-						{e.GMTverano.replace(/[()]/g, "")}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="GMTverano"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
-				{e.actionPack !== "-" || edit ? (
-					<li>
-						<strong>Action pack:</strong>
-						{e.actionPack}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="actionPack"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
-				{e.territorio !== "-" || edit ? (
-					<li>
-						<strong>Territorio:</strong>
-						{e.territorio}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="territorio"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
+
+				<ChannelDataColumn
+					title={"VC"}
+					column={e.vc}
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					defaultView={true}
+				/>
+				<ChannelDataColumn
+					title={"SID"}
+					column={e.sid}
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					defaultView={true}
+				/>
+				<ChannelDataColumn
+					title={"Nombre"}
+					column={e.canal}
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					defaultView={false}
+				/>
+				<ChannelDataColumn
+					title={"Horario GMT"}
+					column={e.GMT}
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					defaultView={true}
+				/>
+				<ChannelDataColumn
+					title={"Horario Verano"}
+					column={e.GMTverano}
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					defaultView={true}
+				/>
+				<ChannelDataColumn
+					title={"Action Pack"}
+					column={e.actionPack}
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					defaultView={true}
+				/>
+				<ChannelDataColumn
+					title={"Territorio"}
+					column={e.territorio}
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					defaultView={true}
+				/>
+
 				{e.carga !== "-" || edit ? (
 					<li>
 						<strong>Carga:</strong>
@@ -421,6 +381,14 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 						) : null}
 					</li>
 				) : null}
+				<ChannelDataColumn
+					title={"Type"}
+					column={e.type}
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					defaultView={true}
+				/>
 			</ul>
 			<ul
 				className={`${styles.ul} ${edit ? styles.edit : ""}`}
