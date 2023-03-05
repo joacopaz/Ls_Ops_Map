@@ -84,7 +84,7 @@ export default function useScripts() {
 				await gapi.client.init({
 					apiKey: process.env.REACT_APP_G_API_KEY,
 					clientId: process.env.REACT_APP_G_CLIENT_ID,
-					scope: "https://www.googleapis.com/auth/spreadsheets.readonly",
+					scope: "https://www.googleapis.com/auth/drive.file",
 					discoveryDocs: [
 						"https://sheets.googleapis.com/$discovery/rest?version=v4",
 					],
