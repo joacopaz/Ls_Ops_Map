@@ -1,11 +1,38 @@
 import useWrite from "./useWrite";
 import { gapi } from "gapi-script";
 import { utils, writeFile } from "xlsx";
-
+import { useEffect, useState } from "react";
 // const getClient = async () => await auth.getClient();
 
 export default function useScripts() {
 	const { write, del } = useWrite();
+	const [isSigned, setIsSigned] = useState(null);
+
+	useEffect(() => {
+		if (isSigned) {
+			const createSpreadsheet = async (title, callback) => {
+				try {
+					if (!isSigned) {
+						await startGoogle();
+					}
+					if (isSigned) {
+						const response = await gapi.client.sheets.spreadsheets.create({
+							properties: {
+								title: title,
+							},
+						});
+						if (callback) await callback(response);
+						console.log("Spreadsheet ID: " + response.result.spreadsheetId);
+					}
+				} catch (error) {
+					console.log(error);
+				}
+			};
+			createSpreadsheet("Testing");
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isSigned]);
+
 	const round = (num) => Math.round((num + Number.EPSILON) * 100) / 100;
 	// button for deleting history, set to delete from 0.01 to 0.09
 	const deleteHistory = async (start, finish) => {
@@ -75,34 +102,40 @@ export default function useScripts() {
 		console.log("Upload Columns script finished");
 		return;
 	};
-	const useGoogle = async () => {
-		let GoogleAuth;
-		console.log("Using google");
-		gapi.load("client:auth2", loadGoogle);
-		async function loadGoogle() {
-			try {
-				await gapi.client.init({
-					apiKey: process.env.REACT_APP_G_API_KEY,
-					clientId: process.env.REACT_APP_G_CLIENT_ID,
-					scope: "https://www.googleapis.com/auth/drive.file",
-					discoveryDocs: [
-						"https://sheets.googleapis.com/$discovery/rest?version=v4",
-					],
-				});
-				console.log("Gapi initialized");
-				GoogleAuth = gapi.auth2.getAuthInstance();
-				GoogleAuth.signIn();
-				// const response = await gapi.client.request({
-				// 	path: "https://sheets.googleapis.com/v4/spreadsheets",
-				// 	method: "POST",
-				// });
-				// console.log(response);
-				// output.innerText = response.body;
-			} catch (error) {
-				console.log(error);
+	const startGoogle = async () => {
+		await new Promise(async (r) => {
+			let GoogleAuth;
+			console.log("Using google");
+			await gapi.load("client:auth2", loadGoogle);
+			async function loadGoogle() {
+				try {
+					if (!isSigned) {
+						await gapi.client.init({
+							apiKey: process.env.REACT_APP_G_API_KEY,
+							clientId: process.env.REACT_APP_G_CLIENT_ID,
+							scope: "https://www.googleapis.com/auth/drive.file",
+							discoveryDocs: [
+								"https://sheets.googleapis.com/$discovery/rest?version=v4",
+							],
+						});
+						GoogleAuth = gapi.auth2.getAuthInstance();
+						await GoogleAuth.isSignedIn.listen(setIsSigned(true));
+						console.log("Gapi initialized");
+						await GoogleAuth.signIn();
+						r();
+					}
+				} catch (error) {
+					console.log(error);
+				}
 			}
-		}
+		});
 	};
-	// const startGoogle = () => gapi.load("client", useGoogle);
-	return { deleteHistory, uploadDB, exportData, uploadColumns, useGoogle };
+
+	return {
+		deleteHistory,
+		uploadDB,
+		exportData,
+		uploadColumns,
+		startGoogle,
+	};
 }

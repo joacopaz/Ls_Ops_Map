@@ -79,7 +79,9 @@ export default function AdminCommands({ data, checkPatch, setLoading }) {
 					<Button disabled onClick={() => console.log("TBD")}>
 						Manage DB - TBD
 					</Button>
-					<Button onClick={() => scripts.useGoogle()}>Test Google Auth</Button>
+					{/* <Button onClick={() => scripts.startGoogle("Base Mapa")}>
+						Test Google Auth
+					</Button> */}
 				</nav>
 			</div>
 		</>
