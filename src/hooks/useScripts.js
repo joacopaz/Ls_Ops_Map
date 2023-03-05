@@ -1,5 +1,8 @@
 import useWrite from "./useWrite";
+import { gapi } from "gapi-script";
 import { utils, writeFile } from "xlsx";
+
+// const getClient = async () => await auth.getClient();
 
 export default function useScripts() {
 	const { write, del } = useWrite();
@@ -72,6 +75,34 @@ export default function useScripts() {
 		console.log("Upload Columns script finished");
 		return;
 	};
-
-	return { deleteHistory, uploadDB, exportData, uploadColumns };
+	const useGoogle = async () => {
+		let GoogleAuth;
+		console.log("Using google");
+		gapi.load("client:auth2", loadGoogle);
+		async function loadGoogle() {
+			try {
+				await gapi.client.init({
+					apiKey: process.env.REACT_APP_G_API_KEY,
+					clientId: process.env.REACT_APP_G_CLIENT_ID,
+					scope: "https://www.googleapis.com/auth/spreadsheets.readonly",
+					discoveryDocs: [
+						"https://sheets.googleapis.com/$discovery/rest?version=v4",
+					],
+				});
+				console.log("Gapi initialized");
+				GoogleAuth = gapi.auth2.getAuthInstance();
+				GoogleAuth.signIn();
+				// const response = await gapi.client.request({
+				// 	path: "https://sheets.googleapis.com/v4/spreadsheets",
+				// 	method: "POST",
+				// });
+				// console.log(response);
+				// output.innerText = response.body;
+			} catch (error) {
+				console.log(error);
+			}
+		}
+	};
+	// const startGoogle = () => gapi.load("client", useGoogle);
+	return { deleteHistory, uploadDB, exportData, uploadColumns, useGoogle };
 }

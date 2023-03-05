@@ -435,9 +435,6 @@ const Mapa = ({
 					</div>
 				</>
 			) : null}
-
-			{/* Footer */}
-			<div className={styles.build}>Build 0.4</div>
 		</>
 	);
 };

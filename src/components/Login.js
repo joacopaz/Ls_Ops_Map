@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import useGrant from "../hooks/useGrant";
 import Loader from "./Loader";
 import { Link } from "react-router-dom";
+import Footer from "./Footer";
 
 export default function Login() {
 	useGrant();
@@ -81,7 +82,7 @@ export default function Login() {
 					<div className="w-100 text-center mt-3">
 						Forgot your password?{" "}
 						<div>
-							<Link to="/recover">Change it</Link>
+							<Link to="/recover">Recover</Link>
 						</div>
 					</div>
 				</Card.Body>
@@ -91,6 +92,7 @@ export default function Login() {
 			<div className="w-100 text-center mt-2">
 				Need an account? <Link to="/signup">Sign Up</Link>
 			</div> */}
+			<Footer />
 		</>
 	);
 }

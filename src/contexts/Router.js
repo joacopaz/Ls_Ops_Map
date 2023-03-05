@@ -3,6 +3,8 @@ import Signup from "../components/Signup";
 import Login from "../components/Login";
 import Dashboard from "../components/Dashboard";
 import Recover from "../components/Recover";
+import PrivacyPolicy from "../components/legal/PrivacyPolicy";
+import TermsOfUse from "../components/legal/TermsOfUse";
 
 export const router = createBrowserRouter([
 	{
@@ -24,5 +26,13 @@ export const router = createBrowserRouter([
 	{
 		path: "/recover",
 		element: <Recover />,
+	},
+	{
+		path: "/privacy",
+		element: <PrivacyPolicy />,
+	},
+	{
+		path: "/terms",
+		element: <TermsOfUse />,
 	},
 ]);

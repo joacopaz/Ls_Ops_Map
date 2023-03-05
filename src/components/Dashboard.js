@@ -5,6 +5,7 @@ import useGrant from "../hooks/useGrant";
 import AdminCommands from "./AdminCommands";
 import useOnLoad from "../hooks/useOnLoad";
 import ReportBug from "./ReportBug";
+import Footer from "./Footer";
 
 const Dashboard = () => {
 	useGrant();
@@ -58,6 +59,7 @@ const Dashboard = () => {
 			) : (
 				"This content is restricted"
 			)}
+			<Footer />
 		</>
 	);
 };

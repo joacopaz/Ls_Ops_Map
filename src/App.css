@@ -6,3 +6,28 @@ body {
 	background-size: 300px, auto;
 	background-image: url("./dtv-logo.png");
 }
+
+.policy-container {
+	margin: 1rem;
+	background-color: hsl(209, 69%, 10%);
+}
+
+.policy-container > p {
+	margin-top: 1rem;
+}
+
+.policy-container > p.list {
+	margin-left: 1rem;
+}
+
+p.list::before {
+	content: "‣ ";
+}
+
+.policy-container a {
+	color: lightblue;
+}
+
+.policy-container a:hover {
+	color: lightcoral;
+}

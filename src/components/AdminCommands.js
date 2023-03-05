@@ -9,7 +9,6 @@ import useScripts from "../hooks/useScripts";
 
 export default function AdminCommands({ data, checkPatch, setLoading }) {
 	const [active, setActive] = useState(false);
-
 	// Script environment
 	const scripts = useScripts();
 	//
@@ -80,7 +79,7 @@ export default function AdminCommands({ data, checkPatch, setLoading }) {
 					<Button disabled onClick={() => console.log("TBD")}>
 						Manage DB - TBD
 					</Button>
-					{/* <Button onClick={() => scripts.uploadDB(DB)}>Run Script</Button> */}
+					<Button onClick={() => scripts.useGoogle()}>Test Google Auth</Button>
 				</nav>
 			</div>
 		</>

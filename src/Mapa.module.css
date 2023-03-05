@@ -244,3 +244,18 @@
 	transform: scale(1.4);
 	filter: grayscale(30%);
 }
+
+.policy {
+	display: flex;
+	position: absolute;
+	bottom: 1rem;
+	right: 1rem;
+	gap: 1rem;
+}
+.policy a {
+	color: white;
+}
+
+.policy a:hover {
+	color: bisque;
+}
