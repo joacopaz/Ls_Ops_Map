@@ -231,7 +231,7 @@
 }
 
 .bugReport {
-	position: absolute;
+	position: fixed;
 	top: 1rem;
 	left: 1rem;
 	max-height: 2rem;
@@ -248,7 +248,7 @@
 
 .policy {
 	display: flex;
-	position: absolute;
+	position: fixed;
 	bottom: 1rem;
 	right: 1rem;
 	gap: 1rem;
