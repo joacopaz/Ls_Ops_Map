@@ -183,9 +183,7 @@ export default function useScripts() {
 						range: {
 							sheetId: 0,
 							startRowIndex: 0,
-							endRowIndex: 1,
 							startColumnIndex: 0,
-							endColumnIndex: columnsJSON.length - 1,
 						},
 					},
 				},
