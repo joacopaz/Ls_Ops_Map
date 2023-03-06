@@ -112,6 +112,7 @@ export default function useScripts() {
 				} catch (error) {
 					console.log(error);
 					setFetching(false);
+					setIsSigned(false);
 				}
 			}
 		});
