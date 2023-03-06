@@ -65,7 +65,7 @@ export default function useScripts() {
 			const filename = "mapa.xlsx";
 			const ws = utils.json_to_sheet(data);
 			const wb = utils.book_new();
-			utils.book_append_sheet(wb, ws, "People");
+			utils.book_append_sheet(wb, ws, "DB");
 			writeFile(wb, filename);
 		} catch (error) {
 			console.log(error);
