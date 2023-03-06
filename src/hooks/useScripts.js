@@ -201,6 +201,7 @@ export default function useScripts() {
 					fields: "userEnteredFormat(horizontalAlignment, verticalAlignment) ",
 				},
 			});
+			// Resize columns to fit
 			requests.push({
 				autoResizeDimensions: {
 					dimensions: {
@@ -209,13 +210,18 @@ export default function useScripts() {
 					},
 				},
 			});
+			// Change sheet name to DB and reeze the first two columns (vc and channel)
 			requests.push({
 				updateSheetProperties: {
 					properties: {
 						sheetId: 0,
 						title: "DB",
+						gridProperties: {
+							frozenRowCount: 1,
+							frozenColumnCount: 2,
+						},
 					},
-					fields: "title",
+					fields: "title, gridProperties(frozenRowCount, frozenColumnCount)",
 				},
 			});
 			try {
