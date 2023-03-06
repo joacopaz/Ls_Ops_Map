@@ -113,6 +113,7 @@ export default function useScripts() {
 					console.log(error);
 					setFetching(false);
 					setIsSigned(false);
+					GoogleAuth.signOut();
 				}
 			}
 		});
