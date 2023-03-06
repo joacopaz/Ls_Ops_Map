@@ -202,6 +202,7 @@
 .adminCommandsContainer {
 	position: fixed;
 	right: 0;
+	top: 10vh;
 	background-color: rgba(0, 0, 0, 0.539);
 	display: flex;
 	align-items: flex-start;
