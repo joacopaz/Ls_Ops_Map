@@ -111,6 +111,7 @@ export default function useScripts() {
 					r();
 				} catch (error) {
 					console.log(error);
+					setFetching(false);
 				}
 			}
 		});
