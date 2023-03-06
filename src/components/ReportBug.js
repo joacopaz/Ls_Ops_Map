@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import useWrite from "../hooks/useWrite";
 import styles from "../Mapa.module.css";
 import icon from "../warning.png";
 
 export default function ReportBug({ user, setLoading }) {
+	const [showPrompt, setShowPrompt] = useState(false);
 	const { write } = useWrite();
 	const reportBug = async () => {
 		const report = window.confirm(
@@ -25,11 +26,21 @@ export default function ReportBug({ user, setLoading }) {
 	};
 
 	return (
-		<img
-			className={styles.bugReport}
-			src={icon}
-			alt="bug report icon"
-			onClick={reportBug}
-		/>
+		<>
+			<img
+				className={styles.bugReport}
+				src={icon}
+				alt="bug report icon"
+				onClick={reportBug}
+				onMouseEnter={() => setShowPrompt(true)}
+				onMouseLeave={() => setShowPrompt(false)}
+			/>
+			<div
+				className={styles.textPrompt}
+				style={showPrompt ? { opacity: "100%" } : { opacity: "0%" }}
+			>
+				Report bug
+			</div>
+		</>
 	);
 }
