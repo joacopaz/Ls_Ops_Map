@@ -14,7 +14,7 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 		setTimeout(() => setLoaded(true), 500);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [e]);
-	useColumns();
+	// const { columns } = useColumns();
 	return (
 		<>
 			{e.img && e.img.substring(0, 4) === "http" && !loaded ? <Loader /> : null}

@@ -1,37 +1,16 @@
 import useWrite from "./useWrite";
 import { gapi } from "gapi-script";
 import { utils, writeFile } from "xlsx";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
+import columnsJSON from "../temp/columns.json";
 // const getClient = async () => await auth.getClient();
 
 export default function useScripts() {
 	const { write, del } = useWrite();
 	const [isSigned, setIsSigned] = useState(null);
-
-	useEffect(() => {
-		if (isSigned) {
-			const createSpreadsheet = async (title, callback) => {
-				try {
-					if (!isSigned) {
-						await startGoogle();
-					}
-					if (isSigned) {
-						const response = await gapi.client.sheets.spreadsheets.create({
-							properties: {
-								title: title,
-							},
-						});
-						if (callback) await callback(response);
-						console.log("Spreadsheet ID: " + response.result.spreadsheetId);
-					}
-				} catch (error) {
-					console.log(error);
-				}
-			};
-			createSpreadsheet("Testing");
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isSigned]);
+	const { currentUser } = useAuth();
+	const [fetching, setFetching] = useState(false);
 
 	const round = (num) => Math.round((num + Number.EPSILON) * 100) / 100;
 	// button for deleting history, set to delete from 0.01 to 0.09
@@ -102,34 +81,157 @@ export default function useScripts() {
 		console.log("Upload Columns script finished");
 		return;
 	};
-	const startGoogle = async () => {
+	async function startGoogle() {
+		setFetching(true);
+		// Start google auth process
 		await new Promise(async (r) => {
 			let GoogleAuth;
 			console.log("Using google");
-			await gapi.load("client:auth2", loadGoogle);
+			if (!isSigned) {
+				window.alert(
+					"Si no tenés usuario de google podés usar el usuario: lsopsmap@gmail.com y la pass Directv2023"
+				);
+				await gapi.load("client:auth2", loadGoogle);
+			}
+			if (isSigned) r();
 			async function loadGoogle() {
 				try {
-					if (!isSigned) {
-						await gapi.client.init({
-							apiKey: process.env.REACT_APP_G_API_KEY,
-							clientId: process.env.REACT_APP_G_CLIENT_ID,
-							scope: "https://www.googleapis.com/auth/drive.file",
-							discoveryDocs: [
-								"https://sheets.googleapis.com/$discovery/rest?version=v4",
-							],
-						});
-						GoogleAuth = gapi.auth2.getAuthInstance();
-						await GoogleAuth.isSignedIn.listen(setIsSigned(true));
-						console.log("Gapi initialized");
-						await GoogleAuth.signIn();
-						r();
-					}
+					await gapi.client.init({
+						apiKey: process.env.REACT_APP_G_API_KEY,
+						clientId: process.env.REACT_APP_G_CLIENT_ID,
+						scope: "https://www.googleapis.com/auth/drive.file",
+						discoveryDocs: [
+							"https://sheets.googleapis.com/$discovery/rest?version=v4",
+						],
+					});
+					GoogleAuth = gapi.auth2.getAuthInstance();
+					await GoogleAuth.isSignedIn.listen(setIsSigned(true));
+					console.log("Gapi initialized");
+					await GoogleAuth.signIn();
+					r();
 				} catch (error) {
 					console.log(error);
 				}
 			}
 		});
-	};
+		// Give time for cache to get settled
+		await new Promise((r) => setTimeout(r, 500));
+		// Create new google sheet
+		const sheetId = await new Promise(async (r) => {
+			const date = new Date();
+			const day = date.getDate();
+			const month = date.getMonth() + 1;
+			const year = date.getFullYear();
+			const dateString = `${day}/${month}/${year.toString().substring(2)}`;
+			const createSpreadsheet = async (title, callback) => {
+				try {
+					const response = await gapi.client.sheets.spreadsheets.create({
+						properties: {
+							title: title,
+						},
+					});
+					if (callback) await callback(response);
+					return response.result.spreadsheetId;
+				} catch (error) {
+					console.log(error);
+				}
+			};
+			const sheetId = await createSpreadsheet(
+				`Ls Ops Map Export ${dateString} ${currentUser.username}`
+			);
+			r(sheetId);
+		});
+
+		// Update sheet with the DB data
+		async function updateSheet(spreadsheetId = sheetId) {
+			const channels = JSON.parse(localStorage.getItem("channels"));
+			const columnNames = columnsJSON.data.map((col) => col.title);
+			const values = [columnNames];
+			const channelData = channels.map((e) => {
+				return columnsJSON.data.map((col) => e.data[col.column]);
+			});
+			channelData.forEach((channel) => values.push(channel));
+			const body = {
+				values: values,
+			};
+			try {
+				const response = await gapi.client.sheets.spreadsheets.values.update({
+					spreadsheetId: spreadsheetId,
+					resource: body,
+					range: "Sheet1!A:AD",
+					valueInputOption: "RAW",
+				});
+				const result = response.result;
+				console.log(`${result.updatedCells} cells updated.`);
+			} catch (err) {
+				console.log(err.message);
+				return;
+			}
+		}
+		await updateSheet();
+
+		// Format sheet
+		async function batchUpdate(spreadsheetId = sheetId) {
+			const requests = [];
+			// Make first row filters
+			requests.push({
+				setBasicFilter: {
+					filter: {
+						range: {
+							sheetId: 0,
+							startRowIndex: 0,
+							endRowIndex: 1,
+							startColumnIndex: 0,
+							endColumnIndex: columnsJSON.length - 1,
+						},
+					},
+				},
+			});
+			// Center text
+			requests.push({
+				repeatCell: {
+					range: { sheetId: 0 },
+					cell: {
+						userEnteredFormat: {
+							horizontalAlignment: "CENTER",
+							verticalAlignment: "MIDDLE",
+						},
+					},
+					fields: "userEnteredFormat(horizontalAlignment, verticalAlignment) ",
+				},
+			});
+			requests.push({
+				autoResizeDimensions: {
+					dimensions: {
+						sheetId: 0,
+						dimension: "COLUMNS",
+					},
+				},
+			});
+			requests.push({
+				updateSheetProperties: {
+					properties: {
+						sheetId: 0,
+						title: "DB",
+					},
+					fields: "title",
+				},
+			});
+			try {
+				const batchUpdateRequest = { requests: requests };
+				await gapi.client.sheets.spreadsheets.batchUpdate({
+					spreadsheetId: spreadsheetId,
+					resource: batchUpdateRequest,
+				});
+			} catch (err) {
+				console.log(err.result.error.message);
+				return;
+			}
+		}
+		await batchUpdate();
+		setFetching(false);
+		window.open(`https://docs.google.com/spreadsheets/d/${sheetId}/edit#gid=0`);
+	}
 
 	return {
 		deleteHistory,
@@ -137,5 +239,6 @@ export default function useScripts() {
 		exportData,
 		uploadColumns,
 		startGoogle,
+		fetching,
 	};
 }

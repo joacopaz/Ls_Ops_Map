@@ -38,13 +38,15 @@ const Dashboard = () => {
 		<>
 			{currentUser ? (
 				<>
-					{currentUser.isAdmin && !loading && (
-						<AdminCommands
-							data={data}
-							setLoading={setLoading}
-							checkPatch={checkPatch}
-						/>
-					)}
+					{
+						/*currentUser.isAdmin && */ !loading && (
+							<AdminCommands
+								data={data}
+								setLoading={setLoading}
+								checkPatch={checkPatch}
+							/>
+						)
+					}
 					<ReportBug user={currentUser.username} setLoading={setLoading} />
 					<Mapa
 						data={data}

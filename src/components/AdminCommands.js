@@ -15,7 +15,6 @@ export default function AdminCommands({ data, checkPatch, setLoading }) {
 
 	const exportData = async () => {
 		setLoading(true);
-
 		await checkPatch();
 		const finalObject = [];
 		data.channels.forEach((channel) => {
@@ -47,6 +46,8 @@ export default function AdminCommands({ data, checkPatch, setLoading }) {
 				ESCLAVO: data.esclavo,
 				MASTER: data.master,
 				PROVEEDOR: data.proveedor,
+				TYPE: data.type,
+				SID: data.sid,
 			});
 		});
 		finalObject.sort((a, b) => a.ID - b.ID);
@@ -73,14 +74,17 @@ export default function AdminCommands({ data, checkPatch, setLoading }) {
 			>
 				<nav>
 					<Button onClick={exportData}>Export XLSX</Button>
-					<Button disabled onClick={() => console.log("TBD")}>
+					<Button
+						onClick={() => scripts.startGoogle()}
+						disabled={scripts.fetching}
+					>
+						{!scripts.fetching ? "Export to Google Sheets" : "Exporting..."}
+					</Button>
+					{/* <Button disabled onClick={() => console.log("TBD")}>
 						Manage Users - TBD
-					</Button>
-					<Button disabled onClick={() => console.log("TBD")}>
+					</Button> */}
+					{/* <Button disabled onClick={() => console.log("TBD")}>
 						Manage DB - TBD
-					</Button>
-					{/* <Button onClick={() => scripts.startGoogle("Base Mapa")}>
-						Test Google Auth
 					</Button> */}
 				</nav>
 			</div>
