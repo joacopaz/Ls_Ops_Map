@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "../Mapa.module.css";
 
-export default function Header({ view, setView }) {
+export default function Header({ view, setView, isAdmin }) {
 	return (
 		<nav className={styles.header}>
 			<ul className={styles.navContent}>
@@ -11,12 +11,14 @@ export default function Header({ view, setView }) {
 				>
 					Home
 				</li>
-				<li
-					onClick={() => setView("Scripts")}
-					className={view === "Scripts" ? styles.selected : null}
-				>
-					Run Scripts
-				</li>
+				{isAdmin ? (
+					<li
+						onClick={() => setView("Scripts")}
+						className={view === "Scripts" ? styles.selected : null}
+					>
+						Run Scripts
+					</li>
+				) : null}
 			</ul>
 		</nav>
 	);

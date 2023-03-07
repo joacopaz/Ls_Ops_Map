@@ -120,7 +120,8 @@ export default function ScriptEnvironment({ checkPatch }) {
 				</div>
 				<p>
 					Delete completely the current DB and override it with a new XLSX
-					sourced DB from a file you upload.
+					sourced DB from a file you upload. ***CURRENTLY IN DEVELOPMENT,
+					DISABLED FOR NOW***
 				</p>
 				{currentUser.isAdmin ? (
 					<Alert

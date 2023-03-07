@@ -47,7 +47,9 @@ const Dashboard = () => {
 	return (
 		<>
 			{hidden ? <Loader /> : null}
-			{!hidden ? <Header setView={setView} view={view} /> : null}
+			{!hidden ? (
+				<Header setView={setView} view={view} isAdmin={currentUser.isAdmin} />
+			) : null}
 			{
 				/*currentUser.isAdmin && */ !hidden && (
 					<AdminCommands
