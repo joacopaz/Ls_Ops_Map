@@ -34,7 +34,7 @@ const Searchbar = forwardRef(
 			);
 			if (channel) return setSelectedChannel(channel);
 			const closestMatch = data.channels.find(
-				(e) => ref.current.value.match(/(\d+)/)[1] === e.data.vc
+				(e) => Number(ref.current.value.match(/(\d+)/)[1]) === e.data.vc
 			);
 			if (closestMatch) setSelectedChannel(closestMatch);
 		};

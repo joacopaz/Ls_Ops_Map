@@ -319,7 +319,7 @@
 	padding-left: 0;
 	padding-right: 0;
 	padding-bottom: 0;
-	border-radius: 50px 50px 0px 0px;
+	border-radius: 10px;
 }
 
 .allScriptsContainer {
@@ -376,6 +376,7 @@
 	overflow-x: hidden;
 	overflow-y: scroll;
 	display: flex;
+	border-radius: 0 0 7px 7px;
 }
 
 .console > div {
