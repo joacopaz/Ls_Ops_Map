@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useLayoutEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import Mapa from "./Mapa";
 import useGrant from "../hooks/useGrant";
@@ -14,6 +14,7 @@ const Dashboard = () => {
 	useGrant();
 	// const [error, setError] = useState("");
 	const [view, setView] = useState(null);
+	const [hidden, setHidden] = useState(true);
 	const { currentUser /*, logout*/ } = useAuth();
 	/*
 	We won't be handling Logout since it's a closed app
@@ -38,19 +39,27 @@ const Dashboard = () => {
 		propertyToString,
 		checkPatch,
 	} = useOnLoad();
+	useLayoutEffect(() => {
+		if (loading) setHidden(true);
+		if (!loading) setHidden(false);
+	}, [loading]);
 	if (!currentUser) return "This content is restricted";
-	if (loading) return <Loader />;
 	return (
 		<>
-			<Header setView={setView} view={view} />
+			{hidden ? <Loader /> : null}
+			{!hidden ? <Header setView={setView} view={view} /> : null}
 			{
-				/*currentUser.isAdmin && */ <AdminCommands
-					data={data}
-					setLoading={setLoading}
-					checkPatch={checkPatch}
-				/>
+				/*currentUser.isAdmin && */ !hidden && (
+					<AdminCommands
+						data={data}
+						setLoading={setLoading}
+						checkPatch={checkPatch}
+					/>
+				)
 			}
-			{<ReportBug user={currentUser.username} setLoading={setLoading} />}
+			{!hidden && (
+				<ReportBug user={currentUser.username} setLoading={setLoading} />
+			)}
 			{!view && (
 				<Mapa
 					data={data}
@@ -62,7 +71,7 @@ const Dashboard = () => {
 					checkPatch={checkPatch}
 				/>
 			)}
-			{view === "Scripts" && (
+			{!hidden && view === "Scripts" && (
 				<ScriptEnvironment setView={setView} checkPatch={checkPatch} />
 			)}
 

@@ -11,12 +11,12 @@ export default function Header({ view, setView }) {
 				>
 					Home
 				</li>
-				{/* <li
+				<li
 					onClick={() => setView("Scripts")}
 					className={view === "Scripts" ? styles.selected : null}
 				>
 					Run Scripts
-				</li> */}
+				</li>
 			</ul>
 		</nav>
 	);

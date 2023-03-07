@@ -340,12 +340,7 @@ const Mapa = ({
 	};
 
 	return (
-		<>
-			{/* Header */}
-
-			{loading ? <Loader /> : null}
-
-			{/* Interactive section */}
+		<div style={loading ? { display: "none" } : {}}>
 			{!loading && selectedChannel ? (
 				<>
 					<ConfirmModal
@@ -435,7 +430,7 @@ const Mapa = ({
 					</div>
 				</>
 			) : null}
-		</>
+		</div>
 	);
 };
 
