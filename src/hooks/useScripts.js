@@ -31,8 +31,9 @@ export default function useScripts() {
 		await write("history", "current", { forcedUpdate: Date.now() });
 		log("--- SCRIPT ENDED ---");
 	};
-	const uploadDB = async (jsonObject) => {
-		const finalDB = jsonObject.DB.map((channel) => ({
+	const uploadDB = async (newDB, log) => {
+		log("Preparing channel data for upload...");
+		const finalDB = newDB.map((channel) => ({
 			img: `https://www.directv.com.ar/content/dam/public-sites/channels/${channel.VC}.png`,
 			vc: channel.VC,
 			canal: channel.CANAL,
@@ -62,12 +63,16 @@ export default function useScripts() {
 			type: channel.TYPE,
 			sid: channel.SID,
 		}));
+		log("Channel data prepared!");
+		log("Uploading DB, this may take a while....");
 
-		await finalDB.forEach(async (channel, i) => {
+		for (let i = 0; i < finalDB.length; i++) {
+			const channel = finalDB[i];
+			log(`Uploading VC ${channel.vc} ${channel.canal} under the id ${i}`);
 			await write("channels", `${i}`, channel);
-			console.log(`Written channel ${channel.canal}`);
-		});
-		console.log("UploadDB script finished");
+			await new Promise((innerRes) => setTimeout(innerRes, 10));
+		}
+		log("New DB has been successfully uploaded!");
 		return;
 	};
 

@@ -10,7 +10,6 @@ import useWrite from "../hooks/useWrite";
 
 const xlsxToJSON = (file) => {
 	return new Promise(async (resolve, reject) => {
-		console.log("Running JSON conversion");
 		const reader = new FileReader();
 		reader.onload = async ({ target }) => {
 			const data = target.result;
@@ -23,9 +22,7 @@ const xlsxToJSON = (file) => {
 			});
 		};
 		reader.onerror = (e) => {
-			console.log("Error reading file");
-			console.log(e.target.error);
-			reject();
+			throw reject("Error reading file");
 		};
 		reader.readAsBinaryString(file);
 	});
@@ -37,40 +34,7 @@ export default function ScriptEnvironment({ checkPatch }) {
 	const [hasLog, setHasLog] = useState(false);
 	const logRef = useRef(null);
 	const lastP = useRef(null);
-	const { write } = useWrite();
-	const getFile = () => {
-		return new Promise((r) => {
-			const input = document.createElement("input");
-			input.type = "file";
-			input.onchange = async ({ target }) => {
-				if (!target.files[0].name.match(/.xlsx/)) {
-					return alert("File must be .XLSX (excel)");
-				}
-				const file = target.files[0];
-				console.log("Running parser with file");
-				const channelArray = await xlsxToJSON(file);
-				const columnLength = Object.keys(channelArray[0]).length;
-				const idealLength = columnJSON.data.length;
-				if (columnLength !== idealLength)
-					return alert(
-						`La base debe tener ${idealLength} columnas, pero la solicitada tiene ${columnLength}!`
-					);
-				columnJSON.data.forEach((col) => {
-					if (Object.keys(channelArray[0]).includes(col.oldKey) === false)
-						return alert(
-							`Can not find a ${
-								col.oldKey
-							} column in the Excel file. Please check that all columns match ${columnJSON.data
-								.map((col) => `"${col.oldKey}"`)
-								.join(", ")}`
-						);
-				});
-				console.log("Uploaded DB fulfills parameters for successful upload");
-				r(channelArray);
-			};
-			input.click();
-		});
-	};
+	const { write, del } = useWrite();
 
 	const log = (string) => {
 		if (!hasLog) setHasLog(true);
@@ -82,12 +46,79 @@ export default function ScriptEnvironment({ checkPatch }) {
 		lastP.current.scrollIntoView();
 	};
 
+	const getFile = () => {
+		return new Promise((resolve, reject) => {
+			const input = document.createElement("input");
+			input.type = "file";
+			input.onchange = async ({ target }) => {
+				try {
+					log("Verifying integrity of the file...");
+					if (!target.files[0].name.match(/.xlsx/)) {
+						throw reject("File must be .XLSX (excel)");
+					}
+					const file = target.files[0];
+					log("Parsing Excel file and converting to JSON format...");
+					const channelArray = await xlsxToJSON(file);
+					const columnLength = Object.keys(channelArray[0]).length;
+					const idealLength = columnJSON.data.length;
+					log("Checking the amount of columns is correct...");
+					if (columnLength !== idealLength) {
+						throw reject(
+							`La base debe tener ${idealLength} columnas, pero la solicitada tiene ${columnLength}!`
+						);
+					}
+					log("Amount of columns is correct!");
+					log("Checking the column names match the expected names...");
+					columnJSON.data.forEach((col) => {
+						if (Object.keys(channelArray[0]).includes(col.oldKey) === false) {
+							throw reject(
+								`La base cargada no tiene la columna ${
+									col.oldKey
+								}. Verificar que el EXCEL a cargar tenga las columnas: ${columnJSON.data
+									.map((col) => `${col.oldKey}`)
+									.join(
+										", "
+									)} exactamente escritas de esta forma. No hay problema si están vacías pero tienen que estar.`
+							);
+						}
+					});
+					log("Column names are correct!");
+					log(
+						"Uploaded DB matches the expected column length and names, everything is OK!"
+					);
+					resolve(channelArray);
+				} catch (error) {
+					log("--- ERROR ---");
+				}
+			};
+			clearLog();
+			log("Awaiting user input");
+			input.click();
+		});
+	};
+
+	const eraseCurrentDB = async () => {
+		return new Promise(async (resolve) => {
+			try {
+				log("Proceeding to erase the current DB");
+				const localData = JSON.parse(localStorage.getItem("channels"));
+				for (const channel of localData) {
+					log(`Deleting VC ${channel.data.vc} ${channel.data.canal}`);
+					await del("channels", channel.id);
+				}
+				resolve(log("DB Successfully Deleted"));
+			} catch (error) {
+				log("--- ERROR ---");
+			}
+		});
+	};
+
 	const clearLog = () => {
 		logRef.current.innerHTML = "";
 	};
 
-	const deleteHistory = async () => {
-		clearLog();
+	const deleteHistory = async (behavior) => {
+		if (behavior !== "noClear") clearLog();
 		log("Checking latest DB version");
 		const latestVersion = await checkPatch();
 		if (latestVersion === Number(0)) {
@@ -104,7 +135,7 @@ export default function ScriptEnvironment({ checkPatch }) {
 			<h2>Scripts</h2>
 			<div className={styles.allScriptsContainer}>
 				<div className={styles.script}>
-					<label>Delete history / Force Updates</label>
+					<label>Delete history / Force updates</label>
 					<Button disabled={!currentUser.isAdmin} onClick={deleteHistory}>
 						Run
 					</Button>
@@ -115,14 +146,31 @@ export default function ScriptEnvironment({ checkPatch }) {
 				</p>
 				<div className={styles.script}>
 					<label>Upload DB from Excel (.xlsx)</label>
-					<Button disabled={!currentUser.isAdmin} onClick={getFile}>
+					<Button
+						disabled={!currentUser.isAdmin}
+						onClick={async () => {
+							try {
+								const consents = window.confirm(
+									"Please beware of your internet connection while uploading. Do you want to proceed?"
+								);
+								if (!consents) return;
+								const newDB = await getFile();
+								await deleteHistory("noClear");
+								await eraseCurrentDB();
+								await scripts.uploadDB(newDB, log);
+								log("--- SCRIPT ENDED ---");
+							} catch (err) {
+								log(err);
+								log("--- SCRIPT ENDED ---");
+							}
+						}}
+					>
 						Run
 					</Button>
 				</div>
 				<p>
 					Delete completely the current DB and override it with a new XLSX
-					sourced DB from a file you upload. ***CURRENTLY IN DEVELOPMENT,
-					DISABLED FOR NOW***
+					sourced DB from a file you upload.
 				</p>
 				{currentUser.isAdmin ? (
 					<Alert
