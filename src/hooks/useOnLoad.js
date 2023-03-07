@@ -53,6 +53,7 @@ const useOnLoad = () => {
 			);
 		while (latestStoragedVersion < current) {
 			const data = storage.getAll();
+			console.log(data);
 			const version = round(Number(JSON.parse(data.version)));
 			const channels = JSON.parse(data.channels);
 
@@ -123,13 +124,26 @@ const useOnLoad = () => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(() => {
 		if (!currentUser) return;
-		const hasStorage = Object.keys(storage.getAll()).length !== 0;
+		const hasStorage =
+			Object.keys(storage.getAll()).length !== 0 &&
+			Object.keys(storage.getAll())[0] !== "forcedUpdate" &&
+			Object.keys(storage.getAll()).length !== 1;
 		if (hasStorage && !fetched.current) {
 			setLoading(true);
 			fetched.current = true;
 			const compareVersions = async () => {
 				let latestStoragedVersion = round(Number(storage.get("version"))); // localStorage version
 				const response = await read("history", "current"); // remoteDB version
+				const lastRemoteForcedUpdate = response.forcedUpdate;
+				const lastLocalForcedUpdate = Number(storage.get("forcedUpdate"));
+				if (
+					!lastLocalForcedUpdate ||
+					lastRemoteForcedUpdate > lastLocalForcedUpdate
+				) {
+					storage.clear();
+					storage.set("forcedUpdate", JSON.stringify(Date.now()));
+					window.location.reload();
+				}
 				let current;
 				if (response) current = response.current;
 				if (!response) {
@@ -166,11 +180,12 @@ const useOnLoad = () => {
 				fetched.current = true;
 				console.log("Fetching remote data");
 				const channels = await readAll("channels");
-				const { current } = await read("history", "current"); // remoteDB version
+				const { current, forcedUpdate } = await read("history", "current"); // remoteDB version
 				channels.sort((a, b) => Number(a.data.vc) > Number(b.data.vc));
 				setData({ version: current, channels });
 				storage.set("channels", JSON.stringify(channels));
 				storage.set("version", JSON.stringify(current));
+				storage.set("forcedUpdate", forcedUpdate);
 				console.log(`Updated local storage to version ${current} of DB`);
 				setLoading(false);
 			};

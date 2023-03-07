@@ -6,6 +6,7 @@ import { Alert } from "react-bootstrap";
 import useScripts from "../hooks/useScripts";
 import { read, utils } from "xlsx";
 import columnJSON from "../temp/columns.json";
+import useWrite from "../hooks/useWrite";
 
 const xlsxToJSON = (file) => {
 	return new Promise(async (resolve, reject) => {
@@ -36,7 +37,7 @@ export default function ScriptEnvironment({ checkPatch }) {
 	const [hasLog, setHasLog] = useState(false);
 	const logRef = useRef(null);
 	const lastP = useRef(null);
-
+	const { write } = useWrite();
 	const getFile = () => {
 		return new Promise((r) => {
 			const input = document.createElement("input");
@@ -71,14 +72,13 @@ export default function ScriptEnvironment({ checkPatch }) {
 		});
 	};
 
-	const log = async (string) => {
+	const log = (string) => {
 		if (!hasLog) setHasLog(true);
 		const { current } = logRef;
 		const newP = document.createElement("p");
 		newP.innerText = string;
 		current.appendChild(newP);
 		lastP.current = newP;
-		await new Promise((r) => setTimeout(r, 500));
 		lastP.current.scrollIntoView();
 	};
 
@@ -88,10 +88,12 @@ export default function ScriptEnvironment({ checkPatch }) {
 
 	const deleteHistory = async () => {
 		clearLog();
-		await log("Checking latest DB version");
+		log("Checking latest DB version");
 		const latestVersion = await checkPatch();
 		if (latestVersion === Number(0)) {
-			await log("Latest version is already 0, there is no history to delete.");
+			log("Latest version is already 0, there is no history to delete.");
+			log("Forcing updates on all the of the user Databases");
+			write("history", "current", { forcedUpdate: Date.now() });
 			return log("--- SCRIPT ENDED ---");
 		}
 		log(`Latest version is v${latestVersion}`);
@@ -102,15 +104,14 @@ export default function ScriptEnvironment({ checkPatch }) {
 			<h2>Scripts</h2>
 			<div className={styles.allScriptsContainer}>
 				<div className={styles.script}>
-					<label>Delete history</label>
+					<label>Delete history / Force Updates</label>
 					<Button disabled={!currentUser.isAdmin} onClick={deleteHistory}>
 						Run
 					</Button>
 				</div>
 				<p>
 					Delete all history of user created versions and rebase the database to
-					version 0 (forcing a re-download of the current DB to all users on
-					login)
+					version 0 in the current form and make all users re-download it.
 				</p>
 				<div className={styles.script}>
 					<label>Upload DB from Excel (.xlsx)</label>

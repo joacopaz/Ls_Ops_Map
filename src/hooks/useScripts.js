@@ -27,6 +27,8 @@ export default function useScripts() {
 		});
 		log(`Rebasing locally`);
 		localStorage.setItem("version", "0");
+		log("Forcing updates on all the of the user Databases");
+		await write("history", "current", { forcedUpdate: Date.now() });
 		log("--- SCRIPT ENDED ---");
 	};
 	const uploadDB = async (jsonObject) => {
