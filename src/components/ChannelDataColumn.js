@@ -12,7 +12,7 @@ export default function ChannelDataColumn({
 	defaultView,
 }) {
 	useEffect(() => {
-		// console.log(column);
+		// console.log(colString);
 	});
 	return (
 		<>

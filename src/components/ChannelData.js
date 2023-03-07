@@ -16,8 +16,10 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [e]);
 	// const { columns } = useColumns();
+
 	return (
 		<>
+			{/* FIXED HEADER START */}
 			{e.img && e.img.substring(0, 4) === "http" && !loaded ? <Loader /> : null}
 
 			{e.img && e.img.substring(0, 4) === "http" ? (
@@ -49,7 +51,8 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 						) : null}
 					</li>
 				) : null}
-
+				{/* FIXED HEADER END */}
+				{/* SHORT DOUBLE COLS START*/}
 				<ChannelDataColumn
 					title={"VC"}
 					column={e.vc}
@@ -113,282 +116,150 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					isLong={false}
 					defaultView={true}
 				/>
-
-				{e.carga !== "-" || edit ? (
-					<li>
-						<strong>Carga:</strong>
-						{e.carga}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="carga"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
-				{e.analista !== "-" || edit ? (
-					<li>
-						<strong>Analista:</strong>
-						{e.analista}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="analista"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
-
-				{e.categoria !== "-" || edit ? (
-					<li>
-						<strong>Categoria:</strong>
-						{e.categoria}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="categoria"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
-				{e.contacto !== "-" || edit ? (
-					<li>
-						<strong>Contacto:</strong>
-						{e.contacto}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="contacto"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
-
-				{e.esclavo !== "-" || edit ? (
-					<li>
-						<strong>Esclavo:</strong>
-						{e.esclavo}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="esclavo"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
-				{e.frecuencia !== "-" || edit ? (
-					<li>
-						<strong>Frecuencia:</strong>
-						{e.frecuencia}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="frecuencia"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
-				{e.espejos !== "-" || edit ? (
-					<li>
-						<strong>Espejos:</strong>
-						{e.espejos}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="espejos"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
-				{e.grid !== "-" || edit ? (
-					<li>
-						<strong>Grid:</strong>
-						{e.grid}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="grid"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
-				{e.horario !== "-" || edit ? (
-					<li>
-						<strong>Horario:</strong>
-						{e.horario}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="horario"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
-				{e.master !== "-" || edit ? (
-					<li>
-						<strong>Master:</strong>
-						{e.master}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="master"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
-				{e.usuario !== "-" || edit ? (
-					<li>
-						<strong>Usuario:</strong>
-						{e.usuario}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="usuario"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
-				{e.pass !== "-" || edit ? (
-					<li>
-						<strong>Password:</strong>
-						{e.pass}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="pass"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
-				{e.tel !== "-" || edit ? (
-					<li>
-						<strong>Teléfono:</strong>
-						{e.tel}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="tel"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
-
-				{e.url !== "-" || edit ? (
-					<li>
-						<strong>Página Web:</strong>
-						{e.url}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="url"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
-				{e.correo !== "-" || edit ? (
-					<li>
-						<strong>Correo:</strong>
-						{e.correo}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="correo"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
-				{e.proveedor !== "-" || edit ? (
-					<li>
-						<strong>Proveedor:</strong>
-						{e.proveedor}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="proveedor"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
+				<ChannelDataColumn
+					title={"Carga"}
+					column={e.carga}
+					colString="carga"
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					defaultView={true}
+				/>
+				<ChannelDataColumn
+					title={"Analista"}
+					column={e.analista}
+					colString="analista"
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					defaultView={true}
+				/>
+				<ChannelDataColumn
+					title={"Categoría"}
+					column={e.categoria}
+					colString="categoria"
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					defaultView={true}
+				/>
+				<ChannelDataColumn
+					title={"Contacto"}
+					column={e.contacto}
+					colString="contacto"
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					defaultView={true}
+				/>
+				<ChannelDataColumn
+					title={"Esclavo"}
+					column={e.esclavo}
+					colString="esclavo"
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					defaultView={true}
+				/>
+				<ChannelDataColumn
+					title={"Frecuencia"}
+					column={e.frecuencia}
+					colString="frecuencia"
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					defaultView={true}
+				/>
+				<ChannelDataColumn
+					title={"Espejos"}
+					column={e.espejos}
+					colString="espejos"
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					defaultView={true}
+				/>
+				<ChannelDataColumn
+					title={"Grilla"}
+					column={e.grid}
+					colString="grid"
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					defaultView={true}
+				/>
+				<ChannelDataColumn
+					title={"Horario"}
+					column={e.horario}
+					colString="horario"
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					defaultView={true}
+				/>
+				<ChannelDataColumn
+					title={"Master"}
+					column={e.master}
+					colString="master"
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					defaultView={true}
+				/>
+				<ChannelDataColumn
+					title={"Usario"}
+					column={e.usuario}
+					colString="usuario"
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					defaultView={true}
+				/>
+				<ChannelDataColumn
+					title={"Password"}
+					column={e.pass}
+					colString="pass"
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					defaultView={true}
+				/>
+				<ChannelDataColumn
+					title={"Teléfono"}
+					column={e.tel}
+					colString="tel"
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					defaultView={true}
+				/>
+				<ChannelDataColumn
+					title={"Página Web"}
+					column={e.url}
+					colString="url"
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					defaultView={true}
+				/>
+				<ChannelDataColumn
+					title={"Correo"}
+					column={e.correo}
+					colString="correo"
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					defaultView={true}
+				/>
+				<ChannelDataColumn
+					title={"Proveedor"}
+					column={e.proveedor}
+					colString="proveedor"
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					defaultView={true}
+				/>
 				<ChannelDataColumn
 					title={"Type"}
 					column={e.type}
@@ -399,62 +270,41 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					defaultView={true}
 				/>
 			</ul>
+			{/* SHORT DOUBLE COLS END */}
+			{/* LONG SINGLE COLS START */}
 			<ul
 				className={`${styles.ul} ${edit ? styles.edit : ""}`}
 				style={{ paddingTop: "0", paddingBottom: "1rem" }}
 			>
-				{e.spaDesc !== "-" || edit ? (
-					<li>
-						<strong>Descripción:</strong>
-						{e.spaDesc}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="spaDesc"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
-				{e.engDesc !== "-" || edit ? (
-					<li>
-						<strong>Descripción Inglés:</strong>
-						{e.engDesc}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="engDesc"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
-				{e.obs !== "-" || edit ? (
-					<li>
-						<strong>Observaciones:</strong>
-						{e.obs}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="obs"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
+				<ChannelDataColumn
+					title={"Descripción"}
+					column={e.spaDesc}
+					colString="spaDesc"
+					edit={edit}
+					editData={editData}
+					isLong={true}
+					defaultView={true}
+				/>
+				<ChannelDataColumn
+					title={"Descripción Inglés"}
+					column={e.engDesc}
+					colString="engDesc"
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					defaultView={true}
+				/>
+				<ChannelDataColumn
+					title={"Observaciones"}
+					column={e.obs}
+					colString="obs"
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					defaultView={true}
+				/>
 			</ul>
+			{/* LONG SINGLE COLS END */}
 			{sharedVcs.length > 1 && !edit ? (
 				<MultiChannelAlert sharedVcs={sharedVcs} />
 			) : null}
