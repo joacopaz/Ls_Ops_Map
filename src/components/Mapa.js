@@ -169,7 +169,7 @@ const Mapa = ({
 	const cancelEditingMode = (e) => {
 		const dataToRestore = { ...data };
 		editCache.forEach((e) => {
-			if (e.type === "Create") {
+			if (e.actionType === "Create") {
 				const indexToDelete = indexOfChannel(e.id);
 				data.channels.splice(indexToDelete, 1);
 			} else {
@@ -244,11 +244,11 @@ const Mapa = ({
 		setCreatingNew(true);
 		setEditPayload([
 			...editPayload,
-			{ id: `${newID}`, type: "Create", changes: { ...newChannel.data } },
+			{ id: `${newID}`, actionType: "Create", changes: { ...newChannel.data } },
 		]);
 		setEditCache((prev) => [
 			...prev,
-			{ id: `${newID}`, type: "Create", data: { ...newChannel.data } },
+			{ id: `${newID}`, actionType: "Create", data: { ...newChannel.data } },
 		]);
 		setLoading(false);
 	};
@@ -276,13 +276,13 @@ const Mapa = ({
 			const changesForHistory = editPayload.map((e) => {
 				const channelIndex = indexOfChannel(e.id);
 				const channel = data.channels[channelIndex].data.canal;
-				if (e.type === "Create" && e.changes.prevState)
+				if (e.actionType === "Create" && e.changes.prevState)
 					delete e.changes.prevState;
-				if (e.type)
+				if (e.actionType)
 					return {
 						channel,
 						id: e.id,
-						type: e.type,
+						actionType: e.actionType,
 						...e.changes,
 					};
 				return {
@@ -303,7 +303,7 @@ const Mapa = ({
 				user,
 			});
 			editPayload.forEach(async (e) => {
-				if (e.changes.type !== "Delete") {
+				if (e.changes.actionType !== "Delete") {
 					if (e.changes.prevState) delete e.changes.prevState;
 					return await write("channels", e.id, { ...e.changes });
 				}

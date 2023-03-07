@@ -12,9 +12,12 @@ import Loader from "./Loader";
 
 const Dashboard = () => {
 	useGrant();
-	return alert(
-		"El Mapa está siendo testeado en este momento, en breve ya va a estar disponible de nuevo, porfa usá el de Sharepoint por el momento"
-	);
+
+	// Disable app for debugging
+	// return alert(
+	// 	"El Mapa está siendo testeado en este momento, en breve ya va a estar disponible de nuevo, porfa usá el de Sharepoint por el momento"
+	// );
+
 	// const [error, setError] = useState("");
 	const [view, setView] = useState(null);
 	const [hidden, setHidden] = useState(true);

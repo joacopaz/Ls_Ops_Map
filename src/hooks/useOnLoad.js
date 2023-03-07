@@ -61,7 +61,7 @@ const useOnLoad = () => {
 			changes.forEach((change) => {
 				const { id } = change;
 				let indexToChange = channels.findIndex((e) => e.id === id);
-				if (indexToChange === -1 && change.type === "Create") {
+				if (indexToChange === -1 && change.actionType === "Create") {
 					// prevent new channels from being created with prevState
 					if (change.prevState) delete change.prevState;
 					channels.push({ id, data: change });
@@ -69,7 +69,7 @@ const useOnLoad = () => {
 				}
 				const newProps = {};
 				let deletedChannel;
-				if (change.type === "Delete") {
+				if (change.actionType === "Delete") {
 					deletedChannel = channels.splice(indexToChange, 1);
 				} else {
 					for (const key in change) {
@@ -78,7 +78,7 @@ const useOnLoad = () => {
 							if (
 								key === "channel" ||
 								key === "id" ||
-								key === "type" ||
+								key === "actionType" ||
 								key === "prevState"
 							)
 								continue;
@@ -90,17 +90,17 @@ const useOnLoad = () => {
 						...newProps,
 					};
 				}
-				if (change.type === "Create")
+				if (change.actionType === "Create")
 					console.log(
 						`Creating VC ${channels[indexToChange]?.data?.vc} ${
 							channels[indexToChange]?.data?.canal
 						} with ${JSON.stringify(newProps)}`
 					);
-				if (change.type === "Delete")
+				if (change.actionType === "Delete")
 					console.log(
 						`Deleting VC ${deletedChannel[0]?.data.vc} ${deletedChannel[0]?.data.canal}`
 					);
-				if (!change.type)
+				if (!change.actionType)
 					console.log(
 						`Updating VC ${channels[indexToChange]?.data?.vc} ${
 							channels[indexToChange]?.data?.canal

@@ -45,7 +45,7 @@ const DeleteForm = forwardRef(
 								{
 									id: channelToDelete.id,
 									changes: {
-										type: "Delete",
+										actionType: "Delete",
 										prevState: { ...channelToDelete.data },
 									},
 								},
