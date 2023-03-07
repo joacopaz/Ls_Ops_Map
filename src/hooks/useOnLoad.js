@@ -35,7 +35,7 @@ const useOnLoad = () => {
 		alert("Hay una nueva versión de la base, recargando página");
 		window.location.reload();
 	};
-	const checkPatch = async (shouldReturn) => {
+	const checkPatch = async () => {
 		let latestStoragedVersion = round(Number(storage.get("version"))); // localStorage version
 		const response = await read("history", "current"); // remoteDB version
 		let current;
