@@ -392,6 +392,7 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 				<ChannelDataColumn
 					title={"Type"}
 					column={e.type}
+					colString="type"
 					edit={edit}
 					editData={editData}
 					isLong={false}
