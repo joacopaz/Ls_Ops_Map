@@ -20,7 +20,7 @@ export default function AdminCommands({ data, checkPatch, setLoading }) {
 		data.channels.forEach((channel) => {
 			const { data } = channel;
 			finalObject.push({
-				ID: channel.id,
+				// ID: channel.id,
 				VC: data.vc,
 				CANAL: data.canal,
 				TERRITORIO: data.territorio,

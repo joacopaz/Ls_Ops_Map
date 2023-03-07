@@ -2,8 +2,8 @@ body {
 	background-color: hsl(209, 69%, 10%);
 	color: white;
 	background-repeat: no-repeat;
-	background-position: center 3%;
-	background-size: 300px, auto;
+	background-position: center 6vh;
+	background-size: 200px, auto;
 	background-image: url("./dtv-logo.png");
 }
 

@@ -4,7 +4,7 @@ import { Button } from "react-bootstrap";
 import MultiChannelAlert from "./MultiChannelAlert";
 import Loader from "./Loader";
 import ChannelDataColumn from "./ChannelDataColumn";
-import useColumns from "../hooks/useColumns";
+// import useColumns from "../hooks/useColumns";
 
 const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 	const [loaded, setLoaded] = useState(false);
@@ -12,6 +12,7 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 	useLayoutEffect(() => {
 		setLoaded(false);
 		setTimeout(() => setLoaded(true), 500);
+		// console.log(e);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [e]);
 	// const { columns } = useColumns();
@@ -52,6 +53,7 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 				<ChannelDataColumn
 					title={"VC"}
 					column={e.vc}
+					colString={"vc"}
 					edit={edit}
 					editData={editData}
 					isLong={false}
@@ -60,6 +62,7 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 				<ChannelDataColumn
 					title={"SID"}
 					column={e.sid}
+					colString={"sid"}
 					edit={edit}
 					editData={editData}
 					isLong={false}
@@ -68,6 +71,7 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 				<ChannelDataColumn
 					title={"Nombre"}
 					column={e.canal}
+					colString={"canal"}
 					edit={edit}
 					editData={editData}
 					isLong={false}
@@ -76,6 +80,7 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 				<ChannelDataColumn
 					title={"Horario GMT"}
 					column={e.GMT}
+					colString={"GMT"}
 					edit={edit}
 					editData={editData}
 					isLong={false}
@@ -84,6 +89,7 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 				<ChannelDataColumn
 					title={"Horario Verano"}
 					column={e.GMTverano}
+					colString={"GMTverano"}
 					edit={edit}
 					editData={editData}
 					isLong={false}
@@ -92,6 +98,7 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 				<ChannelDataColumn
 					title={"Action Pack"}
 					column={e.actionPack}
+					colString={"actionPack"}
 					edit={edit}
 					editData={editData}
 					isLong={false}
@@ -100,6 +107,7 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 				<ChannelDataColumn
 					title={"Territorio"}
 					column={e.territorio}
+					colString={"territorio"}
 					edit={edit}
 					editData={editData}
 					isLong={false}

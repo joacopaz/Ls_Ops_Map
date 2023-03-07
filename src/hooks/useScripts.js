@@ -13,12 +13,21 @@ export default function useScripts() {
 	const [fetching, setFetching] = useState(false);
 
 	const round = (num) => Math.round((num + Number.EPSILON) * 100) / 100;
-	// button for deleting history, set to delete from 0.01 to 0.09
-	const deleteHistory = async (start, finish) => {
-		for (let index = start; index <= finish; round(index + 0.01)) {
+	const deleteHistory = async (start, finish, log) => {
+		for (let index = start; index < finish; index = round(index + 0.01)) {
+			log(`Deleting v${index}`);
 			await del("history", `v${index}`);
-			console.log(`Deleted v${index}`);
 		}
+
+		log(`Rebasing online DB to version 0`);
+		await write("history", "current", {
+			created: `${new Date()}`,
+			current: 0,
+			user: "ADMIN",
+		});
+		log(`Rebasing locally`);
+		localStorage.setItem("version", "0");
+		log("--- SCRIPT ENDED ---");
 	};
 	const uploadDB = async (jsonObject) => {
 		const finalDB = jsonObject.DB.map((channel) => ({
@@ -62,7 +71,12 @@ export default function useScripts() {
 
 	const exportData = (data) => {
 		try {
-			const filename = "mapa.xlsx";
+			const date = new Date();
+			const day = date.getDate();
+			const month = date.getMonth() + 1;
+			const year = date.getFullYear();
+			const dateString = `${day}-${month}-${year.toString().substring(2)}`;
+			const filename = `Mapa_Export-${dateString}.xlsx`;
 			const ws = utils.json_to_sheet(data);
 			const wb = utils.book_new();
 			utils.book_append_sheet(wb, ws, "DB");

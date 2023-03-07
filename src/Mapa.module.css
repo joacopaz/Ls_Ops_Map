@@ -177,9 +177,9 @@
 
 .admin {
 	position: fixed;
-	top: 1rem;
+	top: 0.5rem;
 	right: 1rem;
-	max-height: 2rem;
+	max-height: 1.5rem;
 	caret-color: none;
 }
 
@@ -233,8 +233,8 @@
 
 .bugReport {
 	position: fixed;
-	top: 1rem;
-	left: 1rem;
+	top: 0.2rem;
+	left: 0.5rem;
 	max-height: 2rem;
 	border-radius: 50%;
 	padding: 5px;
@@ -250,8 +250,8 @@
 
 .textPrompt {
 	position: absolute;
-	top: 1.2rem;
-	left: 3.6rem;
+	top: 0.35rem;
+	left: 3.5rem;
 	border: yellow 1px solid;
 	color: yellow;
 	padding: 0.2rem;
@@ -275,4 +275,150 @@
 
 .policy a:hover {
 	color: bisque;
+}
+
+.header {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 2.5rem;
+	background-color: rgba(0, 0, 0, 0.619);
+	caret-color: transparent;
+	user-select: none;
+}
+
+.navContent {
+	display: flex;
+	list-style: none;
+	gap: 2rem;
+	height: 100%;
+	align-items: center;
+	padding-left: 10rem;
+	caret-color: transparent;
+}
+
+.navContent li {
+	cursor: pointer;
+	transition: 200ms;
+	color: rgb(190, 188, 188);
+}
+
+.navContent li:hover {
+	color: white;
+}
+
+.navContent li.selected {
+	color: white;
+}
+
+.scriptEnvContainer {
+	min-height: 70vh;
+	min-width: 60vw;
+	position: relative;
+	padding-left: 0;
+	padding-right: 0;
+	padding-bottom: 0;
+}
+
+.allScriptsContainer {
+	position: relative;
+	width: 100%;
+	min-height: 50vh;
+	max-height: 90vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	overflow: scroll;
+}
+
+.scriptEnvContainer h2 {
+	margin-bottom: 1rem;
+}
+
+.script,
+.scriptEnvContainer p {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	padding-right: 40%;
+	gap: 30px;
+	width: 100%;
+	border-top: 1px solid rgba(0, 0, 0, 0.298);
+	padding-top: 5px;
+	margin-bottom: 0;
+}
+
+.scriptEnvContainer p + .script {
+	border-top: none;
+}
+
+.script label {
+	font-weight: bold;
+}
+
+.scriptEnvContainer p {
+	border: none;
+	text-align: center;
+	padding: 0;
+	justify-content: center;
+	padding-bottom: 5px;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.298);
+}
+.console {
+	position: relative;
+	bottom: 0;
+	height: 14vh;
+	background-color: black;
+	width: 100%;
+	border-radius: 0 0 50px 50px;
+	color: white;
+	padding: 0.8rem;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	display: flex;
+}
+
+.console > div {
+	display: inline-flexbox;
+	width: 100%;
+	flex-direction: column;
+	position: relative;
+}
+
+.console span {
+	position: sticky;
+	display: inline;
+	top: 5px;
+	left: 5px;
+	font-size: 0.8rem;
+	margin: 0;
+}
+
+.console p {
+	text-align: center;
+	color: yellow;
+	font-size: 0.8rem;
+}
+
+.noScript {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.noScript,
+.console p:last-child {
+	animation-name: blink;
+	animation-duration: 1s;
+	animation-iteration-count: infinite;
+}
+
+@keyframes blink {
+	from {
+		opacity: 100%;
+	}
+	to {
+		opacity: 40%;
+	}
 }

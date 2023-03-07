@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "react-bootstrap";
 import styles from "../Mapa.module.css";
 
@@ -8,8 +8,12 @@ export default function ChannelDataColumn({
 	edit,
 	editData,
 	isLong,
+	colString,
 	defaultView,
 }) {
+	useEffect(() => {
+		// console.log(column);
+	});
 	return (
 		<>
 			{(defaultView &&
@@ -26,7 +30,7 @@ export default function ChannelDataColumn({
 							size="sm"
 							className={styles.editBtn}
 							onClick={(e) => editData(e.target.dataset.edit)}
-							data-edit={column}
+							data-edit={colString}
 						>
 							Edit
 						</Button>

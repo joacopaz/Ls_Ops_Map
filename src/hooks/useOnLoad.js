@@ -117,6 +117,7 @@ const useOnLoad = () => {
 			setData({ version: latestStoragedVersion, channels });
 		}
 		console.log("No further patching needed.");
+		return latestStoragedVersion;
 	};
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
