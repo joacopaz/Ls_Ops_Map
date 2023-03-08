@@ -124,11 +124,14 @@ const useOnLoad = () => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(() => {
 		if (!currentUser) return;
+		console.log(Object.keys(storage.getAll()).length !== 0);
+		console.log(Object.keys(storage.getAll())[0] !== "forcedUpdate");
+		console.log(Object.keys(storage.getAll()).length !== 1);
+
 		const hasStorage =
 			Object.keys(storage.getAll()).length !== 0 &&
 			Object.keys(storage.getAll())[0] !== "forcedUpdate" &&
 			Object.keys(storage.getAll()).length !== 1;
-		console.log(hasStorage);
 		if (hasStorage && !fetched.current) {
 			setLoading(true);
 			fetched.current = true;
