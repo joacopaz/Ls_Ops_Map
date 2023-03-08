@@ -128,6 +128,7 @@ const useOnLoad = () => {
 			Object.keys(storage.getAll()).length !== 0 &&
 			Object.keys(storage.getAll())[0] !== "forcedUpdate" &&
 			Object.keys(storage.getAll()).length !== 1;
+		console.log(hasStorage);
 		if (hasStorage && !fetched.current) {
 			setLoading(true);
 			fetched.current = true;

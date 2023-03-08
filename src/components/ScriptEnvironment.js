@@ -170,7 +170,8 @@ export default function ScriptEnvironment({ checkPatch }) {
 				</div>
 				<p>
 					Delete completely the current DB and override it with a new XLSX
-					sourced DB from a file you upload.
+					sourced DB from a file you upload. Will force all user to download the
+					new DB.
 				</p>
 				{currentUser.isAdmin ? (
 					<Alert
