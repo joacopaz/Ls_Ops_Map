@@ -12,12 +12,12 @@ export default function ManageUsers() {
 	useEffect(() => {
 		if (users) return;
 		alert(
-			"La seccion de usuarios ya está terminada estéticamente, falta configurar los botones a la brevedad"
+			"La sección de usuarios ya está terminada estéticamente, falta configurar los botones a la brevedad"
 		);
 		const getUsers = async () => {
-			// const data = await readAll("users");
 			// localStorage.setItem("users", JSON.stringify(data));
-			const users = JSON.parse(localStorage.getItem("users"));
+			// const users = JSON.parse(localStorage.getItem("users"));
+			const users = await readAll("users");
 			const orderedUsers = users.sort((a, b) => {
 				if (a.data.name < b.data.name) {
 					return -1;
