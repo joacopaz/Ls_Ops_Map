@@ -84,7 +84,7 @@ const Dashboard = () => {
 				<ScriptEnvironment checkPatch={checkPatch} />
 			)}
 			{!hidden && view === "ManageUsers" && (
-				<ManageUsers checkPatch={checkPatch} />
+				<ManageUsers checkPatch={checkPatch} setLoading={setLoading} />
 			)}
 
 			<Footer />

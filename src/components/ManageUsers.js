@@ -1,20 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { ListGroup, Card, Button } from "react-bootstrap";
+import React, { useRef, useEffect, useState } from "react";
+import { ListGroup, Button } from "react-bootstrap";
 import useRead from "../hooks/useRead";
 import styles from "../Mapa.module.css";
 import User from "./User";
+import Loader from "./Loader";
 
 export default function ManageUsers() {
 	const { readAll } = useRead();
 	const [users, setUsers] = useState(null);
 	const [selected, setSelected] = useState(null);
-
+	const [loading, setLoading] = useState(false);
+	const fetched = useRef(null);
 	useEffect(() => {
-		if (users) return;
+		if (fetched.current) return;
 		alert(
-			"La sección de usuarios ya está terminada estéticamente, falta configurar los botones a la brevedad"
+			"La interfaz de usuarios ya está terminada, falta configurar los botones en breve"
 		);
 		const getUsers = async () => {
+			setLoading(true);
+			fetched.current = true;
 			// localStorage.setItem("users", JSON.stringify(data));
 			// const users = JSON.parse(localStorage.getItem("users"));
 			const users = await readAll("users");
@@ -31,8 +35,9 @@ export default function ManageUsers() {
 			setUsers(orderedUsers);
 			return orderedUsers;
 		};
-		getUsers(); //.then((r) => console.log(r));
+		getUsers().then(() => setLoading(false));
 	});
+	if (loading) return <Loader />;
 
 	return (
 		<div
@@ -103,7 +108,7 @@ export default function ManageUsers() {
 									bottom: "1rem",
 								}}
 							>
-								<Button variant="danger">
+								<Button variant="danger" style={{ width: "80%" }}>
 									Delete User {selected?.name.toUpperCase()}
 								</Button>
 							</li>
