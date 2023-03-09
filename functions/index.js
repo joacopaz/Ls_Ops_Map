@@ -58,17 +58,17 @@ const validateFirebaseIdToken = async (req, res, next) => {
 };
 app.use(validateFirebaseIdToken);
 
-// const appCheckVerification = async (req, res, next) => {
-// 	const appCheckToken = req.header("X-Firebase-AppCheck");
-// 	if (!appCheckToken) res.status(401).send("App Check not passed");
-// 	try {
-// 		const appCheckClaims = await admin.appCheck().verifyToken(appCheckToken);
-// 		return next();
-// 	} catch (err) {
-// 		res.status(401).send("App check not passed");
-// 	}
-// };
-// app.use(appCheckVerification)
+const appCheckVerification = async (req, res, next) => {
+	const appCheckToken = req.header("X-Firebase-AppCheck");
+	if (!appCheckToken) res.status(401).send("App Check not passed");
+	try {
+		const appCheckClaims = await admin.appCheck().verifyToken(appCheckToken);
+		return next();
+	} catch (err) {
+		res.status(401).send("App check not passed");
+	}
+};
+app.use(appCheckVerification);
 
 const isAdmin = async (req, res, next) => {
 	const { user } = req;
@@ -139,4 +139,4 @@ exports.api = functions.https
 			);
 		}
 	})
-	.https.onRequest(app);
+	.onRequest(app);
