@@ -3,15 +3,6 @@ import { auth } from "../firebase-config";
 import { sendPasswordResetEmail } from "firebase/auth";
 import Loader from "../components/Loader";
 import useRead from "../hooks/useRead";
-import { load } from "recaptcha-v3";
-
-async function loadRecaptcha() {
-	const recaptcha = await load(process.env.REACT_APP_RECAPTCHA_KEY, {
-		autoHideBadge: true,
-		size: "invisible",
-	});
-	return await recaptcha.execute("login");
-}
 
 const AuthContext = React.createContext();
 
@@ -22,7 +13,7 @@ export function useAuth() {
 export default function AuthProvider({ children }) {
 	const [currentUser, setCurrentUser] = useState();
 	const [loading, setLoading] = useState(true);
-	const { read, readAll } = useRead();
+	const { read } = useRead();
 	useEffect(() => {
 		auth.setPersistence("session");
 		const unsub = auth.onAuthStateChanged((user) => {
@@ -54,7 +45,6 @@ export default function AuthProvider({ children }) {
 		read("users", currentUser.uid)
 			.then((r) => (currentUser.isAdmin = r.isAdmin))
 			.catch((err) => console.log(err));
-		// loadRecaptcha().then((token) => (currentUser.recaptchaToken = token));
 	}
 
 	return (

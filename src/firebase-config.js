@@ -17,7 +17,7 @@ const app = firebase.initializeApp({
 
 initializeFirestore(app, { experimentalForceLongPolling: true });
 
-initializeAppCheck(app, {
+export const appCheck = initializeAppCheck(app, {
 	provider: new ReCaptchaV3Provider(process.env.REACT_APP_RECAPTCHA_KEY),
 	isTokenAutoRefreshEnabled: true,
 });
@@ -25,3 +25,22 @@ initializeAppCheck(app, {
 export const auth = app.auth();
 export const db = getFirestore(app);
 export default app;
+
+/* Using app check
+const callApiWithAppCheckExample = async () => {
+  let appCheckTokenResponse;
+  try {
+      appCheckTokenResponse = await getToken(appCheck,  //forceRefresh=//  false);
+	} catch (err) {
+		// Handle any errors if the token was not retrieved.
+		return;
+	}
+  
+	// Include the App Check token with requests to your server.
+	const apiResponse = await fetch('https://yourbackend.example.com/yourApiEndpoint', {
+		headers: {
+			'X-Firebase-AppCheck': appCheckTokenResponse.token,
+		}
+	});
+
+	*/

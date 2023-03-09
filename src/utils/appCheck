@@ -1,0 +1,18 @@
+import { appCheck } from "../firebase-config";
+import { getToken } from "firebase/app-check";
+
+export default async function callBackend(endpoint) {
+	let appCheckTokenResponse;
+	try {
+		appCheckTokenResponse = await getToken(appCheck, false);
+	} catch (err) {
+		console.log(err);
+		return;
+	}
+	const apiResponse = await fetch(endpoint, {
+		headers: {
+			"X-Firebase-AppCheck": appCheckTokenResponse.token,
+		},
+	});
+	return apiResponse;
+}
