@@ -1,14 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import useRead from "../hooks/useRead";
 import styles from "../Mapa.module.css";
 
 export default function ManageUsers() {
 	const { readAll } = useRead();
+	const [users, setUsers] = useState(null);
 
 	useEffect(() => {
 		const getUsers = async () => {
 			const data = await readAll("users");
-			return data;
+			setUsers(data);
 		};
 		getUsers().then((r) => console.log(r));
 	});
