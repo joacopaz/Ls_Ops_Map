@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { auth } from "../firebase-config";
 import { sendPasswordResetEmail } from "firebase/auth";
 import Loader from "../components/Loader";
+import useRead from "../hooks/useRead";
 
 const AuthContext = React.createContext();
 
@@ -12,7 +13,7 @@ export function useAuth() {
 export default function AuthProvider({ children }) {
 	const [currentUser, setCurrentUser] = useState();
 	const [loading, setLoading] = useState(true);
-
+	const { read, readAll } = useRead();
 	useEffect(() => {
 		auth.setPersistence("session");
 		const unsub = auth.onAuthStateChanged((user) => {
@@ -41,8 +42,9 @@ export default function AuthProvider({ children }) {
 		currentUser.username = currentUser.email.match(/(.+)@/)[1];
 		currentUser.accessToken = currentUser._delegate.accessToken;
 		console.log(currentUser.accessToken);
-		const admins = process.env.REACT_APP_ADMINS.split(", ");
-		currentUser.isAdmin = admins.some((user) => user === currentUser.username);
+		read("users", currentUser.uid)
+			.then((r) => (currentUser.isAdmin = r.isAdmin))
+			.catch((err) => console.log(err));
 	}
 
 	return (
