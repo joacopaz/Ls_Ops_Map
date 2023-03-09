@@ -7,6 +7,7 @@ export default function ManageUsers() {
 	const [users, setUsers] = useState(null);
 
 	useEffect(() => {
+		if (users) return;
 		const getUsers = async () => {
 			const data = await readAll("users");
 			setUsers(data);
