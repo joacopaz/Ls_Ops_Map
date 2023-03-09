@@ -130,13 +130,12 @@ app.delete("/users", async (req, res) => {
 	// res.send("done");
 });
 
-exports.api = functions.https
-	.onCall((data, context) => {
-		if (!context.app) {
-			throw new functions.https.HttpsError(
-				"failed-precondition",
-				"The function must be called from an App Check verified app."
-			);
-		}
-	})
-	.onRequest(app);
+exports.api = functions.https.onCall((data, context) => {
+	if (!context.app) {
+		throw new functions.https.HttpsError(
+			"failed-precondition",
+			"The function must be called from an App Check verified app."
+		);
+	}
+	functions.https.onRequest(app);
+});
