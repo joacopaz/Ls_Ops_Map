@@ -177,12 +177,12 @@ const useOnLoad = () => {
 				fetched.current = true;
 				console.log("Fetching remote data");
 				const channels = await readAll("channels");
-				const { current, forcedUpdate } = await read("history", "current"); // remoteDB version
+				const { current } = await read("history", "current"); // remoteDB version
 				channels.sort((a, b) => Number(a.data.vc) > Number(b.data.vc));
 				setData({ version: current, channels });
 				storage.set("channels", JSON.stringify(channels));
 				storage.set("version", JSON.stringify(current));
-				storage.set("forcedUpdate", forcedUpdate);
+				storage.set("forcedUpdate", Date.now());
 				console.log(`Updated local storage to version ${current} of DB`);
 				setLoading(false);
 			};

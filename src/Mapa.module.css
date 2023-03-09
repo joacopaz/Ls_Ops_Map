@@ -421,3 +421,12 @@
 		opacity: 40%;
 	}
 }
+
+.manageUsersContainer h2 {
+	margin: 0;
+}
+
+.manageUsersContainer h5 {
+	margin: 0 0 0 1rem;
+	align-self: flex-start;
+}

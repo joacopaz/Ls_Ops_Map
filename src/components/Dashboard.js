@@ -9,6 +9,7 @@ import Footer from "./Footer";
 import Header from "./Header";
 import ScriptEnvironment from "./ScriptEnvironment";
 import Loader from "./Loader";
+import ManageUsers from "./ManageUsers";
 
 const Dashboard = () => {
 	useGrant();
@@ -80,7 +81,10 @@ const Dashboard = () => {
 				/>
 			)}
 			{!hidden && view === "Scripts" && (
-				<ScriptEnvironment setView={setView} checkPatch={checkPatch} />
+				<ScriptEnvironment checkPatch={checkPatch} />
+			)}
+			{!hidden && view === "ManageUsers" && (
+				<ManageUsers checkPatch={checkPatch} />
 			)}
 
 			<Footer />

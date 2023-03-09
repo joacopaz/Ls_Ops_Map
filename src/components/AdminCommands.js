@@ -80,12 +80,7 @@ export default function AdminCommands({ data, checkPatch, setLoading }) {
 					>
 						{!scripts.fetching ? "Export to Google Sheets" : "Exporting..."}
 					</Button>
-					{/* <Button disabled onClick={() => console.log("TBD")}>
-						Manage Users - TBD
-					</Button> */}
-					{/* <Button disabled onClick={() => console.log("TBD")}>
-						Manage DB - TBD
-					</Button> */}
+
 				</nav>
 			</div>
 		</>

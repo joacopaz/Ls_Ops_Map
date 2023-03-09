@@ -39,6 +39,8 @@ export default function AuthProvider({ children }) {
 
 	if (currentUser) {
 		currentUser.username = currentUser.email.match(/(.+)@/)[1];
+		currentUser.accessToken = currentUser._delegate.accessToken;
+		console.log(currentUser.accessToken);
 		const admins = process.env.REACT_APP_ADMINS.split(", ");
 		currentUser.isAdmin = admins.some((user) => user === currentUser.username);
 	}

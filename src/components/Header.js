@@ -16,7 +16,15 @@ export default function Header({ view, setView, isAdmin }) {
 						onClick={() => setView("Scripts")}
 						className={view === "Scripts" ? styles.selected : null}
 					>
-						Run Scripts
+						Scripts
+					</li>
+				) : null}
+				{isAdmin ? (
+					<li
+						onClick={() => setView("ManageUsers")}
+						className={view === "ManageUsers" ? styles.selected : null}
+					>
+						Users
 					</li>
 				) : null}
 			</ul>
