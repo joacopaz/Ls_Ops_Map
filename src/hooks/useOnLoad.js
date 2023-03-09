@@ -53,7 +53,6 @@ const useOnLoad = () => {
 			);
 		while (latestStoragedVersion < current) {
 			const data = storage.getAll();
-			console.log(data);
 			const version = round(Number(JSON.parse(data.version)));
 			const channels = JSON.parse(data.channels);
 

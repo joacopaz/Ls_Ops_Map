@@ -107,14 +107,15 @@ app.post("/users", async (req, res) => {
 // Delete users at the delete endpoing
 app.delete("/users", async (req, res) => {
 	// const userToDelete = req.body.user;
+	res.status(200).send("Running delete");
 	const collection = db.collection("users");
 	// FIX QUERY BY FIELD PATH
-	const data = await collection
-		.where(db.FieldPath.documentId().isEqual("1JZNRJB3m9TPG3GDfWmEIs3mYS23"))
-		.get();
-	res.json(data);
-	const results = [];
-	data.forEach((res) => results.push(res));
+	// const data = await collection
+	// 	.where(db.FieldPath.documentId().isEqual("1JZNRJB3m9TPG3GDfWmEIs3mYS23"))
+	// 	.get();
+	// res.json(data);
+	// const results = [];
+	// data.forEach((res) => results.push(res));
 	// res.send("done");
 });
 
