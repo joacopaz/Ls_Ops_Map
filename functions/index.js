@@ -104,11 +104,11 @@ app.post("/users", async (req, res) => {
 	}
 });
 
-// Delete users at the delete endpoing
+// Delete users at the delete endpoint
 app.delete("/users", async (req, res) => {
 	// const userToDelete = req.body.user;
 	res.status(200).send("Running delete");
-	const collection = db.collection("users");
+	// const collection = db.collection("users");
 	// FIX QUERY BY FIELD PATH
 	// const data = await collection
 	// 	.where(db.FieldPath.documentId().isEqual("1JZNRJB3m9TPG3GDfWmEIs3mYS23"))
