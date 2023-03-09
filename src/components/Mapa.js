@@ -1,7 +1,6 @@
 import styles from "../Mapa.module.css";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "react-bootstrap";
-import Loader from "./Loader";
 import EditModal from "./EditModal";
 import Searchbar from "./Searchbar";
 import ChannelData from "./ChannelData";

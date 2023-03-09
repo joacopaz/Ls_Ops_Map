@@ -13,7 +13,7 @@ export function useAuth() {
 export default function AuthProvider({ children }) {
 	const [currentUser, setCurrentUser] = useState();
 	const [loading, setLoading] = useState(true);
-	const { read, readAll } = useRead();
+	const { read } = useRead();
 	useEffect(() => {
 		auth.setPersistence("session");
 		const unsub = auth.onAuthStateChanged((user) => {
