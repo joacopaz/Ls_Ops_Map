@@ -21,9 +21,9 @@ export default function ManageUsers() {
 		const getUsers = async () => {
 			setLoading(true);
 			fetched.current = true;
-			// const users = await readAll("users");
+			const users = await readAll("users");
 			// localStorage.setItem("users", JSON.stringify(users));
-			const users = JSON.parse(localStorage.getItem("users"));
+			// const users = JSON.parse(localStorage.getItem("users"));
 			const orderedUsers = users.sort((a, b) => {
 				if (a.data.name < b.data.name) {
 					return -1;
@@ -33,9 +33,7 @@ export default function ManageUsers() {
 				}
 				return 0;
 			});
-
 			setUsers(orderedUsers);
-			console.log(orderedUsers);
 			return orderedUsers;
 		};
 		getUsers().then(() => setLoading(false));
