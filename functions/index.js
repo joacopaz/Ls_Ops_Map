@@ -31,7 +31,6 @@ const validateFirebaseIdToken = async (req, res, next) => {
 		req.headers.authorization &&
 		req.headers.authorization.startsWith("Bearer ")
 	) {
-		functions.logger.log('Found "Authorization" header');
 		// Read the ID Token from the Authorization header.
 		idToken = req.headers.authorization.split("Bearer ")[1];
 	} else if (req.cookies) {
@@ -64,9 +63,13 @@ const isAdmin = async (req, res, next) => {
 	try {
 		const doc = await docRef.get();
 		if (!doc.exists) {
-			res.sendStatus(404);
+			functions.logger.log("User not found in user docs");
+			return res.sendStatus(404);
 		} else {
-			if (doc.data().isAdmin) return next();
+			if (doc.data().isAdmin) {
+				functions.logger.log("User is an admin! Everything ok");
+				return next();
+			}
 			res.sendStatus(401);
 		}
 	} catch (error) {
@@ -79,12 +82,14 @@ app.use(isAdmin);
 // Create users at the post endpoint
 app.post("/users", async (req, res) => {
 	// manage users and admin creation here
-	const userToCreate = req.body.user;
+	const userToCreate = req.body.username;
 	const passwordToCreate = req.body.password;
 	functions.logger.log(`User: ${userToCreate} Password: ${passwordToCreate}`);
 	if (!userToCreate || !passwordToCreate) {
 		functions.logger.error("NO USER OR PASSWORD IN BODY");
-		res.status(400).send({ status: "no user and password in body" });
+		res
+			.status(400)
+			.send({ status: "You must include both username and password" });
 	}
 	try {
 		// Creating the user in firebase auth
@@ -106,17 +111,15 @@ app.post("/users", async (req, res) => {
 
 // Delete users at the delete endpoint
 app.delete("/users", async (req, res) => {
-	// const userToDelete = req.body.user;
-	res.status(200).send("Running delete");
-	// const collection = db.collection("users");
-	// FIX QUERY BY FIELD PATH
-	// const data = await collection
-	// 	.where(db.FieldPath.documentId().isEqual("1JZNRJB3m9TPG3GDfWmEIs3mYS23"))
-	// 	.get();
-	// res.json(data);
-	// const results = [];
-	// data.forEach((res) => results.push(res));
-	// res.send("done");
+	const userToDelete = req.body.uid;
+	try {
+		await admin.auth().deleteUser(userToDelete);
+		await db.collection("users").doc(userToDelete).delete();
+		functions.logger.log("Deletion successful");
+		res.sendStatus(204);
+	} catch (error) {
+		res.sendStatus(500);
+	}
 });
 
 exports.api = functions.https.onRequest(app);

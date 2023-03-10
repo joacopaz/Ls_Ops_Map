@@ -4,24 +4,26 @@ import useRead from "../hooks/useRead";
 import styles from "../Mapa.module.css";
 import User from "./User";
 import Loader from "./Loader";
+import { useAuth } from "../contexts/AuthContext";
+import useWrite from "../hooks/useWrite";
 
 export default function ManageUsers() {
 	const { readAll } = useRead();
 	const [users, setUsers] = useState(null);
 	const [selected, setSelected] = useState(null);
 	const [loading, setLoading] = useState(false);
+	const { write } = useWrite();
 	const fetched = useRef(null);
+	const { currentUser } = useAuth();
 	useEffect(() => {
 		if (fetched.current) return;
-		alert(
-			"La interfaz de usuarios ya está terminada, falta configurar los botones en breve"
-		);
+
 		const getUsers = async () => {
 			setLoading(true);
 			fetched.current = true;
-			// localStorage.setItem("users", JSON.stringify(data));
-			// const users = JSON.parse(localStorage.getItem("users"));
-			const users = await readAll("users");
+			// const users = await readAll("users");
+			// localStorage.setItem("users", JSON.stringify(users));
+			const users = JSON.parse(localStorage.getItem("users"));
 			const orderedUsers = users.sort((a, b) => {
 				if (a.data.name < b.data.name) {
 					return -1;
@@ -33,11 +35,80 @@ export default function ManageUsers() {
 			});
 
 			setUsers(orderedUsers);
+			console.log(orderedUsers);
 			return orderedUsers;
 		};
 		getUsers().then(() => setLoading(false));
 	});
 	if (loading) return <Loader />;
+
+	const deleteUser = async () => {
+		setLoading(true);
+		// const testingEndpoint =
+		// 	"http://127.0.0.1:5001/ls-ops-map/us-central1/api/users";
+		const productionEndpoint =
+			"https://us-central1-ls-ops-map.cloudfunctions.net/api/users ";
+		const response = await fetch(productionEndpoint, {
+			method: "DELETE",
+			headers: {
+				Authorization: `Bearer ${currentUser.accessToken}`,
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ uid: selected.id }),
+		});
+		if (response.status === 204) {
+			console.log("User successfully deleted");
+			setUsers((prev) => prev.filter((user) => user.id !== selected.id));
+			setSelected(null);
+		}
+		setLoading(false);
+	};
+
+	const createUser = async (username, password) => {
+		setLoading(true);
+		const testingEndpoint =
+			"http://127.0.0.1:5001/ls-ops-map/us-central1/api/users";
+		const productionEndpoint =
+			"https://us-central1-ls-ops-map.cloudfunctions.net/api/users";
+		try {
+			const response = await fetch(productionEndpoint, {
+				method: "POST",
+				headers: {
+					Authorization: `Bearer ${currentUser.accessToken}`,
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ username, password }),
+			});
+			if (response.status === 201) {
+				console.log("User successfully created!");
+				const jsonResponse = await response.json();
+				console.log(jsonResponse);
+				const { newUserId } = jsonResponse;
+				setUsers((prev) => [
+					...prev,
+					{ id: newUserId, data: { isAdmin: false, name: username } },
+				]);
+				setSelected({ id: newUserId, name: username, isAdmin: "false" });
+				return setLoading(false);
+			}
+			const error = await response.json();
+			console.log(error);
+			alert(error.message || error.status);
+		} catch (error) {
+			console.log(error);
+		}
+		setLoading(false);
+	};
+	const adminUser = async (adminStatusBoolean) => {
+		setLoading(true);
+		try {
+			await write("users", selected.id, { isAdmin: adminStatusBoolean });
+			setSelected((prev) => ({ ...prev, isAdmin: `${adminStatusBoolean}` }));
+		} catch (error) {
+			console.log(error);
+		}
+		setLoading(false);
+	};
 
 	return (
 		<div
@@ -93,6 +164,10 @@ export default function ManageUsers() {
 										variant={
 											selected?.isAdmin === "true" ? "danger" : "success"
 										}
+										onClick={() => {
+											const isAdminBool = selected.isAdmin === "true";
+											adminUser(!isAdminBool);
+										}}
 									>
 										{selected?.isAdmin === "false"
 											? "Grant ADMIN"
@@ -108,7 +183,11 @@ export default function ManageUsers() {
 									bottom: "1rem",
 								}}
 							>
-								<Button variant="danger" style={{ width: "80%" }}>
+								<Button
+									variant="danger"
+									style={{ width: "80%" }}
+									onClick={deleteUser}
+								>
 									Delete User {selected?.name.toUpperCase()}
 								</Button>
 							</li>
@@ -116,7 +195,22 @@ export default function ManageUsers() {
 					) : null}
 				</ul>
 			</div>
-			<Button className="m-5">Create New User</Button>
+			<Button
+				className="m-5"
+				onClick={async () => {
+					let username = prompt("Username? Must be an @dtvpan.com account");
+					const formattedUsername = username.match(/(.+)@/)
+						? username.match(/(.+)@/)[1]
+						: null;
+					if (formattedUsername) username = formattedUsername;
+					const password = prompt(
+						"Password? This is the only time you will be able to see it, take note."
+					);
+					createUser(username, password);
+				}}
+			>
+				Create New User
+			</Button>
 		</div>
 	);
 }
