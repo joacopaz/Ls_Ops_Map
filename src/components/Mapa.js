@@ -10,6 +10,7 @@ import useWrite from "../hooks/useWrite";
 import storage from "../hooks/useStorage";
 import { useAuth } from "../contexts/AuthContext";
 import DeleteForm from "./DeleteForm";
+import MapButtons from "./MapButtons";
 
 const Mapa = ({
 	data,
@@ -96,7 +97,6 @@ const Mapa = ({
 			setSharedVcs(compartidos);
 		}
 	}, [selectedChannel, data.channels, deleting]);
-
 	useEffect(() => {
 		if (!creatingNew) cancelEditingMode();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -117,7 +117,6 @@ const Mapa = ({
 		);
 		if (closestMatch) setSelectedChannel(closestMatch);
 	};
-
 	const finishEditing = (e) => {
 		if (editPayload.length === 0) {
 			setEdit(false);
@@ -172,18 +171,19 @@ const Mapa = ({
 	};
 	const cancelEditingMode = (e) => {
 		const dataToRestore = { ...data };
-		editCache.forEach((e) => {
-			if (e.actionType === "Create") {
-				const indexToDelete = indexOfChannel(e.id);
-				data.channels.splice(indexToDelete, 1);
-			} else {
-				const indexToRestore = dataToRestore.channels.findIndex(
-					(channel) => channel.id === e.id
-				);
-				dataToRestore.channels[indexToRestore].data = e.data;
-			}
-		});
-		setData(dataToRestore);
+		if (!deleting)
+			editCache.forEach((e) => {
+				if (e.actionType === "Create") {
+					const indexToDelete = indexOfChannel(e.id);
+					data.channels.splice(indexToDelete, 1);
+				} else {
+					const indexToRestore = dataToRestore.channels.findIndex(
+						(channel) => channel.id === e.id
+					);
+					dataToRestore.channels[indexToRestore].data = e.data;
+				}
+			});
+		if (!deleting) setData(dataToRestore);
 		setEdit(false);
 		setEditCache([]);
 		setEditPayload([]);
@@ -193,7 +193,6 @@ const Mapa = ({
 		}
 		if (deleting) setDeleting(false);
 	};
-
 	const editData = (property) => {
 		const stringToShow = propertyToString(property);
 		setProperty({ property, stringToShow });
@@ -257,11 +256,9 @@ const Mapa = ({
 		]);
 		setLoading(false);
 	};
-
 	const handleChannelDeletion = () => {
 		if (deleting === false) setDeleting(true);
 	};
-
 	const handleConfirm = async (isDelete) => {
 		if (editPayload.length === 0) return;
 		setLoading(true);
@@ -335,7 +332,6 @@ const Mapa = ({
 			setChannelToDelete({});
 		}
 	};
-
 	const handleDeleteInput = (e) => {
 		const channel = data.channels.find(
 			(e) => `${e.data.vc} ${e.data.canal}` === deleteInputRef.current.value
@@ -392,35 +388,6 @@ const Mapa = ({
 							/>
 						) : null}
 
-						<div style={{ display: "flex", gap: "20px" }}>
-							{selectedChannel && !edit && !deleting ? (
-								<Button
-									variant="primary"
-									className="mt-4"
-									onClick={() => setEdit(true)}
-								>
-									Edit
-								</Button>
-							) : null}
-							{selectedChannel && edit ? (
-								<Button
-									variant="success"
-									className="mt-4"
-									onClick={finishEditing}
-								>
-									Submit Changes
-								</Button>
-							) : null}
-							{selectedChannel && edit ? (
-								<Button
-									variant="danger"
-									className="mt-4"
-									onClick={cancelEditingMode}
-								>
-									Cancel
-								</Button>
-							) : null}
-						</div>
 						{deleting ? (
 							<DeleteForm
 								ref={deleteInputRef}
@@ -430,8 +397,21 @@ const Mapa = ({
 								channelToDelete={channelToDelete}
 								handleWillDelete={handleConfirm}
 								setEditPayload={setEditPayload}
+								setEdit={setEdit}
+								cancelEditingMode={cancelEditingMode}
 							/>
 						) : null}
+
+						<MapButtons
+							selectedChannel={selectedChannel}
+							edit={edit}
+							deleting={deleting}
+							setEdit={setEdit}
+							finishEditing={finishEditing}
+							cancelEditingMode={cancelEditingMode}
+							handleChannelCreation={handleChannelCreation}
+							handleChannelDeletion={handleChannelDeletion}
+						/>
 					</div>
 				</>
 			) : null}

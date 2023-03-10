@@ -11,12 +11,16 @@ const DeleteForm = forwardRef(
 			channelToDelete,
 			handleWillDelete,
 			setEditPayload,
+			setEdit,
+			cancelEditingMode,
 		},
 		ref
 	) => {
 		useEffect(() => {
 			ref.current.focus();
-		});
+			setEdit(false);
+			setEditPayload([]);
+		}, []);
 		return (
 			<Form className={styles.deleteForm}>
 				<Form.Control
@@ -35,36 +39,46 @@ const DeleteForm = forwardRef(
 						an Admin can undo this, are you absolutely sure?
 					</Alert>
 				) : null}
-				<Button
-					variant="danger"
-					className="d-block m-auto mt-3"
-					onClick={(e) => {
-						if (!deleteConfirm) {
-							setEditPayload((prev) => [
-								...prev,
-								{
-									id: channelToDelete.id,
-									changes: {
-										actionType: "Delete",
-										prevState: { ...channelToDelete.data },
-									},
-								},
-							]);
-							console.log("Payload set for deletion");
-							return setDeleteConfirm(true);
-						}
-						if (window.confirm("Absolutely sure?")) {
-							handleWillDelete(true);
-							setDeleteConfirm(false);
-							return;
-						}
-						console.log("Payload unset for deletion");
-						setDeleteConfirm(false);
-						setEditPayload([]);
+
+				{/* Buttons */}
+				<div
+					style={{
+						display: "flex",
+						justifyContent: "space-evenly",
+						marginTop: "2rem",
 					}}
 				>
-					{deleteConfirm ? "Delete All Information" : "Delete"}
-				</Button>
+					<Button
+						variant="danger"
+						onClick={(e) => {
+							if (!deleteConfirm) {
+								setEditPayload((prev) => [
+									...prev,
+									{
+										id: channelToDelete.id,
+										changes: {
+											actionType: "Delete",
+											prevState: { ...channelToDelete.data },
+										},
+									},
+								]);
+								console.log("Payload set for deletion");
+								return setDeleteConfirm(true);
+							}
+							if (window.confirm("Absolutely sure?")) {
+								handleWillDelete(true);
+								setDeleteConfirm(false);
+								return;
+							}
+							console.log("Payload unset for deletion");
+							setDeleteConfirm(false);
+							setEditPayload([]);
+						}}
+					>
+						{deleteConfirm ? "Delete All Information" : "Delete"}
+					</Button>
+					<Button onClick={() => cancelEditingMode()}>Cancel</Button>
+				</div>
 			</Form>
 		);
 	}
