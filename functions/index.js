@@ -85,7 +85,7 @@ const isAdmin = async (req, res, next) => {
 };
 app.use(isAdmin);
 
-// We have verified the user is signed in with a valid firebase token and is an admin Señor Jesuscristo te pido por favor que te manifiestes en este momento, Señor, no me están dejando estar en paz, ayuda en tu Santo nombre!
+// We have verified the user is signed in with a valid firebase token and is an admin
 // Create users at the post endpoint
 app.post("/users", async (req, res) => {
 	// manage users and admin creation here
