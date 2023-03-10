@@ -50,7 +50,7 @@ export default function ManageUsers() {
 			headers: {
 				Authorization: `Bearer ${currentUser.accessToken}`,
 				"Content-Type": "application/json",
-				"Access-Control-Allow-Origin": "*",
+				"Access-Control-Allow-Origin": "https://ls-ops-map.web.app/",
 			},
 			body: JSON.stringify({ uid: selected.id }),
 		});
@@ -74,6 +74,7 @@ export default function ManageUsers() {
 				headers: {
 					Authorization: `Bearer ${currentUser.accessToken}`,
 					"Content-Type": "application/json",
+					"Access-Control-Allow-Origin": "https://ls-ops-map.web.app/",
 				},
 				body: JSON.stringify({ username, password }),
 			});
