@@ -8,7 +8,7 @@ const cors = require("cors");
 const app = express();
 app.use(helmet());
 app.use(bodyParser.json());
-app.use(cors({ origin: "https://ls-ops-map.com.ar" }));
+app.use(cors({ origin: "https://ls-ops-map.web.app" }));
 app.use(cookieParser);
 
 admin.initializeApp();
