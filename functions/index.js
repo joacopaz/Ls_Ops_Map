@@ -10,6 +10,7 @@ app.use(
 	cors({
 		origin: "https://ls-ops-map.web.app",
 		methods: ["POST", "DELETE"],
+		allowedHeaders: ["Authorization", "Content-Type"],
 		credentials: true,
 	})
 );
