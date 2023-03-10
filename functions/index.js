@@ -4,11 +4,11 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser")();
 const helmet = require("helmet");
-const cors = require("cors")({ origin: true });
+const cors = require("cors")({ origin: "https://ls-ops-map.web.app" });
 const app = express();
 app.use(helmet());
 app.use(bodyParser.json());
-app.use(cors({ origin: "https://ls-ops-map.web.app", credentials: true }));
+app.use(cors);
 app.use(cookieParser);
 
 admin.initializeApp();
