@@ -14,11 +14,11 @@
 				"headers": [
 					{
 						"key": "Content-Security-Policy",
-						"value": "script-src 'self'; https://*apis.google.com"
+						"value": "script-src 'self' https://*apis.google.com"
 					},
 					{
 						"key": "Access-Control-Allow-Origin",
-						"value": "https://ls-ops-map.web.app; https://us-central1-ls-ops-map.cloudfunctions.net/api/users"
+						"value": "https://ls-ops-map.web.app https://us-central1-ls-ops-map.cloudfunctions.net/api/users"
 					}
 				]
 			}
