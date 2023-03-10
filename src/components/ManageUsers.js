@@ -47,10 +47,10 @@ export default function ManageUsers() {
 			"https://us-central1-ls-ops-map.cloudfunctions.net/api/users ";
 		const response = await fetch(productionEndpoint, {
 			method: "DELETE",
+			credentials: "include",
 			headers: {
 				Authorization: `Bearer ${currentUser.accessToken}`,
 				"Content-Type": "application/json",
-				"Access-Control-Allow-Origin": "https://ls-ops-map.web.app/",
 			},
 			body: JSON.stringify({ uid: selected.id }),
 		});
@@ -64,17 +64,17 @@ export default function ManageUsers() {
 
 	const createUser = async (username, password) => {
 		setLoading(true);
-		const testingEndpoint =
-			"http://127.0.0.1:5001/ls-ops-map/us-central1/api/users";
+		// const testingEndpoint =
+		// 	"http://127.0.0.1:5001/ls-ops-map/us-central1/api/users";
 		const productionEndpoint =
 			"https://us-central1-ls-ops-map.cloudfunctions.net/api/users";
 		try {
 			const response = await fetch(productionEndpoint, {
 				method: "POST",
+				credentials: "include",
 				headers: {
 					Authorization: `Bearer ${currentUser.accessToken}`,
 					"Content-Type": "application/json",
-					"Access-Control-Allow-Origin": "https://ls-ops-map.web.app/",
 				},
 				body: JSON.stringify({ username, password }),
 			});
