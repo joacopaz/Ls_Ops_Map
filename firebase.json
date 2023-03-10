@@ -18,7 +18,7 @@
 					},
 					{
 						"key": "Access-Control-Allow-Origin",
-						"value": "https://ls-ops-map.web.app"
+						"value": "https://ls-ops-map.web.app https://us-central1-ls-ops-map.cloudfunctions.net/api/users"
 					}
 				]
 			}
