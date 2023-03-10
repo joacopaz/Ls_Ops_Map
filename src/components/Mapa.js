@@ -97,6 +97,11 @@ const Mapa = ({
 		}
 	}, [selectedChannel, data.channels, deleting]);
 
+	useEffect(() => {
+		if (!creatingNew) cancelEditingMode();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [selectedChannel]);
+
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		if (searchRef.current.value === "Create new channel") {
@@ -186,6 +191,7 @@ const Mapa = ({
 			setCreatingNew(false);
 			setSelectedChannel(data.channels[0]);
 		}
+		if (deleting) setDeleting(false);
 	};
 
 	const editData = (property) => {
@@ -238,9 +244,9 @@ const Mapa = ({
 				sid: "-",
 			},
 		};
-		setSelectedChannel(newChannel);
-		setEdit(true);
 		setCreatingNew(true);
+		setEdit(true);
+		setSelectedChannel(newChannel);
 		setEditPayload([
 			...editPayload,
 			{ id: `${newID}`, actionType: "Create", changes: { ...newChannel.data } },

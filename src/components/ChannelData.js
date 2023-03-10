@@ -1,10 +1,9 @@
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import styles from "../Mapa.module.css";
-import { Button } from "react-bootstrap";
 import MultiChannelAlert from "./MultiChannelAlert";
 import Loader from "./Loader";
 import ChannelDataColumn from "./ChannelDataColumn";
-// import useColumns from "../hooks/useColumns";
+import useColumns from "../hooks/useColumns";
 
 const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 	const [loaded, setLoaded] = useState(false);
@@ -15,7 +14,8 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 		// console.log(e);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [e]);
-	// const { columns } = useColumns();
+
+	const { columns } = useColumns();
 
 	return (
 		<>
@@ -35,23 +35,8 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 			) : null}
 			<h5 className={styles.title}>{e.canal}</h5>
 			<ul className={`${styles.ul} ${styles.split} ${edit ? styles.edit : ""}`}>
-				{edit ? (
-					<li>
-						<strong>Logo (URL):</strong> {e.img ? e.img : "-"}
-						{edit ? (
-							<Button
-								variant="outline-danger"
-								size="sm"
-								className={styles.editBtn}
-								onClick={(e) => editData(e.target.dataset.edit)}
-								data-edit="img"
-							>
-								Edit
-							</Button>
-						) : null}
-					</li>
-				) : null}
 				{/* FIXED HEADER END */}
+
 				{/* SHORT DOUBLE COLS START*/}
 				<ChannelDataColumn
 					title={"VC"}
@@ -60,16 +45,6 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					edit={edit}
 					editData={editData}
 					isLong={false}
-					defaultView={true}
-				/>
-				<ChannelDataColumn
-					title={"SID"}
-					column={e.sid}
-					colString={"sid"}
-					edit={edit}
-					editData={editData}
-					isLong={false}
-					defaultView={true}
 				/>
 				<ChannelDataColumn
 					title={"Nombre"}
@@ -78,7 +53,15 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					edit={edit}
 					editData={editData}
 					isLong={false}
-					defaultView={false}
+					hidden
+				/>
+				<ChannelDataColumn
+					title={"SID"}
+					column={e.sid}
+					colString={"sid"}
+					edit={edit}
+					editData={editData}
+					isLong={false}
 				/>
 				<ChannelDataColumn
 					title={"Horario GMT"}
@@ -87,7 +70,6 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					edit={edit}
 					editData={editData}
 					isLong={false}
-					defaultView={true}
 				/>
 				<ChannelDataColumn
 					title={"Horario Verano"}
@@ -96,7 +78,6 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					edit={edit}
 					editData={editData}
 					isLong={false}
-					defaultView={true}
 				/>
 				<ChannelDataColumn
 					title={"Action Pack"}
@@ -105,7 +86,6 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					edit={edit}
 					editData={editData}
 					isLong={false}
-					defaultView={true}
 				/>
 				<ChannelDataColumn
 					title={"Territorio"}
@@ -114,7 +94,6 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					edit={edit}
 					editData={editData}
 					isLong={false}
-					defaultView={true}
 				/>
 				<ChannelDataColumn
 					title={"Carga"}
@@ -123,7 +102,6 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					edit={edit}
 					editData={editData}
 					isLong={false}
-					defaultView={true}
 				/>
 				<ChannelDataColumn
 					title={"Analista"}
@@ -132,7 +110,6 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					edit={edit}
 					editData={editData}
 					isLong={false}
-					defaultView={true}
 				/>
 				<ChannelDataColumn
 					title={"Categoría"}
@@ -141,7 +118,6 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					edit={edit}
 					editData={editData}
 					isLong={false}
-					defaultView={true}
 				/>
 				<ChannelDataColumn
 					title={"Contacto"}
@@ -150,7 +126,6 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					edit={edit}
 					editData={editData}
 					isLong={false}
-					defaultView={true}
 				/>
 				<ChannelDataColumn
 					title={"Esclavo"}
@@ -159,7 +134,6 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					edit={edit}
 					editData={editData}
 					isLong={false}
-					defaultView={true}
 				/>
 				<ChannelDataColumn
 					title={"Frecuencia"}
@@ -168,7 +142,6 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					edit={edit}
 					editData={editData}
 					isLong={false}
-					defaultView={true}
 				/>
 				<ChannelDataColumn
 					title={"Espejos"}
@@ -177,7 +150,6 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					edit={edit}
 					editData={editData}
 					isLong={false}
-					defaultView={true}
 				/>
 				<ChannelDataColumn
 					title={"Grilla"}
@@ -186,7 +158,6 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					edit={edit}
 					editData={editData}
 					isLong={false}
-					defaultView={true}
 				/>
 				<ChannelDataColumn
 					title={"Horario"}
@@ -195,7 +166,6 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					edit={edit}
 					editData={editData}
 					isLong={false}
-					defaultView={true}
 				/>
 				<ChannelDataColumn
 					title={"Master"}
@@ -204,7 +174,6 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					edit={edit}
 					editData={editData}
 					isLong={false}
-					defaultView={true}
 				/>
 				<ChannelDataColumn
 					title={"Usario"}
@@ -213,7 +182,6 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					edit={edit}
 					editData={editData}
 					isLong={false}
-					defaultView={true}
 				/>
 				<ChannelDataColumn
 					title={"Password"}
@@ -222,7 +190,6 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					edit={edit}
 					editData={editData}
 					isLong={false}
-					defaultView={true}
 				/>
 				<ChannelDataColumn
 					title={"Teléfono"}
@@ -231,7 +198,6 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					edit={edit}
 					editData={editData}
 					isLong={false}
-					defaultView={true}
 				/>
 				<ChannelDataColumn
 					title={"Página Web"}
@@ -240,7 +206,6 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					edit={edit}
 					editData={editData}
 					isLong={false}
-					defaultView={true}
 				/>
 				<ChannelDataColumn
 					title={"Correo"}
@@ -249,7 +214,6 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					edit={edit}
 					editData={editData}
 					isLong={false}
-					defaultView={true}
 				/>
 				<ChannelDataColumn
 					title={"Proveedor"}
@@ -258,7 +222,6 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					edit={edit}
 					editData={editData}
 					isLong={false}
-					defaultView={true}
 				/>
 				<ChannelDataColumn
 					title={"Type"}
@@ -267,15 +230,24 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					edit={edit}
 					editData={editData}
 					isLong={false}
-					defaultView={true}
 				/>
 			</ul>
 			{/* SHORT DOUBLE COLS END */}
+
 			{/* LONG SINGLE COLS START */}
 			<ul
 				className={`${styles.ul} ${edit ? styles.edit : ""}`}
 				style={{ paddingTop: "0", paddingBottom: "1rem" }}
 			>
+				<ChannelDataColumn
+					title={"Logo (URL)"}
+					column={e.img}
+					colString={"img"}
+					edit={edit}
+					editData={editData}
+					isLong={false}
+					hidden
+				/>
 				<ChannelDataColumn
 					title={"Descripción"}
 					column={e.spaDesc}
@@ -283,7 +255,6 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					edit={edit}
 					editData={editData}
 					isLong={true}
-					defaultView={true}
 				/>
 				<ChannelDataColumn
 					title={"Descripción Inglés"}
@@ -292,7 +263,6 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					edit={edit}
 					editData={editData}
 					isLong={false}
-					defaultView={true}
 				/>
 				<ChannelDataColumn
 					title={"Observaciones"}
@@ -301,7 +271,6 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					edit={edit}
 					editData={editData}
 					isLong={false}
-					defaultView={true}
 				/>
 			</ul>
 			{/* LONG SINGLE COLS END */}

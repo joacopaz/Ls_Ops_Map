@@ -11,7 +11,7 @@ export default function ManageUsers() {
 	const { readAll, read } = useRead();
 	const [users, setUsers] = useState(null);
 	const [selected, setSelected] = useState(null);
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const { write } = useWrite();
 	const fetched = useRef(null);
 	const { currentUser } = useAuth();

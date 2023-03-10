@@ -7,19 +7,15 @@ export default function ChannelDataColumn({
 	column,
 	edit,
 	editData,
-	isLong,
 	colString,
-	defaultView,
+	hidden,
 }) {
 	useEffect(() => {
 		// console.log(colString);
 	});
 	return (
 		<>
-			{(defaultView &&
-				column !== "-" &&
-				column !== undefined &&
-				column !== "") ||
+			{(!hidden && column !== "-" && column !== undefined && column !== "") ||
 			edit ? (
 				<li>
 					<strong>{title}:</strong>

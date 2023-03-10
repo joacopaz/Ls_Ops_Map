@@ -10,23 +10,19 @@ import Header from "./Header";
 import ScriptEnvironment from "./ScriptEnvironment";
 import Loader from "./Loader";
 import ManageUsers from "./ManageUsers";
+import useColumns from "../hooks/useColumns";
 
 const Dashboard = () => {
-	useGrant();
+	/* app disabling for debugging 
+	Disable app for debugging
+	return alert(
+		"El Mapa está siendo testeado en este momento, en breve ya va a estar disponible de nuevo, porfa usá el de Sharepoint por el momento"
+	);
 
-	// Disable app for debugging
-	// return alert(
-	// 	"El Mapa está siendo testeado en este momento, en breve ya va a estar disponible de nuevo, porfa usá el de Sharepoint por el momento"
-	// );
-
-	// const [error, setError] = useState("");
-	const [view, setView] = useState(null);
-	const [hidden, setHidden] = useState(true);
-	const { currentUser /*, logout*/ } = useAuth();
-	/*
-	We won't be handling Logout since it's a closed app
-	async function handleLogout() {
-		setError("");
+	const [error, setError] = useState("");
+		We won't be handling Logout since it's a closed app
+		async function handleLogout() {
+			setError("");
 		try {
 			await logout();
 		} catch (err) {
@@ -34,9 +30,13 @@ const Dashboard = () => {
 				`Failed to log out: ${err.code
 					.match(/\/(.+)/)[1]
 					.replace(new RegExp(/-/, "g"), " ")}`
-			);
-		}
-	}*/
+					);
+				}
+			}*/
+	useGrant();
+	const [view, setView] = useState(null);
+	const [hidden, setHidden] = useState(true);
+	const { currentUser /*, logout*/ } = useAuth();
 	const {
 		data,
 		loading,
@@ -50,6 +50,8 @@ const Dashboard = () => {
 		if (loading) setHidden(true);
 		if (!loading) setHidden(false);
 	}, [loading]);
+	const { columns } = useColumns();
+
 	if (!currentUser) return "This content is restricted";
 	return (
 		<>
