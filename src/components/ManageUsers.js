@@ -8,7 +8,7 @@ import { useAuth } from "../contexts/AuthContext";
 import useWrite from "../hooks/useWrite";
 
 export default function ManageUsers() {
-	const { readAll } = useRead();
+	const { readAll, read } = useRead();
 	const [users, setUsers] = useState(null);
 	const [selected, setSelected] = useState(null);
 	const [loading, setLoading] = useState(false);
@@ -99,6 +99,9 @@ export default function ManageUsers() {
 		setLoading(false);
 	};
 	const adminUser = async (adminStatusBoolean) => {
+		const areYouAdmin = read("users", currentUser.uid);
+		if (!areYouAdmin)
+			return alert("Action cannot be performed, you are not an admin!");
 		setLoading(true);
 		try {
 			await write("users", selected.id, { isAdmin: adminStatusBoolean });
