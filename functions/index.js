@@ -6,9 +6,9 @@ const cookieParser = require("cookie-parser")();
 const helmet = require("helmet");
 const cors = require("cors");
 const app = express();
+app.use(cors({ origin: "https://ls-ops-map.web.app" }));
 app.use(helmet());
 app.use(bodyParser.json());
-app.use(cors({ origin: "https://ls-ops-map.web.app" }));
 app.use(cookieParser);
 
 admin.initializeApp();
