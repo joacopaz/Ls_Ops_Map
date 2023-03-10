@@ -8,7 +8,7 @@ const cors = require("cors");
 const app = express();
 app.use(
 	cors({
-		origin: "https://ls-ops-map.web.app",
+		origin: "*",
 		methods: ["POST", "DELETE"],
 		credentials: true,
 	})
