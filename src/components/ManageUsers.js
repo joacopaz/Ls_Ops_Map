@@ -17,7 +17,6 @@ export default function ManageUsers() {
 	const { currentUser } = useAuth();
 	useEffect(() => {
 		if (fetched.current) return;
-
 		const getUsers = async () => {
 			setLoading(true);
 			fetched.current = true;
@@ -51,6 +50,7 @@ export default function ManageUsers() {
 			headers: {
 				Authorization: `Bearer ${currentUser.accessToken}`,
 				"Content-Type": "application/json",
+				"Access-Control-Allow-Origin": "*",
 			},
 			body: JSON.stringify({ uid: selected.id }),
 		});
