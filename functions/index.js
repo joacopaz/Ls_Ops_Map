@@ -7,7 +7,11 @@ const helmet = require("helmet");
 const cors = require("cors");
 const app = express();
 app.use(
-	cors({ origin: "https://ls-ops-map.web.app", methods: ["POST", "DELETE"] })
+	cors({
+		origin: "https://ls-ops-map.web.app",
+		methods: ["POST", "DELETE"],
+		credentials: true,
+	})
 );
 app.use(helmet());
 app.use(bodyParser.json());
