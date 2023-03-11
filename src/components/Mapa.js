@@ -363,7 +363,7 @@ const Mapa = ({
 						setData={setData}
 						data={data}
 					/>
-					<div className={styles.mapa}>
+					<div className={`${styles.mapa} ${edit && styles.mapEditing}`}>
 						{!creatingNew ? (
 							<Searchbar
 								handleSubmit={handleSubmit}

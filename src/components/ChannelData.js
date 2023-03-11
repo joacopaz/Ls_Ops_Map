@@ -15,7 +15,7 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [e]);
 
-	const { columns } = useColumns();
+	// const { columns } = useColumns();
 
 	return (
 		<>
@@ -176,7 +176,7 @@ const ChannelData = ({ e, edit, editData, sharedVcs }) => {
 					isLong={false}
 				/>
 				<ChannelDataColumn
-					title={"Usario"}
+					title={"Usuario"}
 					column={e.usuario}
 					colString="usuario"
 					edit={edit}

@@ -27,6 +27,14 @@ export default function Header({ view, setView, isAdmin }) {
 						Users
 					</li>
 				) : null}
+				{isAdmin ? (
+					<li
+						onClick={() => setView("EditDB")}
+						className={view === "EditDB" ? styles.selected : null}
+					>
+						Manage DB
+					</li>
+				) : null}
 			</ul>
 		</nav>
 	);

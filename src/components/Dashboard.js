@@ -10,7 +10,7 @@ import Header from "./Header";
 import ScriptEnvironment from "./ScriptEnvironment";
 import Loader from "./Loader";
 import ManageUsers from "./ManageUsers";
-import useColumns from "../hooks/useColumns";
+import ManageDB from "./ManageDB";
 
 const Dashboard = () => {
 	/* app disabling for debugging 
@@ -50,7 +50,6 @@ const Dashboard = () => {
 		if (loading) setHidden(true);
 		if (!loading) setHidden(false);
 	}, [loading]);
-	const { columns } = useColumns();
 
 	if (!currentUser) return "This content is restricted";
 	return (
@@ -87,6 +86,9 @@ const Dashboard = () => {
 			)}
 			{!hidden && view === "ManageUsers" && (
 				<ManageUsers checkPatch={checkPatch} setLoading={setLoading} />
+			)}
+			{!hidden && view === "EditDB" && (
+				<ManageDB checkPatch={checkPatch} setLoading={setLoading} />
 			)}
 
 			<Footer />

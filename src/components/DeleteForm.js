@@ -24,14 +24,16 @@ const DeleteForm = forwardRef(
 		return (
 			<Form className={styles.deleteForm}>
 				<h3 className="mb-5 text-center">Delete existing channel</h3>
-				<Form.Control
-					type="text"
-					className={`w-100 d-block text-center mb-5 ${styles.search}`}
-					placeholder={"Search channel to delete"}
-					list="datalist"
-					onChange={handleDeleteInput}
-					ref={ref}
-				/>
+				{!deleteConfirm ? (
+					<Form.Control
+						type="text"
+						className={`w-100 d-block text-center mb-5 ${styles.search}`}
+						placeholder={"Search channel to delete"}
+						list="datalist"
+						onChange={handleDeleteInput}
+						ref={ref}
+					/>
+				) : null}
 				{deleteConfirm ? (
 					<Alert variant="danger" className="mt-3 text-center ">
 						<Alert.Heading>Warning</Alert.Heading>
@@ -40,7 +42,6 @@ const DeleteForm = forwardRef(
 						an Admin can undo this, are you absolutely sure?
 					</Alert>
 				) : null}
-
 				{/* Buttons */}
 				<div
 					style={{

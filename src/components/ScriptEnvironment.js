@@ -190,6 +190,19 @@ export default function ScriptEnvironment({ checkPatch }) {
 				) : null}
 				<div ref={logRef}></div>
 			</div>
+			<Button
+				onClick={async () => {
+					const columns = columnJSON;
+					for (let i = 0; i < columns.length; i++) {
+						const e = columns[i];
+						console.log("Writing " + e.column);
+						await write("collumns", e.column, e);
+					}
+					console.log("DONE");
+				}}
+			>
+				RUN COLUMNS
+			</Button>
 		</div>
 	);
 }

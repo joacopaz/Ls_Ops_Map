@@ -15,6 +15,12 @@
 	caret-color: transparent;
 }
 
+.mapEditing {
+	overflow-x: hidden;
+	overflow-y: scroll;
+	max-height: calc(100vh - 5rem);
+}
+
 .ul {
 	padding: 1rem;
 	padding-bottom: 0;
@@ -30,6 +36,10 @@
 	-webkit-columns: 2;
 	-moz-columns: 2;
 	padding-bottom: 1rem;
+}
+
+.split.edit {
+	padding-bottom: 0;
 }
 
 .ul > li {
@@ -110,7 +120,6 @@
 	width: 40px;
 	font-size: 1.5rem;
 	display: flex;
-	border-radius: 50%;
 	transition: width 500ms, background-color 200ms !important;
 	overflow: hidden;
 	white-space: pre;

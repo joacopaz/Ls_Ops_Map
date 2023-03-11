@@ -6,13 +6,10 @@ export default function useColumns() {
 		JSON.parse(localStorage.getItem("columns"))
 	);
 	const { read, readAll } = useRead();
-	const fetched = useRef(false);
 	useEffect(() => {
 		const getCols = async () => {
-			if (fetched.current || columns) return;
+			// if (fetched.current) return;
 			try {
-				if (fetched.current) return;
-				fetched.current = true;
 				// Checking local storage for current version and making it a number
 				let parsedLocalVersion;
 				const localVersion = localStorage.getItem("colVersion");
@@ -24,7 +21,7 @@ export default function useColumns() {
 
 				// If equal use local
 				if (parsedLocalVersion === onlineVersion && localVersion) {
-					console.log("Found local columns");
+					console.log("Using local columns");
 					return setColumns(JSON.parse(localStorage.getItem("columns")));
 				}
 
