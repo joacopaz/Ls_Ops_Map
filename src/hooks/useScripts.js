@@ -4,7 +4,6 @@ import { utils, writeFile } from "xlsx";
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import columnsJSON from "../temp/columns.json";
-// const getClient = async () => await auth.getClient();
 
 export default function useScripts() {
 	const { write, del } = useWrite();
@@ -104,6 +103,7 @@ export default function useScripts() {
 	};
 	async function startGoogle() {
 		setFetching(true);
+
 		// Start google auth process
 		await new Promise(async (r) => {
 			let GoogleAuth;
@@ -138,8 +138,10 @@ export default function useScripts() {
 				}
 			}
 		});
+
 		// Give time for cache to get settled
 		await new Promise((r) => setTimeout(r, 500));
+
 		// Create new google sheet
 		const sheetId = await new Promise(async (r) => {
 			const date = new Date();
@@ -165,14 +167,21 @@ export default function useScripts() {
 			);
 			r(sheetId);
 		});
-
 		// Update sheet with the DB data
 		async function updateSheet(spreadsheetId = sheetId) {
 			const channels = JSON.parse(localStorage.getItem("channels"));
-			const columnNames = columnsJSON.data.map((col) => col.title);
+			const columns = JSON.parse(localStorage.getItem("columns")).map(
+				(col) => col.data
+			);
+			const orderedColumns = columns.sort(
+				(colA, colB) => colA.order - colB.order
+			);
+			const columnNames = orderedColumns.map((col) => col.oldKey);
+
+			// First row must be the column names
 			const values = [columnNames];
 			const channelData = channels.map((e) => {
-				return columnsJSON.data.map((col) => e.data[col.column]);
+				return orderedColumns.map((col) => e.data[col.column]);
 			});
 			channelData.forEach((channel) => values.push(channel));
 			const body = {

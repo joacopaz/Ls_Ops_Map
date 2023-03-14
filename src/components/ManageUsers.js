@@ -37,7 +37,7 @@ export default function ManageUsers() {
 		};
 		getUsers().then(() => setLoading(false));
 	});
-	if (loading) return <Loader />;
+	if (loading) return <Loader message="Loading users..." />;
 
 	const deleteUser = async () => {
 		setLoading(true);

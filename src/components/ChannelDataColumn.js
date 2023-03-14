@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Button } from "react-bootstrap";
 import styles from "../Mapa.module.css";
 
@@ -10,9 +10,9 @@ export default function ChannelDataColumn({
 	colString,
 	hidden,
 }) {
-	useEffect(() => {
-		// console.log(colString);
-	});
+	// useEffect(() => {
+	// console.log(colString);
+	// });
 	return (
 		<>
 			{(!hidden && column !== "-" && column !== undefined && column !== "") ||

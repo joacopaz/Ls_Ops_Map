@@ -45,6 +45,8 @@ const Dashboard = () => {
 		round,
 		propertyToString,
 		checkPatch,
+		columns,
+		getCols,
 	} = useOnLoad();
 	useLayoutEffect(() => {
 		if (loading) setHidden(true);
@@ -64,13 +66,14 @@ const Dashboard = () => {
 						data={data}
 						setLoading={setLoading}
 						checkPatch={checkPatch}
+						columns={columns}
 					/>
 				)
 			}
 			{!hidden && (
 				<ReportBug user={currentUser.username} setLoading={setLoading} />
 			)}
-			{!view && (
+			{!view && columns?.length > 10 && (
 				<Mapa
 					data={data}
 					loading={loading}
@@ -79,16 +82,17 @@ const Dashboard = () => {
 					round={round}
 					propertyToString={propertyToString}
 					checkPatch={checkPatch}
+					columns={columns}
 				/>
 			)}
 			{!hidden && view === "Scripts" && (
-				<ScriptEnvironment checkPatch={checkPatch} />
+				<ScriptEnvironment checkPatch={checkPatch} columns={columns} />
 			)}
 			{!hidden && view === "ManageUsers" && (
 				<ManageUsers checkPatch={checkPatch} setLoading={setLoading} />
 			)}
 			{!hidden && view === "EditDB" && (
-				<ManageDB checkPatch={checkPatch} setLoading={setLoading} />
+				<ManageDB checkCols={getCols} checkPatch={checkPatch} round={round} />
 			)}
 
 			<Footer />

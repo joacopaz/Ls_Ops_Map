@@ -5,7 +5,8 @@
 	align-items: center;
 	border-radius: 50px;
 	min-width: 380px;
-	max-width: 80vw;
+	top: 2vh;
+	max-height: 95vh;
 	background-color: rgb(255, 255, 255);
 	flex-direction: column;
 	color: black;
@@ -13,6 +14,8 @@
 	padding-bottom: 2rem;
 	font-size: 1rem;
 	caret-color: transparent;
+	overflow-y: scroll;
+	overflow-x: hidden;
 }
 
 .mapEditing {
@@ -54,7 +57,7 @@
 }
 
 .loader {
-	position: absolute;
+	position: fixed;
 	top: 40%;
 	left: 50%;
 	transform: translate(-50%, -50%);
@@ -106,7 +109,7 @@
 .cardImg {
 	padding: 1rem;
 	max-width: 200px;
-	max-height: 200px;
+	max-height: 100px;
 	display: inline-block;
 	margin: 0 auto;
 }
@@ -239,6 +242,7 @@
 	transition: 300ms;
 	padding: 1rem;
 	max-width: 14rem;
+	z-index: 100;
 }
 
 .adminCommandsContainer nav {
@@ -498,4 +502,108 @@
 }
 .user:hover {
 	background-color: rgb(247, 240, 240);
+}
+
+/* */
+
+.flexColumnsContainerGroup {
+	display: flex;
+	padding: 1rem;
+	gap: 20px;
+	min-width: 350px;
+}
+
+.columnsContainer {
+	min-height: 60vh;
+	flex-wrap: wrap;
+	align-items: center;
+	position: relative;
+}
+
+.flexColumnsContainerGroup > h6 {
+	position: absolute;
+	font-size: 1.4rem;
+	left: 0;
+	transform: translate(100%, -200%);
+}
+
+.manageDBContainer {
+	min-height: 95vh;
+	position: relative;
+	top: 2vh;
+	overflow: scroll;
+}
+
+.manageDBDashboard {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	padding-top: 1rem;
+	caret-color: transparent;
+	user-select: none;
+	gap: 50px;
+}
+
+.DBControllersBody {
+	margin: 1rem;
+	padding: 1rem;
+	align-items: center;
+	justify-content: space-between;
+	gap: 50px;
+	min-width: 490px !important;
+	min-height: 625px;
+}
+
+.DBControllersBody > div {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	justify-content: space-between;
+	align-items: center;
+	gap: 30px;
+	border: 1px lightgrey;
+}
+
+.DBControllersBody h6 {
+	padding: 0;
+	margin: 0;
+}
+
+.columnDataHeader {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+@media screen and (max-width: 1200px) {
+	.manageDBDashboard {
+		flex-direction: column;
+		gap: 0px;
+		width: 100vw;
+	}
+	.flexColumnsContainerGroup {
+		width: 100%;
+		justify-content: center;
+	}
+	.DBControllersBody {
+		gap: 25px !important;
+	}
+}
+
+@media screen and (max-width: 550px) {
+	.bugReport {
+		display: none;
+	}
+	.navContent {
+		padding-left: 1rem;
+	}
+}
+
+@media screen and (max-width: 400px) {
+	.navContent {
+		padding-left: 5px;
+	}
+	.navContent > * {
+		font-size: 0.8rem;
+	}
 }

@@ -29,6 +29,10 @@ const useOnLoad = () => {
 	const [data, setData] = useState({});
 	const [loading, setLoading] = useState(false);
 	const { read, readAll } = useRead();
+	const [columns, setColumns] = useState(
+		JSON.parse(localStorage.getItem("columns"))
+	);
+
 	const fetched = useRef(null); // to avoid multiple renders, especially during testing (React Strict Mode)
 	const handleVersionMismatch = () => {
 		localStorage.clear();
@@ -61,51 +65,68 @@ const useOnLoad = () => {
 			changes.forEach((change) => {
 				const { id } = change;
 				let indexToChange = channels.findIndex((e) => e.id === id);
-				if (indexToChange === -1 && change.actionType === "Create") {
-					// prevent new channels from being created with prevState
-					if (change.prevState) delete change.prevState;
-					channels.push({ id, data: change });
-					indexToChange = channels.length - 1;
-				}
-				const newProps = {};
 				let deletedChannel;
-				if (change.actionType === "Delete") {
-					deletedChannel = channels.splice(indexToChange, 1);
-				} else {
-					for (const key in change) {
-						if (Object.hasOwnProperty.call(change, key)) {
-							const element = change[key];
-							if (
-								key === "channel" ||
-								key === "id" ||
-								key === "actionType" ||
-								key === "prevState"
-							)
-								continue;
-							newProps[key] = element;
+				const newProps = {};
+				switch (change.actionType) {
+					case "Delete Column":
+						channels.forEach((channel) => {
+							delete channel.data[change.columnName];
+						});
+						console.log(
+							`Deleting all data for column ${change.columnName} in all channels`
+						);
+						break;
+					case "Delete":
+						deletedChannel = channels.splice(indexToChange, 1);
+						console.log(
+							`Deleting VC ${deletedChannel[0]?.data.vc} ${deletedChannel[0]?.data.canal}`
+						);
+						break;
+					case "Create":
+						// prevent new channels from being created with prevState
+						if (change.prevState) delete change.prevState;
+						channels.push({ id, data: change });
+						indexToChange = channels.length - 1;
+						channels[indexToChange].data = {
+							...channels[indexToChange].data,
+							...newProps,
+						};
+						console.log(
+							`Creating VC ${channels[indexToChange]?.data?.vc} ${
+								channels[indexToChange]?.data?.canal
+							} with ${JSON.stringify(newProps)}`
+						);
+						break;
+					case "Create Column":
+						channels.forEach((channel) => {
+							channel.data[change.columnName] = "-";
+						});
+						break;
+					default:
+						for (const key in change) {
+							if (Object.hasOwnProperty.call(change, key)) {
+								const element = change[key];
+								if (
+									key === "channel" ||
+									key === "id" ||
+									key === "actionType" ||
+									key === "prevState"
+								)
+									continue;
+								newProps[key] = element;
+							}
 						}
-					}
-					channels[indexToChange].data = {
-						...channels[indexToChange].data,
-						...newProps,
-					};
+						channels[indexToChange].data = {
+							...channels[indexToChange].data,
+							...newProps,
+						};
+						console.log(
+							`Updating VC ${channels[indexToChange]?.data?.vc} ${
+								channels[indexToChange]?.data?.canal
+							} with ${JSON.stringify(newProps)}`
+						);
+						break;
 				}
-				if (change.actionType === "Create")
-					console.log(
-						`Creating VC ${channels[indexToChange]?.data?.vc} ${
-							channels[indexToChange]?.data?.canal
-						} with ${JSON.stringify(newProps)}`
-					);
-				if (change.actionType === "Delete")
-					console.log(
-						`Deleting VC ${deletedChannel[0]?.data.vc} ${deletedChannel[0]?.data.canal}`
-					);
-				if (!change.actionType)
-					console.log(
-						`Updating VC ${channels[indexToChange]?.data?.vc} ${
-							channels[indexToChange]?.data?.canal
-						} with ${JSON.stringify(newProps)}`
-					);
 			});
 			latestStoragedVersion = round(version + 0.01);
 			storage.set("version", JSON.stringify(latestStoragedVersion));
@@ -118,6 +139,39 @@ const useOnLoad = () => {
 		}
 		console.log("No further patching needed.");
 		return latestStoragedVersion;
+	};
+
+	const getCols = async () => {
+		// if (fetched.current) return;
+		try {
+			// Checking local storage for current version and making it a number
+			let parsedLocalVersion;
+			const localVersion = localStorage.getItem("colVersion");
+			if (localVersion)
+				parsedLocalVersion = Number(localStorage.getItem("colVersion"));
+			// Getting online version
+			const { current } = await read("columns", "current");
+			const onlineVersion = current;
+
+			// If equal use local
+			if (parsedLocalVersion === onlineVersion && localVersion) {
+				console.log("Using local columns");
+				return setColumns(JSON.parse(localStorage.getItem("columns")));
+			}
+
+			// If not equal download new version
+			console.log("Downloading online columns");
+			localStorage.setItem("colVersion", `${onlineVersion}`);
+			const unfilteredCols = await readAll("columns");
+			const allColumns = unfilteredCols.filter((col) => col.id !== "current");
+			localStorage.setItem("columns", JSON.stringify(allColumns));
+			return setColumns(JSON.parse(localStorage.getItem("columns")));
+		} catch (error) {
+			alert(
+				`There was an error, please report this bug as "Error fetching columns, in useColumns Line 37"`
+			);
+			window.location.reload();
+		}
 	};
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -151,7 +205,6 @@ const useOnLoad = () => {
 				}
 				if (latestStoragedVersion < current) {
 					await checkPatch();
-					setLoading(false);
 				} else {
 					const data = storage.getAll();
 					const version = round(Number(current));
@@ -162,11 +215,12 @@ const useOnLoad = () => {
 					channels.sort((a, b) => Number(a.data.vc) > Number(b.data.vc));
 					setData({ version, channels });
 					console.log("Parsed local data");
-					setLoading(false);
 				}
 			};
 			try {
-				compareVersions();
+				compareVersions()
+					.then(async () => await getCols())
+					.then(() => setLoading(false));
 			} catch (error) {
 				console.log(error);
 			}
@@ -183,10 +237,11 @@ const useOnLoad = () => {
 				storage.set("version", JSON.stringify(current));
 				storage.set("forcedUpdate", Date.now());
 				console.log(`Updated local storage to version ${current} of DB`);
-				setLoading(false);
 			};
 			try {
-				getRemoteDB();
+				getRemoteDB()
+					.then(async () => await getCols())
+					.then(() => setLoading(false));
 			} catch (error) {
 				console.log(error);
 			}
@@ -203,6 +258,8 @@ const useOnLoad = () => {
 		round,
 		propertyToString,
 		checkPatch,
+		getCols,
+		columns,
 	};
 };
 

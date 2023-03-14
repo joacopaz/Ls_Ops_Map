@@ -1,6 +1,5 @@
 import styles from "../Mapa.module.css";
 import { useEffect, useRef, useState } from "react";
-import { Button } from "react-bootstrap";
 import EditModal from "./EditModal";
 import Searchbar from "./Searchbar";
 import ChannelData from "./ChannelData";
@@ -20,6 +19,7 @@ const Mapa = ({
 	round,
 	propertyToString,
 	checkPatch,
+	columns,
 }) => {
 	const { read } = useRead();
 	const { write, del } = useWrite();
@@ -53,7 +53,7 @@ const Mapa = ({
 		if (Object.keys(data).length > 0 && selectedChannel)
 			setSelectedChannel(
 				data.channels[
-					data.channels.findIndex((chan) => chan.id === selectedChannel.id)
+					data.channels.findIndex((ch) => ch.id === selectedChannel.id)
 				]
 			);
 
@@ -379,12 +379,13 @@ const Mapa = ({
 							/>
 						) : null}
 
-						{selectedChannel && !deleting ? (
+						{selectedChannel && !deleting && columns?.length > 10 ? (
 							<ChannelData
 								e={selectedChannel.data}
 								edit={edit}
 								editData={editData}
 								sharedVcs={sharedVcs}
+								columns={columns}
 							/>
 						) : null}
 

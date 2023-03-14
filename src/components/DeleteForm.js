@@ -20,6 +20,8 @@ const DeleteForm = forwardRef(
 			ref.current.focus();
 			setEdit(false);
 			setEditPayload([]);
+
+			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, []);
 		return (
 			<Form className={styles.deleteForm}>

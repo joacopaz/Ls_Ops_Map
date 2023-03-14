@@ -7,6 +7,7 @@ import useScripts from "../hooks/useScripts";
 import { read, utils } from "xlsx";
 import columnJSON from "../temp/columns.json";
 import useWrite from "../hooks/useWrite";
+import Loader from "./Loader";
 
 const xlsxToJSON = (file) => {
 	return new Promise(async (resolve, reject) => {
@@ -28,9 +29,10 @@ const xlsxToJSON = (file) => {
 	});
 };
 
-export default function ScriptEnvironment({ checkPatch }) {
+export default function ScriptEnvironment({ checkPatch, columns }) {
+	const [loading, setLoading] = useState(false);
 	const { currentUser } = useAuth();
-	const scripts = useScripts();
+	const scripts = useScripts(columns);
 	const [hasLog, setHasLog] = useState(false);
 	const logRef = useRef(null);
 	const lastP = useRef(null);
@@ -118,6 +120,7 @@ export default function ScriptEnvironment({ checkPatch }) {
 	};
 
 	const deleteHistory = async (behavior) => {
+		setLoading(true);
 		if (behavior !== "noClear") clearLog();
 		log("Checking latest DB version");
 		const latestVersion = await checkPatch();
@@ -125,18 +128,24 @@ export default function ScriptEnvironment({ checkPatch }) {
 			log("Latest version is already 0, there is no history to delete.");
 			log("Forcing updates on all the of the user Databases");
 			write("history", "current", { forcedUpdate: Date.now() });
+			setLoading(false);
 			return log("--- SCRIPT ENDED ---");
 		}
 		log(`Latest version is v${latestVersion}`);
 		await scripts.deleteHistory(0, latestVersion, log);
+		setLoading(false);
 	};
 	return (
 		<div className={`${styles.scriptEnvContainer} ${styles.mapa}`}>
+			{loading ? <Loader /> : null}
 			<h2>Scripts</h2>
 			<div className={styles.allScriptsContainer}>
 				<div className={styles.script}>
 					<label>Delete history / Force updates</label>
-					<Button disabled={!currentUser.isAdmin} onClick={deleteHistory}>
+					<Button
+						disabled={!currentUser.isAdmin || loading}
+						onClick={deleteHistory}
+					>
 						Run
 					</Button>
 				</div>
@@ -147,8 +156,9 @@ export default function ScriptEnvironment({ checkPatch }) {
 				<div className={styles.script}>
 					<label>Upload DB from Excel (.xlsx)</label>
 					<Button
-						disabled={!currentUser.isAdmin}
+						disabled={!currentUser.isAdmin || loading}
 						onClick={async () => {
+							setLoading(true);
 							try {
 								const consents = window.confirm(
 									"Please beware of your internet connection while uploading. Do you want to proceed?"
@@ -159,9 +169,11 @@ export default function ScriptEnvironment({ checkPatch }) {
 								await eraseCurrentDB();
 								await scripts.uploadDB(newDB, log);
 								log("--- SCRIPT ENDED ---");
+								setLoading(false);
 							} catch (err) {
 								log(err);
 								log("--- SCRIPT ENDED ---");
+								setLoading(false);
 							}
 						}}
 					>
@@ -173,6 +185,69 @@ export default function ScriptEnvironment({ checkPatch }) {
 					sourced DB from a file you upload. Will force all user to download the
 					new DB.
 				</p>
+				{/* <div className={styles.script}>
+					<label>Rebase columns to minium Order 1 instead of 0</label>
+					<Button
+						disabled={!currentUser.isAdmin || loading}
+						onClick={async () => {
+							clearLog();
+							setLoading(true);
+							try {
+								log("Getting current columns");
+								const columns = JSON.parse(localStorage.getItem("columns"));
+								log("Creating new order");
+								const newOrder = columns
+									.map((column) => ({
+										id: column.id,
+										data: { ...column.data, order: column.data.order + 1 },
+									}))
+									.sort((colA, colB) => colA.data.order - colB.data.order);
+								for (let i = 0; i < newOrder.length; i++) {
+									const e = newOrder[i];
+									log(`Writing ${e.id} in new order ${e.data.order}`);
+									await write("columns", e.id, { order: e.data.order });
+								}
+								log("--- SCRIPT ENDED ---");
+							} catch (err) {
+								log(err);
+								log("--- SCRIPT ENDED ---");
+								setLoading(false);
+							}
+							setLoading(false);
+						}}
+					>
+						Run
+					</Button>
+				</div>
+				<p>
+					Rewrite all columns in Columns collection to the current Order + 1
+					(current is 0 based)
+				</p> */}
+				{/* UPLOAD COLUMNS SCRIPT
+				
+				 <div className={styles.script}>
+					<label>Upload Columns JSON</label>
+					<Button
+						onClick={async () => {
+							const columns = columnJSON;
+							for (let i = 0; i < columns.length; i++) {
+								const e = columns[i];
+								log("Writing " + e.column);
+								await write("columns", e.column, e);
+							}
+							await write("columns", current, 0);
+							log("DONE");
+						}}
+					>
+						Run
+					</Button>
+				</div>
+				<p>
+					Upload a COLUMNS file to the remote DB in JSON format (must be found
+					in the /temp folder).
+				</p> */}
+
+				{/* FOOTER (ALERT AND CONSOLE) */}
 				{currentUser.isAdmin ? (
 					<Alert
 						variant="danger"
@@ -190,19 +265,6 @@ export default function ScriptEnvironment({ checkPatch }) {
 				) : null}
 				<div ref={logRef}></div>
 			</div>
-			<Button
-				onClick={async () => {
-					const columns = columnJSON;
-					for (let i = 0; i < columns.length; i++) {
-						const e = columns[i];
-						console.log("Writing " + e.column);
-						await write("collumns", e.column, e);
-					}
-					console.log("DONE");
-				}}
-			>
-				RUN COLUMNS
-			</Button>
 		</div>
 	);
 }

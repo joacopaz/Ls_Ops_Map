@@ -7,51 +7,30 @@ import cog from "../cog.png";
 // script import
 import useScripts from "../hooks/useScripts";
 
-export default function AdminCommands({ data, checkPatch, setLoading }) {
+export default function AdminCommands({
+	data,
+	checkPatch,
+	setLoading,
+	columns,
+}) {
 	const [active, setActive] = useState(false);
 	// Script environment
-	const scripts = useScripts();
+	const scripts = useScripts(columns);
 	//
 
 	const exportData = async () => {
 		setLoading(true);
 		await checkPatch();
-		const finalObject = [];
+		const cols = columns.map((col) => col.data);
+		const finalArrOfObjs = [];
 		data.channels.forEach((channel) => {
 			const { data } = channel;
-			finalObject.push({
-				// ID: channel.id,
-				VC: data.vc,
-				CANAL: data.canal,
-				TERRITORIO: data.territorio,
-				FRECUENCIA: data.frecuencia,
-				GMT: data.GMT,
-				"GMT VERANO": data.GMTverano,
-				"FEED | GRILLA": data.grid,
-				HORARIO: data.horario,
-				CONTACTO: data.contacto,
-				CORREO: data.correo,
-				TELÉFONO: data.tel,
-				"ACTION PACK": data.actionPack,
-				WEB: data.url,
-				USUARIO: data.usuario,
-				PASSWORD: data.pass,
-				OBSERVACIONES: data.obs,
-				ESPEJOS: data.espejos,
-				CATEGORÍA: data.categoria,
-				"DESCRIPCIÓN ESPAÑOL": data.spaDesc,
-				"ENGLISH DESCRIPTION": data.engDesc,
-				ANALISTA: data.analista,
-				CARGA: data.carga,
-				ESCLAVO: data.esclavo,
-				MASTER: data.master,
-				PROVEEDOR: data.proveedor,
-				TYPE: data.type,
-				SID: data.sid,
-			});
+			const channelObject = {};
+			cols.forEach((col) => (channelObject[col.oldKey] = data[col.column]));
+			finalArrOfObjs.push(channelObject);
 		});
-		finalObject.sort((a, b) => a.ID - b.ID);
-		scripts.exportData(finalObject);
+		finalArrOfObjs.sort((a, b) => a.vc - b.vc);
+		scripts.exportData(finalArrOfObjs);
 
 		// console.log(finalObject);
 		setLoading(false);
@@ -80,7 +59,6 @@ export default function AdminCommands({ data, checkPatch, setLoading }) {
 					>
 						{!scripts.fetching ? "Export to Google Sheets" : "Exporting..."}
 					</Button>
-
 				</nav>
 			</div>
 		</>
