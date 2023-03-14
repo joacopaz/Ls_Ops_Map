@@ -212,7 +212,7 @@ const useOnLoad = () => {
 						handleVersionMismatch();
 					}
 					const channels = JSON.parse(data.channels);
-					channels.sort((a, b) => Number(a.data.vc) > Number(b.data.vc));
+					channels.sort((a, b) => Number(a.data.vc) - Number(b.data.vc));
 					setData({ version, channels });
 					console.log("Parsed local data");
 				}
