@@ -36,7 +36,7 @@ export default function ScriptEnvironment({ checkPatch, columns }) {
 	const [hasLog, setHasLog] = useState(false);
 	const logRef = useRef(null);
 	const lastP = useRef(null);
-	const { write, del, delField } = useWrite();
+	const { write, del /*, delField*/ } = useWrite();
 
 	const log = (string) => {
 		if (!hasLog) setHasLog(true);

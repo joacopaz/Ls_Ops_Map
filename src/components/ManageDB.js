@@ -194,7 +194,6 @@ export default function ManageDB({ checkCols, checkPatch, round }) {
 		// Pre patch to get latest channel version
 		setLoadingMsg("Patching DB...");
 		await checkPatch();
-		const selected = {};
 
 		const channels = JSON.parse(localStorage.getItem("channels"));
 		try {
@@ -355,7 +354,7 @@ export default function ManageDB({ checkCols, checkPatch, round }) {
 					oldKey: newColTitle.toUpperCase(),
 					order: columns.data.length + 1,
 				});
-				setLoading(false);
+				return setLoading(false);
 			}
 			alert(
 				"Error uploading data, please verify what information has changed before re-creating anything"
