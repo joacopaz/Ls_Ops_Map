@@ -164,7 +164,10 @@ const useOnLoad = () => {
 			localStorage.setItem("colVersion", `${onlineVersion}`);
 			const unfilteredCols = await readAll("columns");
 			const allColumns = unfilteredCols.filter((col) => col.id !== "current");
-			localStorage.setItem("columns", JSON.stringify(allColumns));
+			const orderedColumns = allColumns.sort(
+				(colA, colB) => colA.order - colB.order
+			);
+			localStorage.setItem("columns", JSON.stringify(orderedColumns));
 			return setColumns(JSON.parse(localStorage.getItem("columns")));
 		} catch (error) {
 			alert(
