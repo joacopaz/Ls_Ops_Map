@@ -36,7 +36,7 @@ export default function ScriptEnvironment({ checkPatch, columns }) {
 	const [hasLog, setHasLog] = useState(false);
 	const logRef = useRef(null);
 	const lastP = useRef(null);
-	const { write, del } = useWrite();
+	const { write, del, delField } = useWrite();
 
 	const log = (string) => {
 		if (!hasLog) setHasLog(true);
@@ -246,7 +246,31 @@ export default function ScriptEnvironment({ checkPatch, columns }) {
 					Upload a COLUMNS file to the remote DB in JSON format (must be found
 					in the /temp folder).
 				</p> */}
-
+				{/* DELETE COL IN ALL CHANNELS 
+				<div className={styles.script}>
+					<label>Delete specific named col in all channels</label>
+					<Button
+						onClick={async () => {
+							await checkPatch();
+							const channels = JSON.parse(localStorage.getItem("channels"));
+							for (let i = 0; i < channels.length; i++) {
+								const element = channels[i];
+								await delField("channels", element.id, "tert");
+								log(
+									`Deleting all fields in channels ${Math.floor(
+										(i / channels.length) * 100
+									)}%`
+								);
+							}
+						}}
+					>
+						Run
+					</Button>
+				</div>
+				<p>
+					Upload a COLUMNS file to the remote DB in JSON format (must be found
+					in the /temp folder).
+					</p>*/}
 				{/* FOOTER (ALERT AND CONSOLE) */}
 				{currentUser.isAdmin ? (
 					<Alert

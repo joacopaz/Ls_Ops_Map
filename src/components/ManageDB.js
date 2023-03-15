@@ -194,6 +194,7 @@ export default function ManageDB({ checkCols, checkPatch, round }) {
 		// Pre patch to get latest channel version
 		setLoadingMsg("Patching DB...");
 		await checkPatch();
+		const selected = {};
 
 		const channels = JSON.parse(localStorage.getItem("channels"));
 		try {
@@ -203,7 +204,9 @@ export default function ManageDB({ checkCols, checkPatch, round }) {
 			for (let i = 0; i < channels.length; i++) {
 				const element = channels[i];
 				setLoadingMsg(
-					`Deleting column in all channels, this may take a while: Currently deleting ${i} / ${channels.length}`
+					`Deleting column in all channels, this may take a while: ${Math.floor(
+						(i / channels.length) * 100
+					)}%`
 				);
 				delete element.data[selected.column];
 				try {
@@ -256,7 +259,9 @@ export default function ManageDB({ checkCols, checkPatch, round }) {
 
 				setLoadingMsg("Parsing new columns...");
 				setSelected(undefined);
-				return await checkPatch();
+				await checkPatch();
+				await checkCols();
+				return setLoading(false);
 			}
 			alert(
 				"There was an error running the operation! Please check if the DB has not been updated while this operation was being executed."
@@ -297,7 +302,9 @@ export default function ManageDB({ checkCols, checkPatch, round }) {
 			for (let i = 0; i < channels.length; i++) {
 				const channel = channels[i];
 				setLoadingMsg(
-					`Updating all channels with new column (this may take a while)... ${i} / ${channels.length}`
+					`Updating all channels with new column (this may take a while)... ${Math.floor(
+						(i / channels.length) * 100
+					)}%`
 				);
 				await write("channels", `${channel.id}`, { [newColMapData]: "-" });
 			}
@@ -318,7 +325,7 @@ export default function ManageDB({ checkCols, checkPatch, round }) {
 					changes: [
 						{
 							actionType: "Create Column",
-							columnName: selected.column,
+							columnName: newColMapData,
 						},
 					],
 					user: currentUser.username,
@@ -340,15 +347,23 @@ export default function ManageDB({ checkCols, checkPatch, round }) {
 				const { current } = await read("columns", "current");
 				await write("columns", "current", { current: current + 1 });
 				await checkPatch();
-				return setLoading(false);
+				await checkCols();
+				setSelected({
+					column: newColMapData,
+					title: newColTitle,
+					isLong: false,
+					oldKey: newColTitle.toUpperCase(),
+					order: columns.data.length + 1,
+				});
+				setLoading(false);
 			}
 			alert(
 				"Error uploading data, please verify what information has changed before re-creating anything"
 			);
 		} catch (error) {
 			console.log(error);
+			alert("Error, check console for details (F12)");
 			setLoading(false);
-			alert(JSON.stringify(error));
 		}
 		setLoading(false);
 	};
