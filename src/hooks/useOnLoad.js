@@ -165,7 +165,7 @@ const useOnLoad = () => {
 			const unfilteredCols = await readAll("columns");
 			const allColumns = unfilteredCols.filter((col) => col.id !== "current");
 			const orderedColumns = allColumns.sort(
-				(colA, colB) => colA.order - colB.order
+				(colA, colB) => colA.data.order - colB.data.order
 			);
 			localStorage.setItem("columns", JSON.stringify(orderedColumns));
 			return setColumns(JSON.parse(localStorage.getItem("columns")));
