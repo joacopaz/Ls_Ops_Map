@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { forwardRef, useRef, useState } from "react";
 import styles from "../Mapa.module.css";
 import { Button } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
@@ -29,7 +29,7 @@ const xlsxToJSON = (file) => {
 	});
 };
 
-export default function ScriptEnvironment({ checkPatch, columns }) {
+const ScriptEnvironment = forwardRef(({ checkPatch, columns }, ref) => {
 	const [loading, setLoading] = useState(false);
 	const { currentUser } = useAuth();
 	const scripts = useScripts(columns);
@@ -136,7 +136,7 @@ export default function ScriptEnvironment({ checkPatch, columns }) {
 		setLoading(false);
 	};
 	return (
-		<div className={`${styles.scriptEnvContainer} ${styles.mapa}`}>
+		<div className={`${styles.scriptEnvContainer} ${styles.mapa}`} ref={ref}>
 			{loading ? <Loader /> : null}
 			<h2>Scripts</h2>
 			<div className={styles.allScriptsContainer}>
@@ -291,4 +291,6 @@ export default function ScriptEnvironment({ checkPatch, columns }) {
 			</div>
 		</div>
 	);
-}
+});
+
+export default ScriptEnvironment;

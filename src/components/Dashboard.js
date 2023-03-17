@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState, useLayoutEffect, createContext, useRef } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import Mapa from "./Mapa";
 import useGrant from "../hooks/useGrant";
@@ -11,6 +11,8 @@ import ScriptEnvironment from "./ScriptEnvironment";
 import Loader from "./Loader";
 import ManageUsers from "./ManageUsers";
 import ManageDB from "./ManageDB";
+
+export const FilterContext = createContext();
 
 const Dashboard = () => {
 	/* app disabling for debugging 
@@ -53,12 +55,22 @@ const Dashboard = () => {
 		if (!loading) setHidden(false);
 	}, [loading]);
 
+	const contentRef = useRef(null);
+
+	const [results, setResults] = useState(false);
+	const [filter, setFilter] = useState(false);
+
 	if (!currentUser) return "This content is restricted";
 	return (
 		<>
 			{hidden ? <Loader /> : null}
 			{!hidden ? (
-				<Header setView={setView} view={view} isAdmin={currentUser.isAdmin} />
+				<Header
+					setView={setView}
+					view={view}
+					isAdmin={currentUser.isAdmin}
+					contentRef={contentRef}
+				/>
 			) : null}
 			{
 				/*currentUser.isAdmin && */ !hidden && (
@@ -73,27 +85,33 @@ const Dashboard = () => {
 			{!hidden && (
 				<ReportBug user={currentUser.username} setLoading={setLoading} />
 			)}
-			{!view && columns?.length > 10 && (
-				<Mapa
-					data={data}
-					loading={loading}
-					setData={setData}
-					setLoading={setLoading}
-					round={round}
-					propertyToString={propertyToString}
-					checkPatch={checkPatch}
-					columns={columns}
-				/>
-			)}
-			{!hidden && view === "Scripts" && (
-				<ScriptEnvironment checkPatch={checkPatch} columns={columns} />
-			)}
-			{!hidden && view === "ManageUsers" && (
-				<ManageUsers checkPatch={checkPatch} setLoading={setLoading} />
-			)}
-			{!hidden && view === "EditDB" && (
-				<ManageDB checkCols={getCols} checkPatch={checkPatch} round={round} />
-			)}
+			<div ref={contentRef} style={{ transition: "opacity 200ms" }}>
+				{!view && columns?.length > 10 && (
+					<FilterContext.Provider
+						value={{ filter, setFilter, results, setResults }}
+					>
+						<Mapa
+							data={data}
+							loading={loading}
+							setData={setData}
+							setLoading={setLoading}
+							round={round}
+							propertyToString={propertyToString}
+							checkPatch={checkPatch}
+							columns={columns}
+						/>
+					</FilterContext.Provider>
+				)}
+				{!hidden && view === "Scripts" && (
+					<ScriptEnvironment checkPatch={checkPatch} columns={columns} />
+				)}
+				{!hidden && view === "ManageUsers" && (
+					<ManageUsers checkPatch={checkPatch} setLoading={setLoading} />
+				)}
+				{!hidden && view === "EditDB" && (
+					<ManageDB checkCols={getCols} checkPatch={checkPatch} round={round} />
+				)}
+			</div>
 
 			<Footer />
 		</>

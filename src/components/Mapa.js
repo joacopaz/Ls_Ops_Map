@@ -10,6 +10,9 @@ import storage from "../hooks/useStorage";
 import { useAuth } from "../contexts/AuthContext";
 import DeleteForm from "./DeleteForm";
 import MapButtons from "./MapButtons";
+import Filter from "./Filter";
+import FilterBar from "./Filterbar";
+import FilterForm from "./FilterForm";
 
 const Mapa = ({
 	data,
@@ -26,6 +29,7 @@ const Mapa = ({
 	const { currentUser } = useAuth();
 	const searchRef = useRef();
 	const deleteInputRef = useRef();
+	const contentRef = useRef();
 	const [selectedChannel, setSelectedChannel] = useState(null);
 	const [sharedVcs, setSharedVcs] = useState([]);
 	const [edit, setEdit] = useState(false);
@@ -39,6 +43,7 @@ const Mapa = ({
 	const [deleting, setDeleting] = useState(false);
 	const [channelToDelete, setChannelToDelete] = useState({});
 	const [deleteConfirm, setDeleteConfirm] = useState(false);
+	const [searching, setSearching] = useState(false);
 
 	useEffect(() => {
 		// Set first channel as selected on load
@@ -248,7 +253,11 @@ const Mapa = ({
 		setSelectedChannel(newChannel);
 		setEditPayload([
 			...editPayload,
-			{ id: `${newID}`, actionType: "Create", changes: { ...newChannel.data } },
+			{
+				id: `${newID}`,
+				actionType: "Create",
+				changes: { ...newChannel.data },
+			},
 		]);
 		setEditCache((prev) => [
 			...prev,
@@ -339,9 +348,12 @@ const Mapa = ({
 		if (!channel) return;
 		setChannelToDelete(channel);
 	};
-
 	return (
-		<div style={loading ? { display: "none" } : {}}>
+		<div
+			style={loading ? { display: "none" } : { display: "flex" }}
+			ref={contentRef}
+			className={styles.content}
+		>
 			{!loading && selectedChannel ? (
 				<>
 					<ConfirmModal
@@ -364,55 +376,68 @@ const Mapa = ({
 						data={data}
 					/>
 					<div className={`${styles.mapa} ${edit && styles.mapEditing}`}>
-						{!creatingNew ? (
-							<Searchbar
-								handleSubmit={handleSubmit}
-								setDeleting={setDeleting}
-								deleting={deleting}
-								handleChannelCreation={handleChannelCreation}
-								handleChannelDeletion={handleChannelDeletion}
-								setDeleteConfirm={setDeleteConfirm}
-								setChannelToDelete={setChannelToDelete}
-								setSelectedChannel={setSelectedChannel}
-								data={data}
-								ref={searchRef}
-							/>
+						{!creatingNew && !edit ? (
+							<>
+								<Filter
+									setSearching={setSearching}
+									searching={searching}
+									contentRef={contentRef}
+								/>
+								{searching ? <FilterBar /> : null}
+								{!searching ? (
+									<Searchbar
+										handleSubmit={handleSubmit}
+										setDeleting={setDeleting}
+										deleting={deleting}
+										handleChannelCreation={handleChannelCreation}
+										handleChannelDeletion={handleChannelDeletion}
+										setDeleteConfirm={setDeleteConfirm}
+										setChannelToDelete={setChannelToDelete}
+										setSelectedChannel={setSelectedChannel}
+										data={data}
+										ref={searchRef}
+									/>
+								) : null}
+							</>
 						) : null}
-
-						{selectedChannel && !deleting && columns?.length > 10 ? (
-							<ChannelData
-								e={selectedChannel.data}
-								edit={edit}
-								editData={editData}
-								sharedVcs={sharedVcs}
-								columns={columns}
-							/>
-						) : null}
-
-						{deleting ? (
-							<DeleteForm
-								ref={deleteInputRef}
-								handleDeleteInput={handleDeleteInput}
-								deleteConfirm={deleteConfirm}
-								setDeleteConfirm={setDeleteConfirm}
-								channelToDelete={channelToDelete}
-								handleWillDelete={handleConfirm}
-								setEditPayload={setEditPayload}
-								setEdit={setEdit}
-								cancelEditingMode={cancelEditingMode}
-							/>
-						) : null}
-
-						<MapButtons
-							selectedChannel={selectedChannel}
-							edit={edit}
-							deleting={deleting}
-							setEdit={setEdit}
-							finishEditing={finishEditing}
-							cancelEditingMode={cancelEditingMode}
-							handleChannelCreation={handleChannelCreation}
-							handleChannelDeletion={handleChannelDeletion}
-						/>
+						{!searching ? (
+							<>
+								{selectedChannel && !deleting && columns?.length > 10 ? (
+									<ChannelData
+										e={selectedChannel.data}
+										edit={edit}
+										editData={editData}
+										sharedVcs={sharedVcs}
+										columns={columns}
+									/>
+								) : null}
+								{deleting ? (
+									<DeleteForm
+										ref={deleteInputRef}
+										handleDeleteInput={handleDeleteInput}
+										deleteConfirm={deleteConfirm}
+										setDeleteConfirm={setDeleteConfirm}
+										channelToDelete={channelToDelete}
+										handleWillDelete={handleConfirm}
+										setEditPayload={setEditPayload}
+										setEdit={setEdit}
+										cancelEditingMode={cancelEditingMode}
+									/>
+								) : null}
+								<MapButtons
+									selectedChannel={selectedChannel}
+									edit={edit}
+									deleting={deleting}
+									setEdit={setEdit}
+									finishEditing={finishEditing}
+									cancelEditingMode={cancelEditingMode}
+									handleChannelCreation={handleChannelCreation}
+									handleChannelDeletion={handleChannelDeletion}
+								/>{" "}
+							</>
+						) : (
+							<FilterForm />
+						)}
 					</div>
 				</>
 			) : null}

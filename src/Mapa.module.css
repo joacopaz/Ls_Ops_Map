@@ -4,7 +4,8 @@
 	display: flex;
 	align-items: center;
 	border-radius: 50px;
-	min-width: 380px;
+	min-width: 75vw;
+	min-height: 60vh;
 	top: 2vh;
 	max-height: 95vh;
 	background-color: rgb(255, 255, 255);
@@ -16,6 +17,11 @@
 	caret-color: transparent;
 	/* overflow-y: scroll; */
 	overflow-x: hidden;
+	transition: opacity 200ms;
+}
+
+.content {
+	transition: opacity 200ms;
 }
 
 .mapEditing {
@@ -155,7 +161,7 @@
 }
 
 .editBtn:focus {
-	background-color: #ff0000 !important;
+	background-color: #bf3333 !important;
 	color: white !important;
 }
 

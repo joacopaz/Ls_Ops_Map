@@ -1,19 +1,28 @@
 import React from "react";
 import styles from "../Mapa.module.css";
 
-export default function Header({ view, setView, isAdmin }) {
+export default function Header({ view, setView, isAdmin, contentRef }) {
+	const transitionEffect = (ref, view) => {
+		ref.current.style.opacity = 0;
+		setTimeout(() => {
+			ref.current.style.opacity = 100;
+			setView(view);
+		}, 200);
+	};
 	return (
 		<nav className={styles.header}>
 			<ul className={styles.navContent}>
 				<li
-					onClick={() => setView(null)}
+					onClick={() => {
+						transitionEffect(contentRef, null);
+					}}
 					className={view === null ? styles.selected : null}
 				>
 					Home
 				</li>
 				{isAdmin ? (
 					<li
-						onClick={() => setView("Scripts")}
+						onClick={() => transitionEffect(contentRef, "Scripts")}
 						className={view === "Scripts" ? styles.selected : null}
 					>
 						Scripts
@@ -21,7 +30,7 @@ export default function Header({ view, setView, isAdmin }) {
 				) : null}
 				{isAdmin ? (
 					<li
-						onClick={() => setView("ManageUsers")}
+						onClick={() => transitionEffect(contentRef, "ManageUsers")}
 						className={view === "ManageUsers" ? styles.selected : null}
 					>
 						Users
@@ -29,7 +38,7 @@ export default function Header({ view, setView, isAdmin }) {
 				) : null}
 				{isAdmin ? (
 					<li
-						onClick={() => setView("EditDB")}
+						onClick={() => transitionEffect(contentRef, "EditDB")}
 						className={view === "EditDB" ? styles.selected : null}
 					>
 						Manage DB
