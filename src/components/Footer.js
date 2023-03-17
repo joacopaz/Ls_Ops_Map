@@ -12,7 +12,7 @@ export default function Footer() {
 					Terms of Use
 				</a>
 			</div> */}
-			<div className={styles.build}>Build 0.6</div>
+			<div className={styles.build}>Build 0.7</div>
 		</>
 	);
 }

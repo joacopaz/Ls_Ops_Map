@@ -1,8 +1,17 @@
 import React, { useRef, useLayoutEffect, useContext, useState } from "react";
-import { Form, DropdownButton } from "react-bootstrap";
+import { Form, DropdownButton, Spinner } from "react-bootstrap";
 import DropdownItem from "react-bootstrap/esm/DropdownItem";
 import styles from "../FilterForm.module.css";
 import { FilterContext } from "./Dashboard";
+
+const getUnique = (results, filter) => {
+	const uniqueArray = [];
+	results.forEach((result) => {
+		if (uniqueArray.includes(result.data[filter])) return;
+		uniqueArray.push(result.data[filter]);
+	});
+	return uniqueArray.sort();
+};
 
 const FilterBar = () => {
 	const ref = useRef(null);
@@ -10,20 +19,40 @@ const FilterBar = () => {
 	useLayoutEffect(() => {
 		ref.current.focus();
 	}, [ref]);
-	const { setResults, filter, setFilter } = useContext(FilterContext);
+	const { results, setResults, filter, setFilter } = useContext(FilterContext);
 	const [timer, setTimer] = useState(null);
+	const [searching, setSearching] = useState(false);
 	const handleChange = () => {
+		setSearching(true);
 		if (timer) clearTimeout(timer);
 		setTimer(
 			setTimeout(() => {
 				handleSubmit();
-			}, 1200)
+			}, 400)
 		);
 	};
 
+	const cols = JSON.parse(localStorage.getItem("columns"));
+	const getTitle = (col) => {
+		return cols.find((column) => column.data.column === col).data.title;
+	};
+
+	const channels = JSON.parse(localStorage.getItem("channels"));
+
 	function handleSubmit() {
-		console.log("Submit");
 		setResults("");
+		sessionStorage.setItem("term", ref.current.value);
+		if (filter) {
+			const results = channels.filter((channel) =>
+				channel.data[filter]
+					.toString()
+					.toLowerCase()
+					.includes(ref.current.value.toLowerCase())
+			);
+			setResults(results);
+		}
+
+		setSearching(false);
 	}
 
 	return (
@@ -38,13 +67,14 @@ const FilterBar = () => {
 				<div>
 					<DropdownButton
 						className={styles.dropdown}
-						title="Filtrar por columna"
+						title={filter ? getTitle(filter) : "Filtrar por columna"}
 						ref={dropdownRef}
 						style={{
 							position: "absolute",
 							right: "0",
 							transform: "translate(110%,0)",
 							width: "200px",
+							zIndex: "500",
 						}}
 					>
 						<DropdownItem
@@ -54,10 +84,11 @@ const FilterBar = () => {
 									"Filtrar por columna";
 								ref.current.value = "";
 								ref.current.focus();
+								sessionStorage.removeItem("filter");
 								setFilter(null);
 							}}
 						>
-							(blank)
+							(ninguna)
 						</DropdownItem>
 						{JSON.parse(localStorage.getItem("columns")).map((col) => {
 							return (
@@ -68,7 +99,9 @@ const FilterBar = () => {
 											col.data.title;
 										ref.current.value = "";
 										ref.current.focus();
-										setFilter(col.data.title);
+										sessionStorage.setItem("filter", col.data.column);
+										setFilter(col.data.column);
+										handleSubmit();
 									}}
 								>
 									{col.data.title}
@@ -77,24 +110,29 @@ const FilterBar = () => {
 						})}
 					</DropdownButton>
 				</div>
-				<Form.Control
-					type="text"
-					className={`${styles.search} ${styles.filtering}`}
-					placeholder={filter ? `Search in ${filter}` : "Search by keywords"}
-					list="datalist"
-					ref={ref}
-					onChange={handleChange}
-				/>
-				<datalist id="datalist">
-					{/* {data?.channels?.map((e) => {
-						return (
-							<option
-								value={`${e.data.vc} ${e.data.canal}`}
-								key={e.id}
-							></option>
-						);
-					})} */}
-				</datalist>
+				<div className={styles.searchBarContainer}>
+					{searching ? (
+						<Spinner className={styles.loading} variant="primary" />
+					) : null}
+					<Form.Control
+						type="text"
+						className={`${styles.search} ${styles.filtering}`}
+						placeholder={
+							filter ? `Search in ${getTitle(filter)}` : "Search by keywords"
+						}
+						list="datalist"
+						ref={ref}
+						onChange={handleChange}
+						defaultValue={sessionStorage.getItem("term")}
+					/>
+					<datalist id="datalist">
+						{results?.length > 0
+							? getUnique(results, filter).map((unq, i) => (
+									<option key={i}>{unq}</option>
+							  ))
+							: null}
+					</datalist>
+				</div>
 			</Form.Group>
 			<Form.Text className="text-center w-100" as="div">
 				and &, or /

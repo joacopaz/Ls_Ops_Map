@@ -58,7 +58,7 @@ const Dashboard = () => {
 	const contentRef = useRef(null);
 
 	const [results, setResults] = useState(false);
-	const [filter, setFilter] = useState(false);
+	const [filter, setFilter] = useState(sessionStorage.getItem("filter"));
 
 	if (!currentUser) return "This content is restricted";
 	return (

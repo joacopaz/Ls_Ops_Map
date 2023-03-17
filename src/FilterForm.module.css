@@ -43,6 +43,19 @@
 
 /* Search bar for filtering */
 
+.searchBarContainer {
+	position: relative;
+}
+
+.loading {
+	position: absolute;
+	right: 6px;
+	top: 9px;
+	z-index: 10;
+	width: 20px;
+	height: 20px;
+}
+
 .search {
 	text-align: center;
 	border: 1px solid #00abf4 !important;
@@ -59,12 +72,87 @@
 
 .results {
 	display: flex;
+	flex-direction: column;
 	width: 100%;
 	height: 100%;
 	border: #00abf4 solid 1px;
-	justify-content: center;
-	align-items: center;
+	justify-content: flex-start;
 	padding: 1rem;
+	padding: 0;
+	height: 30rem;
+	position: relative;
+	padding-top: 2.3rem;
+	width: 1200px;
+}
+
+.results > span {
+	margin: auto;
+}
+
+.result {
+	border: lightgrey 1px solid;
+	display: flex;
+	padding: 0.2rem;
+	cursor: pointer;
+	transition: background-color 200ms;
+	color: white;
+	background-color: #0b5ed7;
+	max-height: 40px;
+}
+.resultHeader {
+	position: absolute;
+	top: 0;
+	width: 100%;
+	background-color: black;
+}
+
+.result > div {
+	margin: 2px 5px 2px 5px;
+	padding-left: 5px;
+	padding-right: 5px;
+	border-right: 1px white solid;
+}
+.result > div:nth-child(1) {
+	width: 60px;
+}
+.result > div:nth-child(2) {
+	width: 250px;
+}
+.result > div:nth-child(3) {
+	width: 60px;
+}
+
+.result > div:nth-child(4) {
+	width: 70px;
+}
+
+.result > div:nth-child(5) {
+	border-right: 0;
+	flex-grow: 1;
+	max-width: 700px;
+	overflow: hidden;
+	text-align: center;
+}
+
+.imgContainer {
+	max-height: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	margin: 0;
+}
+.imgContainer > img {
+	max-width: 100%;
+	max-height: 100%;
+	display: block;
+}
+
+.result:hover {
+	background-color: #1b4e99;
+}
+.resultHeader:hover {
+	background-color: rgba(0, 0, 0, 0.893);
 }
 
 /* Dropdown categorías */
