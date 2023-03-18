@@ -2,12 +2,20 @@ import React, { useContext, useRef } from "react";
 import styles from "../FilterForm.module.css";
 import { FilterContext } from "./Dashboard";
 
-export default function FilterForm({ setSelectedChannel, setSearching }) {
+export default function FilterForm({
+	setSelectedChannel,
+	setSearching,
+	contentRef,
+}) {
 	const { results, filter } = useContext(FilterContext);
 
 	const handleResultClick = (result) => {
-		setSelectedChannel(result);
-		setSearching(false);
+		contentRef.current.style.opacity = 0;
+		setTimeout(() => {
+			setSelectedChannel(result);
+			setSearching(false);
+			contentRef.current.style.opacity = 100;
+		}, 200);
 	};
 
 	const cols = JSON.parse(localStorage.getItem("columns"));

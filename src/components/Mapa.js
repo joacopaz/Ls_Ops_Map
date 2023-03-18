@@ -439,6 +439,7 @@ const Mapa = ({
 							<FilterForm
 								setSearching={setSearching}
 								setSelectedChannel={setSelectedChannel}
+								contentRef={contentRef}
 							/>
 						)}
 					</div>
