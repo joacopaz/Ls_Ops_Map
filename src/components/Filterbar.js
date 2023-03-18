@@ -1,4 +1,4 @@
-import React, { useRef, useLayoutEffect, useContext, useState } from "react";
+import React, { useRef, useEffect, useContext, useState } from "react";
 import { Form, DropdownButton, Spinner } from "react-bootstrap";
 import DropdownItem from "react-bootstrap/esm/DropdownItem";
 import styles from "../FilterForm.module.css";
@@ -16,10 +16,15 @@ const getUnique = (results, filter) => {
 const FilterBar = () => {
 	const ref = useRef(null);
 	const dropdownRef = useRef(null);
-	useLayoutEffect(() => {
+	useEffect(() => {
 		ref.current.focus();
 	}, [ref]);
+	useEffect(() => {
+		handleSubmit();
+	}, []);
+
 	const { results, setResults, filter, setFilter } = useContext(FilterContext);
+
 	const [timer, setTimer] = useState(null);
 	const [searching, setSearching] = useState(false);
 	const handleChange = () => {
@@ -101,7 +106,7 @@ const FilterBar = () => {
 										ref.current.focus();
 										sessionStorage.setItem("filter", col.data.column);
 										setFilter(col.data.column);
-										handleSubmit();
+										setTimeout(handleSubmit, 50);
 									}}
 								>
 									{col.data.title}
