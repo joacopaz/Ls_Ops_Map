@@ -57,13 +57,13 @@ const FilterBar = () => {
 			setResults(results);
 		}
 		if (!filter) {
-			const results = channels.filter((channel) =>
-				channel.data[filter]
-					.toString()
-					.toLowerCase()
-					.includes(ref.current.value.toLowerCase())
-			);
-			setResults(results);
+			// const results = channels.filter((channel) =>
+			// 	channel.data[filter]
+			// 		.toString()
+			// 		.toLowerCase()
+			// 		.includes(ref.current.value.toLowerCase())
+			// );
+			// setResults(results);
 		}
 
 		setSearching(false);
