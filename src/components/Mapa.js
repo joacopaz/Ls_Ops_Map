@@ -135,25 +135,16 @@ const Mapa = ({
 		)
 			setAlert(`VC and channel name must be assigned a new value on channel creation
 			(can be modified later).`);
-		if (
-			data.channels.find(
-				(e) =>
-					e.data.canal.toLowerCase() ===
-						selectedChannel.data.canal.toLowerCase() &&
-					e.id !== selectedChannel.id
-			)
-		)
+		const mismatch = data.channels.find(
+			(e) =>
+				e.data.canal.toLowerCase() ===
+					selectedChannel.data.canal.toLowerCase() &&
+				Number(e.data.vc) === Number(selectedChannel.data.vc) &&
+				e.id !== selectedChannel.id
+		);
+		if (mismatch)
 			setAlert(
-				`Channel name must be unique, ${
-					selectedChannel.data.canal
-				} is currently in use by VC ${
-					data.channels.find(
-						(e) =>
-							e.data.canal.toLowerCase() ===
-								selectedChannel.data.canal.toLowerCase() &&
-							e.id !== selectedChannel.id
-					).data.vc
-				}.`
+				`The combination of Channel Name + VC must be unique, ${selectedChannel.data.vc} ${selectedChannel.data.canal}  is currently in use by ${mismatch.data.vc} ${mismatch.data.canal}.`
 			);
 		if (isNaN(selectedChannel.data.vc)) setAlert("VC must be a number");
 		let string = "";
