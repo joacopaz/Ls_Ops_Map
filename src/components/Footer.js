@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "../Mapa.module.css";
-import icon from "../cute-heart.png";
+// import icon from "../cute-heart.png";
 
 export default function Footer() {
 	return (

@@ -4,6 +4,11 @@ import DropdownItem from "react-bootstrap/esm/DropdownItem";
 import styles from "../FilterForm.module.css";
 import { FilterContext } from "./Dashboard";
 
+// eslint-disable-next-line no-extend-native
+String.prototype.removeAccents = function () {
+	return this.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+};
+
 const splitString = (inputString, splitter, includeSplitter) => {
 	const outputArray = inputString.split(splitter);
 	if (includeSplitter) {
@@ -82,12 +87,20 @@ const FilterBar = () => {
 			let results;
 			if (!isAnd && !isOr)
 				results = channels.filter((channel) =>
-					channel.data[filter].toString().toLowerCase().includes(query)
+					channel.data[filter]
+						.toString()
+						.removeAccents()
+						.toLowerCase()
+						.includes(query)
 				);
 			if (isAnd && !isOr) {
 				results = channels.filter((channel) => {
 					const allMatch = params.map((param) =>
-						channel.data[filter].toString().toLowerCase().includes(param)
+						channel.data[filter]
+							.toString()
+							.removeAccents()
+							.toLowerCase()
+							.includes(param)
 					);
 					if (allMatch.some((ele) => ele === false)) return false;
 					return true;
@@ -96,7 +109,11 @@ const FilterBar = () => {
 			if (isOr && !isAnd) {
 				results = channels.filter((channel) => {
 					const anyMatch = params.map((param) =>
-						channel.data[filter].toString().toLowerCase().includes(param)
+						channel.data[filter]
+							.toString()
+							.removeAccents()
+							.toLowerCase()
+							.includes(param)
 					);
 					if (anyMatch.some((ele) => ele === true)) return true;
 					return false;
@@ -114,7 +131,9 @@ const FilterBar = () => {
 					for (const key in data) {
 						if (Object.hasOwnProperty.call(data, key)) {
 							const element = data[key];
-							if (element.toString().toLowerCase().includes(query)) {
+							if (
+								element.toString().removeAccents().toLowerCase().includes(query)
+							) {
 								matches.push(key);
 							}
 						}
@@ -135,7 +154,13 @@ const FilterBar = () => {
 						if (Object.hasOwnProperty.call(data, key)) {
 							const element = data[key];
 							params.forEach((param) => {
-								if (element.toString().toLowerCase().includes(param)) {
+								if (
+									element
+										.toString()
+										.removeAccents()
+										.toLowerCase()
+										.includes(param)
+								) {
 									matches.push(key);
 									values.push(element.toString().toLowerCase());
 								}
@@ -162,7 +187,13 @@ const FilterBar = () => {
 						if (Object.hasOwnProperty.call(data, key)) {
 							const element = data[key];
 							params.forEach((param) => {
-								if (element.toString().toLowerCase().includes(param)) {
+								if (
+									element
+										.toString()
+										.removeAccents()
+										.toLowerCase()
+										.includes(param)
+								) {
 									matches.push(key);
 								}
 							});
