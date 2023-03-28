@@ -60,7 +60,7 @@ const FilterBar = () => {
 
 	function handleSubmit() {
 		setResults("");
-		const query = ref.current.value.trim().toLowerCase();
+		const query = ref.current.value.trim().toLowerCase().removeAccents();
 		sessionStorage.setItem("term", query);
 		let isAnd = false;
 		let isOr = false;
