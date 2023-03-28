@@ -29,6 +29,7 @@ const FilterBar = () => {
 	}, [ref]);
 	useEffect(() => {
 		handleSubmit();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const { results, setResults, filter, setFilter } = useContext(FilterContext);

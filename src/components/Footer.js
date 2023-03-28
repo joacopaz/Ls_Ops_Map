@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "../Mapa.module.css";
+import icon from "../cute-heart.png";
 
 export default function Footer() {
 	return (
@@ -12,7 +13,10 @@ export default function Footer() {
 					Terms of Use
 				</a>
 			</div> */}
-			<div className={styles.build}>Build 0.7</div>
+			<div className={styles.build}>
+				<span>Build 0.8</span>
+				{/* <img src={icon} style={{ maxHeight: "15px" }}></img> */}
+			</div>
 		</>
 	);
 }
