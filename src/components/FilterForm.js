@@ -18,9 +18,10 @@ export default function FilterForm({
 		}, 200);
 	};
 
-	const cols = JSON.parse(localStorage.getItem("columns"));
 	const getTitle = (col) => {
-		return cols.find((column) => column.data.column === col).data.title;
+		const cols = JSON.parse(localStorage.getItem("columns")) || [];
+		const found = cols.find((column) => column.data.column === col);
+		return found ? found.data.title : "";
 	};
 
 	const alertRef = useRef(null);
@@ -41,10 +42,14 @@ export default function FilterForm({
 					<div className="text-center">Logo</div>
 					<div className="text-center">SID</div>
 					<div className="text-center">
-						{filter ? getTitle(filter) : "No hay filtro"}
+						{filter
+							? getTitle(filter)
+							: results.length > 0
+							? "Matches"
+							: "No hay filtro"}
 					</div>
 				</div>
-				{results.length === 0 || !results ? (
+				{results?.length === 0 || !results ? (
 					<span>No results...</span>
 				) : (
 					<div style={{ overflowX: "hidden", overflowY: "scroll" }}>
@@ -60,7 +65,21 @@ export default function FilterForm({
 									<img src={result.data.img} alt={result.data.title} />
 								</div>
 								<div>{result.data.sid}</div>
-								<div>{result.data[filter]}</div>
+								<div>
+									{filter
+										? result.data[filter]
+										: result.data.matchedAt
+										? result.data.matchedAt.map((match, i) => {
+												if (i === 0 && result.data.matchedAt.length > 1)
+													return `${getTitle(match)}: ${result.data[match]} - `;
+												if (i !== result.data.matchedAt.length - 1)
+													return `${getTitle(match)}: ${result.data[match]} - `;
+												if (i === result.data.matchedAt.length - 1)
+													return `${getTitle(match)}: ${result.data[match]}`;
+												return match;
+										  })
+										: null}
+								</div>
 							</div>
 						))}
 					</div>

@@ -4,6 +4,14 @@ import DropdownItem from "react-bootstrap/esm/DropdownItem";
 import styles from "../FilterForm.module.css";
 import { FilterContext } from "./Dashboard";
 
+const splitString = (inputString, splitter, includeSplitter) => {
+	const outputArray = inputString.split(splitter);
+	if (includeSplitter) {
+		outputArray.splice(1, 0, splitter);
+	}
+	return outputArray.map((ele) => ele.trim());
+};
+
 const getUnique = (results, filter) => {
 	const uniqueArray = [];
 	results.forEach((result) => {
@@ -46,24 +54,128 @@ const FilterBar = () => {
 
 	function handleSubmit() {
 		setResults("");
-		sessionStorage.setItem("term", ref.current.value);
+		const query = ref.current.value.trim().toLowerCase();
+		sessionStorage.setItem("term", query);
+		let isAnd = false;
+		let isOr = false;
+		let params = null;
+		if (query.includes("&")) {
+			isAnd = true;
+			isOr = false;
+			params = splitString(query, "&", false);
+		}
+		if (query.includes("/")) {
+			isAnd = false;
+			isOr = true;
+			params = splitString(query, "/", false);
+		}
+		if (isAnd && query.includes("/")) {
+			alert("Por favor elegir sólo 1, & o /, no ambos");
+			ref.current.value = ref.current.value.slice(0, -1);
+		}
+		if (isOr && query.includes("&")) {
+			alert("Por favor elegir sólo 1, & o /, no ambos");
+			ref.current.value = ref.current.value.slice(0, -1);
+		}
 		if (filter) {
-			const results = channels.filter((channel) =>
-				channel.data[filter]
-					.toString()
-					.toLowerCase()
-					.includes(ref.current.value.toLowerCase())
-			);
+			let results;
+			if (!isAnd && !isOr)
+				results = channels.filter((channel) =>
+					channel.data[filter].toString().toLowerCase().includes(query)
+				);
+			if (isAnd && !isOr) {
+				results = channels.filter((channel) => {
+					const allMatch = params.map((param) =>
+						channel.data[filter].toString().toLowerCase().includes(param)
+					);
+					if (allMatch.some((ele) => ele === false)) return false;
+					return true;
+				});
+			}
+			if (isOr && !isAnd) {
+				results = channels.filter((channel) => {
+					const anyMatch = params.map((param) =>
+						channel.data[filter].toString().toLowerCase().includes(param)
+					);
+					if (anyMatch.some((ele) => ele === true)) return true;
+					return false;
+				});
+			}
+
 			setResults(results);
 		}
 		if (!filter) {
-			// const results = channels.filter((channel) =>
-			// 	channel.data[filter]
-			// 		.toString()
-			// 		.toLowerCase()
-			// 		.includes(ref.current.value.toLowerCase())
-			// );
-			// setResults(results);
+			const results = [];
+			if (!isAnd && !isOr)
+				channels.forEach((channel) => {
+					const { data } = channel;
+					const matches = [];
+					for (const key in data) {
+						if (Object.hasOwnProperty.call(data, key)) {
+							const element = data[key];
+							if (element.toString().toLowerCase().includes(query)) {
+								matches.push(key);
+							}
+						}
+					}
+					if (matches.length > 0)
+						results.push({
+							...channel,
+							data: { ...channel.data, matchedAt: matches },
+						});
+				});
+
+			if (isAnd && !isOr)
+				channels.forEach((channel) => {
+					const { data } = channel;
+					const matches = [];
+					const values = [];
+					for (const key in data) {
+						if (Object.hasOwnProperty.call(data, key)) {
+							const element = data[key];
+							params.forEach((param) => {
+								if (element.toString().toLowerCase().includes(param)) {
+									matches.push(key);
+									values.push(element.toString().toLowerCase());
+								}
+							});
+						}
+					}
+
+					const allMatch = params
+						.map((param) => values.some((val) => val.includes(param)))
+						.every((val) => val === true);
+
+					if (matches.length > 0 && allMatch)
+						results.push({
+							...channel,
+							data: { ...channel.data, matchedAt: matches },
+						});
+				});
+
+			if (!isAnd && isOr)
+				channels.forEach((channel) => {
+					const { data } = channel;
+					const matches = [];
+					for (const key in data) {
+						if (Object.hasOwnProperty.call(data, key)) {
+							const element = data[key];
+							params.forEach((param) => {
+								if (element.toString().toLowerCase().includes(param)) {
+									matches.push(key);
+								}
+							});
+						}
+					}
+
+					if (matches.length > 0)
+						results.push({
+							...channel,
+							data: { ...channel.data, matchedAt: matches },
+						});
+				});
+
+			setResults(results);
 		}
 
 		setSearching(false);
